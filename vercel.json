@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/u/:username",
+      "destination": "/u.html?username=:username"
+    },
+    {
+      "source": "/checkout/:username/:product",
+      "destination": "/checkout.html?username=:username&product=:product"
+    }
+  ]
+}

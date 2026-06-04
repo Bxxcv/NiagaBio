@@ -1,0 +1,6 @@
+document.addEventListener('DOMContentLoaded',()=>{
+  const loginForm=document.getElementById('loginForm');
+  const registerForm=document.getElementById('registerForm');
+  if(loginForm){ loginForm.addEventListener('submit', async(e)=>{ e.preventDefault(); const btn=loginForm.querySelector('button[type="submit"]'); btn.disabled=true; btn.textContent='Memproses...'; try{ await NB.signIn(loginEmail.value.trim(), loginPassword.value); nbToast('Login berhasil.'); location.href='dashboard.html'; }catch(err){ nbToast(err.message||'Gagal login','danger'); }finally{ btn.disabled=false; btn.textContent='Masuk'; } }); }
+  if(registerForm){ registerForm.addEventListener('submit', async(e)=>{ e.preventDefault(); const btn=registerForm.querySelector('button[type="submit"]'); btn.disabled=true; btn.textContent='Membuat akun...'; try{ await NB.signUp(registerEmail.value.trim(), registerPassword.value, registerName.value.trim()); nbToast('Akun berhasil dibuat. Plan kamu otomatis Free.'); location.href='dashboard.html'; }catch(err){ nbToast(err.message||'Gagal daftar','danger'); }finally{ btn.disabled=false; btn.textContent='Daftar Gratis'; } }); }
+});

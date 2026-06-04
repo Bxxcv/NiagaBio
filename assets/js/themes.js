@@ -1,0 +1,5 @@
+document.addEventListener('DOMContentLoaded',async()=>{
+  setActiveSide('themes'); const user=await NB.requireAuth(); if(!user)return; let profile=await NB.getProfile(user.id); const premium=NB.isPremium(profile); const current=profile?.theme_name||'service';
+  themeGrid.innerHTML=NB.themes.map(t=>`<div class="col-md-6 col-xl-4"><div class="theme-card ${current===t.id?'active':''} ${t.premium&&!premium?'locked':''}" data-theme="${t.id}"><div class="theme-swatch theme-${t.id}" style="background:linear-gradient(135deg,var(--theme-a,#0f9f68),var(--theme-b,#dff7eb))"></div><h5 class="fw-bold mb-1">${t.name}</h5><p class="text-muted mb-0 small">${t.desc}</p></div></div>`).join('');
+  document.querySelectorAll('[data-theme]').forEach(card=>card.onclick=async()=>{ const id=card.dataset.theme; const t=NB.themes.find(x=>x.id===id); if(t.premium&&!premium){ nbToast('Tema ini khusus Premium. Upgrade dulu ya bang.','warning'); return; } profile={...profile,theme_name:id}; await NB.upsertProfile(profile); document.querySelectorAll('.theme-card').forEach(x=>x.classList.remove('active')); card.classList.add('active'); nbToast('Tema berhasil dipilih.'); });
+});
