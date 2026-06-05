@@ -1,0 +1,14 @@
+PENYEBAB ERROR LINE 860:
+SQL Editor menjalankan potongan kolom tabel yang dimulai dari:
+  id uuid primary key default gen_random_uuid(),
+Padahal sebelum baris itu wajib ada:
+  create table if not exists public.profiles (
+
+CARA FIX:
+1. Di Supabase SQL Editor, tekan Ctrl+A / Select All.
+2. Hapus semua isi query lama.
+3. Paste isi file: supabase/schema_clean_run_this.sql atau supabase/schema.sql dari zip ini.
+4. Run dari baris pertama sampai akhir. Jangan run mulai dari tengah/line 860.
+5. Kalau sudah pernah register admin, jalankan bootstrap admin yang ada di bagian bawah schema.
+
+JANGAN paste patch/kolom tabel di bawah schema yang sudah selesai. Kalau setelah komentar BOOTSTRAP ADMIN masih ada baris seperti "id uuid primary key...", hapus blok itu.
