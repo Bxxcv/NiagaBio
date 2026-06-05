@@ -1,5 +1,5 @@
 window.NIAGABIO_CONFIG = {
-  // GANTI INI setelah setup Supabase. Selama masih placeholder, app berjalan di DEMO MODE/localStorage.
+  // Jangan set DEMO_MODE=false sebelum supabase/schema.sql berhasil dijalankan.
   SUPABASE_URL: "https://ruvgzanlusqxdhtbzntl.supabase.co",
   SUPABASE_ANON_KEY: "sb_publishable_5T85nklr7rjkeADkPbY2BQ_EW3F0Nfz",
   ADMIN_EMAIL: "unrageunrage@gmail.com",
