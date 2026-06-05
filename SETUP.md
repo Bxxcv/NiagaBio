@@ -1,119 +1,84 @@
-# Setup Manual NiagaBio Final
+# Setup Manual NiagaBio
 
-Ikuti urutan ini biar tidak error.
+## 1. Jalankan di local / GitHub
 
-## 1. Supabase Database
+Project ini static HTML/CSS/JS. Tidak perlu npm.
 
-Buka Supabase → SQL Editor → New Query.
+Buka langsung:
 
-Copy semua isi file:
+```txt
+index.html
+```
+
+Atau upload ke GitHub lalu deploy ke Vercel.
+
+## 2. Mode Demo
+
+Default project berjalan di DEMO MODE dengan localStorage agar tidak error meskipun Supabase belum disetup.
+
+Login demo:
+
+```txt
+demo@niagabio.local
+password: demo123
+```
+
+Admin demo:
+
+```txt
+unrageunrage@gmail.com
+password: admin123
+```
+
+## 3. Setup Supabase
+
+1. Buat project Supabase.
+2. Buka SQL Editor.
+3. Jalankan file:
 
 ```txt
 supabase/schema.sql
 ```
 
-Lalu Run.
-
-## 2. Storage Bucket
-
-Buka Supabase → Storage → New bucket.
+4. Buat Storage bucket public bernama:
 
 ```txt
-Bucket name: niagabio
-Public bucket: ON
+niagabio
 ```
 
-Lalu buka SQL Editor dan Run:
-
-```txt
-supabase/storage-policies.sql
-```
-
-## 3. Auth Setting
-
-Buka Supabase → Authentication → Providers → Email.
-
-Untuk MVP, matikan dulu:
-
-```txt
-Confirm email: OFF
-```
-
-## 4. Config Frontend
-
-Edit file:
-
-```txt
-assets/js/config.js
-```
-
-Isi:
+5. Buka `assets/js/config.js`.
+6. Ganti:
 
 ```js
-SUPABASE_URL: "https://PROJECT-KAMU.supabase.co",
-SUPABASE_ANON_KEY: "PUBLISHABLE_OR_ANON_KEY_KAMU",
+SUPABASE_URL: "YOUR_SUPABASE_URL",
+SUPABASE_ANON_KEY: "YOUR_SUPABASE_ANON_KEY",
+DEMO_MODE: true
+```
+
+Menjadi:
+
+```js
+SUPABASE_URL: "https://xxxx.supabase.co",
+SUPABASE_ANON_KEY: "anon-key-kamu",
 DEMO_MODE: false
 ```
 
-Jangan pernah isi secret key, service_role key, database password, atau connection string di frontend.
+Jangan pernah masukkan service role key ke frontend.
 
-## 5. Jadikan Akun Admin
+## 4. Deploy Vercel
 
-Daftar dulu di web memakai email admin:
+1. Push semua file ke GitHub.
+2. Import repository ke Vercel.
+3. Framework preset: Other.
+4. Build command: kosongkan.
+5. Output directory: kosongkan / root.
+6. Deploy.
 
-```txt
-unrageunrage@gmail.com
-```
+## 5. Alur Fitur
 
-Lalu Run SQL:
-
-```sql
-update public.profiles
-set role='admin', plan='premium', status='active', plan_end_date='2099-12-31'
-where email='unrageunrage@gmail.com';
-```
-
-Setelah itu buka:
-
-```txt
-/admin
-```
-
-## 6. QRIS Upgrade Premium Admin
-
-Ganti file placeholder ini dengan QRIS admin milik kamu:
-
-```txt
-assets/img/admin-qris.svg
-```
-
-Boleh ganti ke JPG/PNG, lalu update `PLATFORM_QRIS_IMAGE` di `assets/js/config.js`.
-
-## 7. URL Bersih di Vercel
-
-Project sudah memakai `vercel.json`, jadi link tampil tanpa `.html`:
-
-```txt
-/admin
-/dashboard
-/upgrade
-/u/username
-/checkout/username/productid
-```
-
-## 8. Fitur Admin
-
-Admin panel mendukung:
-
-- Lihat data user
-- Upgrade user ke Premium
-- Set user ke Free
-- Blokir / unblock user
-- Soft delete user
-- Kirim email reset password
-- Lihat request upgrade premium
-- Approve / reject upgrade premium
-- Maintenance mode
-- Lihat order dan omset tercatat
-
-Catatan: tombol reset password mengirim email reset ke user. Hard delete user dari Supabase Auth butuh Edge Function/service role, karena key rahasia tidak boleh ditaruh di frontend.
+- User daftar otomatis Free.
+- Free dibatasi 2 tema, 5 produk, 5 link, 3 sosial media.
+- Premium dibuka lewat admin panel.
+- QRIS manual hanya untuk Premium.
+- Pesanan QRIS masuk ke dashboard seller.
+- Seller klik Paid agar omset bertambah.
