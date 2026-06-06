@@ -2,10 +2,18 @@
   'use strict';
 
   const cfg = window.NIAGABIO_CONFIG || {};
-  const urlReady = Boolean(cfg.SUPABASE_URL && !cfg.SUPABASE_URL.includes('YOUR_'));
-  const keyReady = Boolean(cfg.SUPABASE_ANON_KEY && !cfg.SUPABASE_ANON_KEY.includes('YOUR_'));
+  const isPlaceholder = value => !value || /YOUR_|PASTE_|_HERE/i.test(String(value));
+  const urlReady = Boolean(cfg.SUPABASE_URL && !isPlaceholder(cfg.SUPABASE_URL));
+  const keyReady = Boolean(cfg.SUPABASE_ANON_KEY && !isPlaceholder(cfg.SUPABASE_ANON_KEY));
   const canSupabase = Boolean(window.supabase && urlReady && keyReady && cfg.DEMO_MODE !== true);
-  const sb = canSupabase ? window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY) : null;
+  let sb = null;
+
+  try {
+    sb = canSupabase ? window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY) : null;
+  } catch (error) {
+    console.warn('[NiagaBio] Supabase config belum valid, fallback ke demo/localStorage:', error.message);
+    sb = null;
+  }
 
   const LS = {
     users: 'nb_users',
@@ -384,7 +392,7 @@
     }
 
     const user = read(LS.users, []).find(item => item.email === cleanEmail && item.password === password);
-    if (!user) throw new Error('Email atau password salah. Demo: demo@niagabio.local / demo123');
+    if (!user) throw new Error('Email atau password salah.');
     localStorage.setItem(LS.session, user.id);
     return user;
   }

@@ -847,14 +847,12 @@ using (bucket_id = 'niagabio' and owner = auth.uid());
 -- =========================================================
 -- BOOTSTRAP ADMIN
 -- =========================================================
--- Setelah akun admin pertama sudah register/login dan row profiles-nya ada,
--- jalankan SATU KALI di SQL Editor Supabase, bukan dari frontend:
+-- Setelah schema sukses dan akun admin sudah dibuat di Authentication > Users,
+-- jalankan file ini:
+-- supabase/02_bootstrap_admin_after_signup.sql
 --
--- update public.profiles
--- set role = 'admin', plan = 'premium', status = 'active', plan_end_date = '2099-12-31T00:00:00Z'
--- where email = 'unrageunrage@gmail.com';
---
--- Setelah itu admin bisa mengatur user lewat admin.html tanpa service role key di frontend.
+-- Jangan pakai update biasa untuk bootstrap admin pertama, karena trigger pengunci
+-- role/plan/status memang sengaja aktif untuk melindungi user biasa.
 
 -- =========================================================
 -- END OF NIAGABIO SCHEMA
