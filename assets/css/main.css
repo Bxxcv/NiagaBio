@@ -343,6 +343,17 @@ a {
   padding:20px;
   z-index:1020
 }
+
+.sidebar-overlay {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(11,19,32,.42);
+  border:0;
+  padding:0;
+  z-index:1015;
+  backdrop-filter:blur(2px)
+}
 .main-content {
   margin-left:280px;
   width:calc(100% - 280px);
@@ -586,6 +597,12 @@ a {
   }
   .sidebar.show {
     transform:translateX(0)
+  }
+  body.sidebar-open {
+    overflow:hidden
+  }
+  body.sidebar-open .sidebar-overlay {
+    display:block
   }
   .main-content {
     margin-left:0;
