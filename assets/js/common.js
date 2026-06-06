@@ -99,6 +99,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.body.classList.toggle('is-admin', isAdminProfile);
   document.querySelectorAll('[data-admin-only]').forEach(element => element.classList.toggle('d-none', !isAdminProfile));
 
+  if (profile?.username) {
+    const publicHref = `u?username=${encodeURIComponent(profile.username)}`;
+    document.querySelectorAll('a[href^="u?username=demo"], a[href="u"], #sidebarPublicPreview, #openPublicPage').forEach(link => {
+      link.href = publicHref;
+    });
+    document.querySelectorAll('input[value="u?username=demo"], #publicUrlInput').forEach(input => {
+      input.value = `${location.origin}/u?username=${profile.username}`;
+    });
+  }
+
   document.querySelectorAll('[data-plan]').forEach(element => {
     element.textContent = isAdminProfile ? 'Admin' : (NB.isPremium(profile) ? 'Premium' : 'Free');
     element.className = isAdminProfile ? 'badge-soft badge-admin' : 'badge-soft';
