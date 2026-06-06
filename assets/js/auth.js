@@ -10,9 +10,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       button.textContent = 'Memproses...';
 
       try {
-        await NB.signIn(loginEmail.value.trim(), loginPassword.value);
+        const user = await NB.signIn(loginEmail.value.trim(), loginPassword.value);
+        const profile = user ? await NB.getProfile(user.id) : null;
         nbToast('Login berhasil.');
-        location.href = 'dashboard.html';
+        location.href = profile?.role === 'admin' ? 'admin.html' : 'dashboard.html';
       } catch (error) {
         nbToast(error.message || 'Gagal login.', 'danger');
       } finally {

@@ -62,11 +62,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   document.querySelectorAll('[data-auth-show]').forEach(element => element.classList.toggle('d-none', !user));
   document.querySelectorAll('[data-auth-hide]').forEach(element => element.classList.toggle('d-none', Boolean(user)));
-  document.querySelectorAll('[data-admin-only]').forEach(element => element.classList.toggle('d-none', profile?.role !== 'admin'));
+  const isAdminProfile = profile?.role === 'admin';
+  document.body.classList.toggle('is-admin', isAdminProfile);
+  document.querySelectorAll('[data-admin-only]').forEach(element => element.classList.toggle('d-none', !isAdminProfile));
 
   document.querySelectorAll('[data-plan]').forEach(element => {
-    element.textContent = NB.isPremium(profile) ? 'Premium' : 'Free';
-    element.className = 'badge-soft';
+    element.textContent = isAdminProfile ? 'Admin' : (NB.isPremium(profile) ? 'Premium' : 'Free');
+    element.className = isAdminProfile ? 'badge-soft badge-admin' : 'badge-soft';
   });
 });
 
