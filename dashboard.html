@@ -1,241 +1,358 @@
 <!DOCTYPE html>
 <html lang="id">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1" name="viewport"/>
-  <title>
-   Dashboard - NiagaBio
-  </title>
-  <meta content="NiagaBio adalah link bio + katalog produk untuk seller dan UMKM." name="description"/>
-  <link href="assets/img/logo.jpg" rel="icon"/>
-  <link href="https://cdn.jsdelivr.net" rel="preconnect"/>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
-  <link href="assets/css/main.css" rel="stylesheet"/>
- </head>
- <body data-protected="true">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard - NiagaBio</title>
+  <meta name="description" content="Dashboard seller NiagaBio untuk mengelola link bio, katalog, pesanan, dan halaman publik.">
+  <link rel="icon" href="assets/img/logo.jpg">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="assets/css/main.css" rel="stylesheet">
+</head>
+<body data-protected="true">
   <div class="app-shell">
-   <aside class="sidebar">
-    <div class="d-flex align-items-center gap-2 mb-4">
-     <img alt="NiagaBio" class="nb-logo-sm" src="assets/img/logo.jpg"/>
-     <span class="h4 fw-black text-green mb-0">
-      NiagaBio
-     </span>
-    </div>
-    <nav>
-     <a class="side-link" data-nav="dashboard" href="dashboard.html">
-      <i class="bi bi-grid-1x2">
-      </i>
-      Dashboard
-     </a>
-     <a class="side-link" data-nav="profile" href="profile.html">
-      <i class="bi bi-person">
-      </i>
-      Profil
-     </a>
-     <a class="side-link" data-nav="products" href="products.html">
-      <i class="bi bi-bag">
-      </i>
-      Produk
-     </a>
-     <a class="side-link" data-nav="links" href="links.html">
-      <i class="bi bi-link-45deg">
-      </i>
-      Link Custom
-     </a>
-     <a class="side-link" data-nav="social" href="social.html">
-      <i class="bi bi-share">
-      </i>
-      Sosial Media
-     </a>
-     <a class="side-link" data-nav="gallery" href="gallery.html">
-      <i class="bi bi-images">
-      </i>
-      Gallery
-     </a>
-     <a class="side-link" data-nav="themes" href="themes.html">
-      <i class="bi bi-palette">
-      </i>
-      Tema
-     </a>
-     <a class="side-link" data-nav="checkout" href="checkout-settings.html">
-      <i class="bi bi-qr-code">
-      </i>
-      Checkout
-     </a>
-     <a class="side-link" data-nav="orders" href="orders.html">
-      <i class="bi bi-receipt">
-      </i>
-      Pesanan
-     </a>
-     <a class="side-link" data-nav="upgrade" href="upgrade.html">
-      <i class="bi bi-stars">
-      </i>
-      Upgrade
-     </a>
-     <a class="side-link d-none" data-admin-only="" data-nav="admin" href="admin.html">
-      <i class="bi bi-shield-lock">
-      </i>
-      Admin
-     </a>
-     <hr/>
-     <a class="side-link" href="u.html?username=demo" target="_blank">
-      <i class="bi bi-eye">
-      </i>
-      Preview Demo
-     </a>
-     <a class="side-link text-danger" data-logout="" href="#">
-      <i class="bi bi-box-arrow-right">
-      </i>
-      Keluar
-     </a>
-    </nav>
-   </aside>
-   <main class="main-content">
-    <header class="topbar">
-     <div class="d-flex align-items-center gap-2">
-      <button class="btn btn-outline-nb d-lg-none" data-sidebar-toggle="">
-       <i class="bi bi-list">
-       </i>
-      </button>
-      <div>
-       <h1 class="h4 fw-black mb-0">
-        Dashboard
-       </h1>
-       <small class="text-muted">
-        Kelola halaman NiagaBio kamu
-       </small>
+    <aside class="sidebar">
+      <div class="d-flex align-items-center gap-2 mb-4">
+        <img src="assets/img/logo.jpg" class="nb-logo-sm" alt="NiagaBio">
+        <span class="h4 fw-black text-green mb-0">NiagaBio</span>
       </div>
-     </div>
-     <span class="badge-soft" data-plan="">
-      Free
-     </span>
-    </header>
-    <div class="content-wrap">
-     <div class="row g-4 mb-4">
-      <div class="col-md-6 col-xl-3">
-       <div class="card-nb metric">
-        <span class="icon-bubble mb-3">
-         <i class="bi bi-bag">
-         </i>
-        </span>
-        <div class="value" id="metricProducts">
-         0
+
+      <nav>
+        <a class="side-link" data-nav="dashboard" href="dashboard.html">
+          <i class="bi bi-grid-1x2"></i>
+          Dashboard
+        </a>
+        <a class="side-link" data-nav="profile" href="profile.html">
+          <i class="bi bi-person"></i>
+          Profil
+        </a>
+        <a class="side-link" data-nav="products" href="products.html">
+          <i class="bi bi-bag"></i>
+          Produk
+        </a>
+        <a class="side-link" data-nav="links" href="links.html">
+          <i class="bi bi-link-45deg"></i>
+          Link Custom
+        </a>
+        <a class="side-link" data-nav="social" href="social.html">
+          <i class="bi bi-share"></i>
+          Sosial Media
+        </a>
+        <a class="side-link" data-nav="gallery" href="gallery.html">
+          <i class="bi bi-images"></i>
+          Gallery
+        </a>
+        <a class="side-link" data-nav="themes" href="themes.html">
+          <i class="bi bi-palette"></i>
+          Tema
+        </a>
+        <a class="side-link" data-nav="checkout" href="checkout-settings.html">
+          <i class="bi bi-qr-code"></i>
+          Checkout
+        </a>
+        <a class="side-link" data-nav="orders" href="orders.html">
+          <i class="bi bi-receipt"></i>
+          Pesanan
+        </a>
+        <a class="side-link" data-nav="upgrade" href="upgrade.html">
+          <i class="bi bi-stars"></i>
+          Upgrade
+        </a>
+        <a class="side-link d-none" data-admin-only data-nav="admin" href="admin.html">
+          <i class="bi bi-shield-lock"></i>
+          Admin
+        </a>
+        <hr>
+        <a class="side-link" id="sidebarPublicPreview" href="u.html?username=demo" target="_blank" rel="noopener">
+          <i class="bi bi-eye"></i>
+          Lihat Toko
+        </a>
+        <a class="side-link text-danger" data-logout href="#">
+          <i class="bi bi-box-arrow-right"></i>
+          Keluar
+        </a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar dashboard-topbar">
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-outline-nb d-lg-none" type="button" data-sidebar-toggle aria-label="Buka menu">
+            <i class="bi bi-list"></i>
+          </button>
+          <div>
+            <h1 class="h4 fw-black mb-0">Dashboard</h1>
+            <small class="text-muted">Ringkasan toko dan progres setup kamu.</small>
+          </div>
         </div>
-        <p class="text-muted mb-0">
-         Total Produk
-        </p>
-       </div>
+        <span class="badge-soft" data-plan>Free</span>
+      </header>
+
+      <div class="content-wrap user-dashboard">
+        <section class="dashboard-hero card-nb mb-4">
+          <div class="row g-4 align-items-center">
+            <div class="col-lg-7">
+              <span class="dashboard-eyebrow">Seller Workspace</span>
+              <h2 class="fw-black mb-2">
+                Halo, <span data-user-name>User</span>
+              </h2>
+              <p class="text-muted mb-4">
+                Pantau produk, pesanan, link bio, dan status toko kamu dari satu tempat.
+              </p>
+              <div class="dashboard-url-box">
+                <i class="bi bi-link-45deg"></i>
+                <input id="publicUrlInput" class="form-control" value="u.html?username=demo" readonly>
+                <button id="copyPublicUrl" class="btn btn-outline-nb" type="button">
+                  <i class="bi bi-copy"></i>
+                </button>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="plan-card-user">
+                <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
+                  <div>
+                    <small class="text-uppercase text-muted fw-bold">Paket aktif</small>
+                    <h3 class="h4 fw-black mb-1" id="planName">Free</h3>
+                    <p class="text-muted mb-0" id="planDesc">Fitur dasar untuk mulai jualan.</p>
+                  </div>
+                  <span class="icon-bubble">
+                    <i class="bi bi-stars"></i>
+                  </span>
+                </div>
+                <div class="plan-expiry" id="planExpiry">Upgrade kapan saja untuk membuka QRIS dan gallery.</div>
+                <div class="d-flex flex-wrap gap-2 mt-3">
+                  <a class="btn btn-nb btn-sm" id="openPublicPage" href="u.html?username=demo" target="_blank" rel="noopener">
+                    <i class="bi bi-eye me-1"></i>
+                    Preview toko
+                  </a>
+                  <a class="btn btn-outline-nb btn-sm" href="upgrade.html">
+                    <i class="bi bi-lightning-charge me-1"></i>
+                    Upgrade
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="row g-3 mb-4">
+          <div class="col-6 col-xl-3">
+            <div class="card-nb metric metric-user">
+              <span class="icon-bubble mb-3"><i class="bi bi-bag"></i></span>
+              <div class="value" id="metricProducts">0</div>
+              <p class="text-muted mb-0">Produk</p>
+            </div>
+          </div>
+          <div class="col-6 col-xl-3">
+            <div class="card-nb metric metric-user">
+              <span class="icon-bubble mb-3"><i class="bi bi-receipt"></i></span>
+              <div class="value" id="metricOrders">0</div>
+              <p class="text-muted mb-0">Pesanan</p>
+            </div>
+          </div>
+          <div class="col-6 col-xl-3">
+            <div class="card-nb metric metric-user">
+              <span class="icon-bubble mb-3"><i class="bi bi-hourglass-split"></i></span>
+              <div class="value" id="metricPending">0</div>
+              <p class="text-muted mb-0">Pending</p>
+            </div>
+          </div>
+          <div class="col-6 col-xl-3">
+            <div class="card-nb metric metric-user">
+              <span class="icon-bubble mb-3"><i class="bi bi-cash-stack"></i></span>
+              <div class="value fs-4" id="metricRevenue">Rp0</div>
+              <p class="text-muted mb-0">Omset Paid</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="row g-4 mb-4">
+          <div class="col-xl-7">
+            <div class="card-nb dashboard-panel h-100">
+              <div class="dashboard-panel-head">
+                <div>
+                  <h2 class="h5 fw-black mb-1">Progres setup toko</h2>
+                  <p class="text-muted mb-0">Lengkapi bagian penting biar toko siap dipromosikan.</p>
+                </div>
+                <span class="setup-score" id="setupProgressText">0%</span>
+              </div>
+              <div class="progress dashboard-progress mb-4" role="progressbar" aria-label="Progres setup toko">
+                <div id="setupProgressBar" class="progress-bar" style="width:0%"></div>
+              </div>
+              <div class="setup-list">
+                <a class="setup-item" id="setupProfile" href="profile.html">
+                  <span class="setup-icon"><i class="bi bi-person"></i></span>
+                  <div>
+                    <b>Profil toko</b>
+                    <small>Nama toko, username, WhatsApp, dan bio.</small>
+                  </div>
+                  <i class="bi bi-chevron-right ms-auto"></i>
+                </a>
+                <a class="setup-item" id="setupProducts" href="products.html">
+                  <span class="setup-icon"><i class="bi bi-bag"></i></span>
+                  <div>
+                    <b>Produk</b>
+                    <small>Minimal 1 produk aktif untuk mulai menerima order.</small>
+                  </div>
+                  <i class="bi bi-chevron-right ms-auto"></i>
+                </a>
+                <a class="setup-item" id="setupLinks" href="links.html">
+                  <span class="setup-icon"><i class="bi bi-link-45deg"></i></span>
+                  <div>
+                    <b>Link & sosial</b>
+                    <small>Tambahkan link penting atau akun sosial media.</small>
+                  </div>
+                  <i class="bi bi-chevron-right ms-auto"></i>
+                </a>
+                <a class="setup-item" id="setupCheckout" href="checkout-settings.html">
+                  <span class="setup-icon"><i class="bi bi-qr-code"></i></span>
+                  <div>
+                    <b>Checkout</b>
+                    <small>Atur WhatsApp order atau QRIS untuk Premium.</small>
+                  </div>
+                  <i class="bi bi-chevron-right ms-auto"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-5">
+            <div class="card-nb dashboard-panel h-100">
+              <div class="dashboard-panel-head">
+                <div>
+                  <h2 class="h5 fw-black mb-1">Limit akun</h2>
+                  <p class="text-muted mb-0">Pemakaian fitur berdasarkan paket kamu.</p>
+                </div>
+              </div>
+              <div class="limit-list">
+                <div class="limit-item">
+                  <div>
+                    <b>Produk</b>
+                    <small id="limitProductsText">0 / 5</small>
+                  </div>
+                  <div class="progress limit-progress">
+                    <div id="limitProductsBar" class="progress-bar" style="width:0%"></div>
+                  </div>
+                </div>
+                <div class="limit-item">
+                  <div>
+                    <b>Link custom</b>
+                    <small id="limitLinksText">0 / 5</small>
+                  </div>
+                  <div class="progress limit-progress">
+                    <div id="limitLinksBar" class="progress-bar" style="width:0%"></div>
+                  </div>
+                </div>
+                <div class="limit-item">
+                  <div>
+                    <b>Sosial media</b>
+                    <small id="limitSocialText">0 / 3</small>
+                  </div>
+                  <div class="progress limit-progress">
+                    <div id="limitSocialBar" class="progress-bar" style="width:0%"></div>
+                  </div>
+                </div>
+                <div class="limit-item">
+                  <div>
+                    <b>Gallery</b>
+                    <small id="limitGalleryText">0 / 0</small>
+                  </div>
+                  <div class="progress limit-progress">
+                    <div id="limitGalleryBar" class="progress-bar" style="width:0%"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="alert alert-light border mb-0 mt-3" id="limitNotice">
+                Free cukup untuk mulai. Premium membuka katalog besar, gallery, QRIS, dan tema niche.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="row g-4">
+          <div class="col-xl-8">
+            <div class="card-nb dashboard-panel">
+              <div class="dashboard-panel-head">
+                <div>
+                  <h2 class="h5 fw-black mb-1">Pesanan terbaru</h2>
+                  <p class="text-muted mb-0">5 order terakhir yang masuk ke toko kamu.</p>
+                </div>
+                <a href="orders.html" class="btn btn-outline-nb btn-sm">Lihat semua</a>
+              </div>
+              <div class="table-responsive dashboard-table-wrap">
+                <table class="table align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th>Produk</th>
+                      <th>Pembeli</th>
+                      <th>Total</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recentOrders">
+                    <tr>
+                      <td colspan="4" class="text-center text-muted py-4">Memuat pesanan...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-4">
+            <div class="card-nb dashboard-panel quick-panel">
+              <div class="dashboard-panel-head">
+                <div>
+                  <h2 class="h5 fw-black mb-1">Aksi cepat</h2>
+                  <p class="text-muted mb-0">Langsung ke fitur yang sering dipakai.</p>
+                </div>
+              </div>
+              <div class="quick-action-grid">
+                <a href="products.html" class="quick-action-card">
+                  <i class="bi bi-plus-circle"></i>
+                  <span>Tambah Produk</span>
+                </a>
+                <a href="profile.html" class="quick-action-card">
+                  <i class="bi bi-person-gear"></i>
+                  <span>Edit Profil</span>
+                </a>
+                <a href="checkout-settings.html" class="quick-action-card">
+                  <i class="bi bi-qr-code"></i>
+                  <span>Checkout</span>
+                </a>
+                <a href="themes.html" class="quick-action-card">
+                  <i class="bi bi-palette"></i>
+                  <span>Ganti Tema</span>
+                </a>
+              </div>
+              <div class="dashboard-mini-stats mt-4">
+                <div>
+                  <span id="metricLinks">0</span>
+                  <small>Link</small>
+                </div>
+                <div>
+                  <span id="metricSocial">0</span>
+                  <small>Sosial</small>
+                </div>
+                <div>
+                  <span id="metricGallery">0</span>
+                  <small>Gallery</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
-      <div class="col-md-6 col-xl-3">
-       <div class="card-nb metric">
-        <span class="icon-bubble mb-3">
-         <i class="bi bi-receipt">
-         </i>
-        </span>
-        <div class="value" id="metricOrders">
-         0
-        </div>
-        <p class="text-muted mb-0">
-         Total Pesanan
-        </p>
-       </div>
-      </div>
-      <div class="col-md-6 col-xl-3">
-       <div class="card-nb metric">
-        <span class="icon-bubble mb-3">
-         <i class="bi bi-hourglass-split">
-         </i>
-        </span>
-        <div class="value" id="metricPending">
-         0
-        </div>
-        <p class="text-muted mb-0">
-         Pending
-        </p>
-       </div>
-      </div>
-      <div class="col-md-6 col-xl-3">
-       <div class="card-nb metric">
-        <span class="icon-bubble mb-3">
-         <i class="bi bi-cash-stack">
-         </i>
-        </span>
-        <div class="value fs-3" id="metricRevenue">
-         Rp0
-        </div>
-        <p class="text-muted mb-0">
-         Omset Paid
-        </p>
-       </div>
-      </div>
-     </div>
-     <div class="row g-4">
-      <div class="col-lg-8">
-       <div class="card-nb p-4">
-        <h2 class="h5 fw-bold mb-3">
-         Pesanan Terbaru
-        </h2>
-        <div class="table-responsive">
-         <table class="table">
-          <thead>
-           <tr>
-            <th>
-             Produk
-            </th>
-            <th>
-             Pembeli
-            </th>
-            <th>
-             Total
-            </th>
-            <th>
-             Status
-            </th>
-           </tr>
-          </thead>
-          <tbody id="recentOrders">
-          </tbody>
-         </table>
-        </div>
-       </div>
-      </div>
-      <div class="col-lg-4">
-       <div class="card-nb p-4">
-        <h2 class="h5 fw-bold">
-         Halo,
-         <span data-user-name="">
-          User
-         </span>
-        </h2>
-        <p class="text-muted">
-         Lanjutkan setup toko kamu.
-        </p>
-        <div class="d-grid gap-2">
-         <a class="btn btn-nb" href="products.html">
-          Tambah Produk
-         </a>
-         <a class="btn btn-outline-nb" href="u.html?username=demo" target="_blank">
-          Lihat Contoh Public Page
-         </a>
-        </div>
-       </div>
-      </div>
-     </div>
-    </div>
-   </main>
+    </main>
   </div>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-  </script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-  </script>
-  <script defer="" src="assets/js/config.js">
-  </script>
-  <script defer="" src="assets/js/supabase-client.js">
-  </script>
-  <script defer="" src="assets/js/common.js">
-  </script>
-  <script defer="" src="assets/js/dashboard.js">
-  </script>
- </body>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="assets/js/config.js"></script>
+  <script defer src="assets/js/supabase-client.js"></script>
+  <script defer src="assets/js/common.js"></script>
+  <script defer src="assets/js/dashboard.js"></script>
+</body>
 </html>
