@@ -6,5 +6,5 @@ window.NIAGABIO_CONFIG = {
   ADMIN_EMAIL: "unrageunrage@gmail.com",
   BRAND_NAME: "NiagaBio",
   PREMIUM_PRICE: 80000,
-  DEMO_MODE: true
+  DEMO_MODE: false
 };
