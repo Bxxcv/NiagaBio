@@ -1,353 +1,340 @@
 <!DOCTYPE html>
 <html lang="id">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1" name="viewport"/>
-  <title>
-   Admin Master - NiagaBio
-  </title>
-  <meta content="Panel owner untuk mengelola NiagaBio." name="description"/>
-  <link href="assets/img/logo.jpg" rel="icon"/>
-  <link href="https://cdn.jsdelivr.net" rel="preconnect"/>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
-  <link href="assets/css/main.css" rel="stylesheet"/>
- </head>
- <body class="admin-page" data-protected="true">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Master - NiagaBio</title>
+  <meta name="description" content="Panel owner untuk mengelola user, order, dan setting platform NiagaBio.">
+  <link rel="icon" href="assets/img/logo.jpg">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body class="admin-page" data-protected="true">
   <div class="app-shell admin-shell">
-   <aside class="sidebar admin-sidebar">
-    <div class="d-flex align-items-center gap-2 mb-4">
-     <img alt="NiagaBio" class="nb-logo-square" src="assets/img/logo.jpg"/>
-     <div>
-      <span class="h5 fw-black text-green mb-0 d-block">
-       NiagaBio
-      </span>
-      <small class="text-muted fw-semibold">
-       Owner Control
-      </small>
-     </div>
-    </div>
-    <nav>
-     <a class="side-link active" data-nav="admin" href="admin.html">
-      <i class="bi bi-speedometer2">
-      </i>
-      Admin Master
-     </a>
-     <a class="side-link" href="#adminUsersSection">
-      <i class="bi bi-people">
-      </i>
-      Kelola User
-     </a>
-     <a class="side-link" href="#adminOrdersSection">
-      <i class="bi bi-receipt-cutoff">
-      </i>
-      Order Platform
-     </a>
-     <a class="side-link" href="#adminSettingsSection">
-      <i class="bi bi-sliders">
-      </i>
-      Setting Platform
-     </a>
-     <hr/>
-     <a class="side-link" href="dashboard.html">
-      <i class="bi bi-shop">
-      </i>
-      Dashboard User
-     </a>
-     <a class="side-link" href="index.html" target="_blank">
-      <i class="bi bi-box-arrow-up-right">
-      </i>
-      Landing Page
-     </a>
-     <a class="side-link text-danger" data-logout="" href="#">
-      <i class="bi bi-box-arrow-right">
-      </i>
-      Keluar
-     </a>
-    </nav>
-   </aside>
-   <main class="main-content admin-main">
-    <header class="topbar admin-topbar">
-     <div class="d-flex align-items-center gap-2">
-      <button class="btn btn-outline-nb d-lg-none" data-sidebar-toggle="">
-       <i class="bi bi-list">
-       </i>
-      </button>
-      <div>
-       <h1 class="h4 fw-black mb-0">
-        Admin Master
-       </h1>
-       <small class="text-muted">
-        Panel khusus owner NiagaBio
-       </small>
+    <aside class="sidebar admin-sidebar">
+      <div class="admin-brand">
+        <img src="assets/img/logo.jpg" class="nb-logo-square" alt="NiagaBio">
+        <div>
+          <span class="admin-brand-title">NiagaBio</span>
+          <small>Owner Control</small>
+        </div>
       </div>
-     </div>
-     <span class="badge-soft badge-admin" data-plan="">
-      Admin
-     </span>
-    </header>
-    <div class="content-wrap admin-content">
-     <section class="admin-hero card-nb p-4 p-md-5 mb-4">
-      <div class="row align-items-center g-4">
-       <div class="col-lg-8">
-        <span class="pill mb-3">
-         <i class="bi bi-shield-check">
-         </i>
-         Owner Area
-        </span>
-        <h2 class="fw-black mb-2">
-         Kontrol semua user, order, dan setting platform dari satu tempat.
-        </h2>
-        <p class="text-muted mb-0">
-         Halaman ini dipisahkan dari dashboard user supaya admin kamu terlihat profesional dan tidak membingungkan user biasa.
-        </p>
-       </div>
-       <div class="col-lg-4 text-lg-end">
-        <a class="btn btn-nb me-2 mb-2" href="#adminUsersSection">
-         <i class="bi bi-people me-1">
-         </i>
-         Kelola User
+
+      <nav class="admin-nav">
+        <a class="side-link active" href="#adminOverview" data-admin-scroll>
+          <i class="bi bi-speedometer2"></i>
+          Overview
         </a>
-        <a class="btn btn-outline-nb mb-2" href="#adminSettingsSection">
-         <i class="bi bi-gear me-1">
-         </i>
-         Setting
+        <a class="side-link" href="#adminUsersSection" data-admin-scroll>
+          <i class="bi bi-people"></i>
+          Kelola User
         </a>
-       </div>
-      </div>
-     </section>
-     <section class="row g-4 mb-4">
-      <div class="col-md-6 col-xl-3">
-       <div class="card-nb metric admin-metric">
-        <span class="icon-bubble mb-3">
-         <i class="bi bi-people">
-         </i>
-        </span>
-        <div class="value" id="adminUsers">
-         0
-        </div>
-        <p class="text-muted mb-0">
-         Total User
-        </p>
-       </div>
-      </div>
-      <div class="col-md-6 col-xl-3">
-       <div class="card-nb metric admin-metric">
-        <span class="icon-bubble mb-3">
-         <i class="bi bi-stars">
-         </i>
-        </span>
-        <div class="value" id="adminPremium">
-         0
-        </div>
-        <p class="text-muted mb-0">
-         User Premium
-        </p>
-       </div>
-      </div>
-      <div class="col-md-6 col-xl-3">
-       <div class="card-nb metric admin-metric">
-        <span class="icon-bubble mb-3">
-         <i class="bi bi-receipt">
-         </i>
-        </span>
-        <div class="value" id="adminOrders">
-         0
-        </div>
-        <p class="text-muted mb-0">
-         Total Order
-        </p>
-       </div>
-      </div>
-      <div class="col-md-6 col-xl-3">
-       <div class="card-nb metric admin-metric">
-        <span class="icon-bubble mb-3">
-         <i class="bi bi-cash-stack">
-         </i>
-        </span>
-        <div class="value fs-4" id="adminOmset">
-         Rp0
-        </div>
-        <p class="text-muted mb-0">
-         Omset Paid
-        </p>
-       </div>
-      </div>
-     </section>
-     <section class="card-nb p-4 mb-4" id="adminUsersSection">
-      <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
-       <div>
-        <h2 class="h5 fw-bold mb-1">
-         <i class="bi bi-people text-green me-2">
-         </i>
-         Kelola User
-        </h2>
-        <p class="text-muted mb-0 small">
-         Upgrade Premium, set Free, blokir, dan unblock user.
-        </p>
-       </div>
-       <input class="form-control admin-search" id="adminUserSearch" placeholder="Cari nama, email, username..."/>
-      </div>
-      <div class="table-responsive admin-table-wrap">
-       <table class="table align-middle">
-        <thead>
-         <tr>
-          <th>
-           User
-          </th>
-          <th>
-           Username
-          </th>
-          <th>
-           Plan
-          </th>
-          <th>
-           Status
-          </th>
-          <th>
-           Plan End
-          </th>
-          <th class="text-end">
-           Aksi
-          </th>
-         </tr>
-        </thead>
-        <tbody id="userRows">
-        </tbody>
-       </table>
-      </div>
-     </section>
-     <section class="card-nb p-4 mb-4" id="adminOrdersSection">
-      <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
-       <div>
-        <h2 class="h5 fw-bold mb-1">
-         <i class="bi bi-receipt-cutoff text-green me-2">
-         </i>
-         Order Platform
-        </h2>
-        <p class="text-muted mb-0 small">
-         Lihat semua order, konfirmasi paid, atau cancel.
-        </p>
-       </div>
-       <select class="form-select admin-search" id="adminOrderFilter">
-        <option value="all">
-         Semua status
-        </option>
-        <option value="pending">
-         Pending
-        </option>
-        <option value="paid">
-         Paid
-        </option>
-        <option value="cancelled">
-         Cancelled
-        </option>
-       </select>
-      </div>
-      <div class="table-responsive admin-table-wrap">
-       <table class="table align-middle">
-        <thead>
-         <tr>
-          <th>
-           Produk
-          </th>
-          <th>
-           Pembeli
-          </th>
-          <th>
-           Total
-          </th>
-          <th>
-           Status
-          </th>
-          <th>
-           Bukti
-          </th>
-          <th class="text-end">
-           Aksi
-          </th>
-         </tr>
-        </thead>
-        <tbody id="orderRows">
-        </tbody>
-       </table>
-      </div>
-     </section>
-     <section class="card-nb p-4" id="adminSettingsSection">
-      <div class="mb-4">
-       <h2 class="h5 fw-bold mb-1">
-        <i class="bi bi-sliders text-green me-2">
-        </i>
-        Setting Platform
-       </h2>
-       <p class="text-muted small mb-0">
-        Maintenance mode, register, harga premium, dan WhatsApp admin.
-       </p>
-      </div>
-      <form id="adminSettingsForm">
-       <div class="row g-3">
-        <div class="col-md-6">
-         <div class="form-check form-switch admin-setting-box">
-          <input class="form-check-input" id="maintenanceMode" type="checkbox"/>
-          <label class="form-check-label fw-bold" for="maintenanceMode">
-           Maintenance Mode
-          </label>
-          <div class="small text-muted">
-           Jika aktif, user biasa diarahkan ke maintenance.html.
+        <a class="side-link" href="#adminOrdersSection" data-admin-scroll>
+          <i class="bi bi-receipt-cutoff"></i>
+          Order Platform
+        </a>
+        <a class="side-link" href="#adminSettingsSection" data-admin-scroll>
+          <i class="bi bi-sliders"></i>
+          Setting Platform
+        </a>
+
+        <div class="admin-sidebar-divider"></div>
+
+        <a class="side-link" href="dashboard.html">
+          <i class="bi bi-shop"></i>
+          Dashboard User
+        </a>
+        <a class="side-link" href="index.html" target="_blank" rel="noopener">
+          <i class="bi bi-box-arrow-up-right"></i>
+          Landing Page
+        </a>
+        <a class="side-link text-danger" href="#" data-logout>
+          <i class="bi bi-box-arrow-right"></i>
+          Keluar
+        </a>
+      </nav>
+    </aside>
+
+    <main class="main-content admin-main">
+      <header class="topbar admin-topbar">
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-outline-nb d-lg-none" type="button" data-sidebar-toggle aria-label="Buka menu">
+            <i class="bi bi-list"></i>
+          </button>
+          <div>
+            <h1 class="h4 fw-black mb-0">Admin Master</h1>
+            <small class="text-muted">Panel khusus owner NiagaBio</small>
           </div>
-         </div>
         </div>
-        <div class="col-md-6">
-         <div class="form-check form-switch admin-setting-box">
-          <input class="form-check-input" id="allowRegister" type="checkbox"/>
-          <label class="form-check-label fw-bold" for="allowRegister">
-           Izinkan Register
-          </label>
-          <div class="small text-muted">
-           Matikan kalau pendaftaran sementara ditutup.
+
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-outline-nb btn-sm admin-refresh-btn" type="button" id="adminRefreshBtn">
+            <i class="bi bi-arrow-clockwise me-1"></i>
+            Refresh
+          </button>
+          <span class="badge-soft badge-admin" data-plan>Admin</span>
+        </div>
+      </header>
+
+      <div class="content-wrap admin-content" id="adminOverview">
+        <section class="admin-hero card-nb p-4 p-md-5 mb-4">
+          <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+              <span class="pill mb-3">
+                <i class="bi bi-shield-check"></i>
+                Owner Area
+              </span>
+              <h2 class="fw-black mb-2">Kontrol user, order, dan setting platform dari satu tempat.</h2>
+              <p class="text-muted mb-0">
+                Admin Master ini dipisahkan dari dashboard user supaya aman, jelas, dan enak dipakai dari HP.
+              </p>
+            </div>
+            <div class="col-lg-4">
+              <div class="admin-quick-card">
+                <div class="small text-muted mb-2">Status sistem</div>
+                <div class="d-flex flex-wrap gap-2" id="adminSystemBadges">
+                  <span class="badge text-bg-light">Memuat...</span>
+                </div>
+              </div>
+            </div>
           </div>
-         </div>
-        </div>
-        <div class="col-md-12">
-         <label class="form-label fw-semibold">
-          Pesan Maintenance
-         </label>
-         <textarea class="form-control" id="maintenanceMessage" rows="3"></textarea>
-        </div>
-        <div class="col-md-6">
-         <label class="form-label fw-semibold">
-          Harga Premium
-         </label>
-         <input class="form-control" id="premiumPrice" min="0" placeholder="80000" type="number"/>
-        </div>
-        <div class="col-md-6">
-         <label class="form-label fw-semibold">
-          WhatsApp Admin
-         </label>
-         <input class="form-control" id="adminWhatsApp" placeholder="628xxxx"/>
-        </div>
-       </div>
-       <button class="btn btn-nb mt-4" type="submit">
-        <i class="bi bi-save me-1">
-        </i>
-        Simpan Setting
-       </button>
-      </form>
-     </section>
-    </div>
-   </main>
+        </section>
+
+        <section class="row g-3 g-xl-4 mb-4" aria-label="Statistik admin">
+          <div class="col-6 col-xl-2">
+            <div class="card-nb admin-metric">
+              <span class="icon-bubble mb-3"><i class="bi bi-people"></i></span>
+              <div class="value" id="adminUsers">0</div>
+              <p class="text-muted mb-0">Total User</p>
+            </div>
+          </div>
+          <div class="col-6 col-xl-2">
+            <div class="card-nb admin-metric">
+              <span class="icon-bubble mb-3"><i class="bi bi-stars"></i></span>
+              <div class="value" id="adminPremium">0</div>
+              <p class="text-muted mb-0">Premium</p>
+            </div>
+          </div>
+          <div class="col-6 col-xl-2">
+            <div class="card-nb admin-metric">
+              <span class="icon-bubble mb-3"><i class="bi bi-person"></i></span>
+              <div class="value" id="adminFree">0</div>
+              <p class="text-muted mb-0">Free</p>
+            </div>
+          </div>
+          <div class="col-6 col-xl-2">
+            <div class="card-nb admin-metric">
+              <span class="icon-bubble mb-3"><i class="bi bi-person-slash"></i></span>
+              <div class="value" id="adminBlocked">0</div>
+              <p class="text-muted mb-0">Blocked</p>
+            </div>
+          </div>
+          <div class="col-6 col-xl-2">
+            <div class="card-nb admin-metric">
+              <span class="icon-bubble mb-3"><i class="bi bi-receipt"></i></span>
+              <div class="value" id="adminOrders">0</div>
+              <p class="text-muted mb-0">Order</p>
+            </div>
+          </div>
+          <div class="col-6 col-xl-2">
+            <div class="card-nb admin-metric">
+              <span class="icon-bubble mb-3"><i class="bi bi-cash-stack"></i></span>
+              <div class="value fs-5" id="adminOmset">Rp0</div>
+              <p class="text-muted mb-0">Omset Paid</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="card-nb admin-section mb-4" id="adminUsersSection">
+          <div class="admin-section-head">
+            <div>
+              <h2 class="h5 fw-bold mb-1">
+                <i class="bi bi-people text-green me-2"></i>
+                Kelola User
+              </h2>
+              <p class="text-muted mb-0 small">
+                Upgrade Premium, set Free, blokir, unblock, dan lihat detail akun.
+              </p>
+            </div>
+            <span class="admin-count-pill" id="adminUserCountInfo">0 user</span>
+          </div>
+
+          <div class="admin-filter-grid mb-3">
+            <div class="admin-input-icon">
+              <i class="bi bi-search"></i>
+              <input class="form-control" id="adminUserSearch" placeholder="Cari nama, email, username...">
+            </div>
+            <select class="form-select" id="adminPlanFilter" aria-label="Filter plan user">
+              <option value="all">Semua plan</option>
+              <option value="free">Free</option>
+              <option value="premium">Premium</option>
+            </select>
+            <select class="form-select" id="adminStatusFilter" aria-label="Filter status user">
+              <option value="all">Semua status</option>
+              <option value="active">Active</option>
+              <option value="blocked">Blocked</option>
+            </select>
+          </div>
+
+          <div class="table-responsive admin-table-wrap">
+            <table class="table align-middle admin-table">
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Toko</th>
+                  <th>Plan</th>
+                  <th>Status</th>
+                  <th>Plan End</th>
+                  <th class="text-end">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="userRows">
+                <tr>
+                  <td colspan="6" class="text-center text-muted py-4">Memuat user...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card-nb admin-section mb-4" id="adminOrdersSection">
+          <div class="admin-section-head">
+            <div>
+              <h2 class="h5 fw-bold mb-1">
+                <i class="bi bi-receipt-cutoff text-green me-2"></i>
+                Order Platform
+              </h2>
+              <p class="text-muted mb-0 small">
+                Pantau order, lihat bukti pembayaran, konfirmasi paid, atau cancel.
+              </p>
+            </div>
+            <span class="admin-count-pill" id="adminOrderCountInfo">0 order</span>
+          </div>
+
+          <div class="admin-filter-grid admin-filter-grid-orders mb-3">
+            <div class="admin-input-icon">
+              <i class="bi bi-search"></i>
+              <input class="form-control" id="adminOrderSearch" placeholder="Cari produk, pembeli, nomor HP...">
+            </div>
+            <select class="form-select" id="adminOrderFilter" aria-label="Filter order">
+              <option value="all">Semua status</option>
+              <option value="pending">Pending</option>
+              <option value="paid">Paid</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+
+          <div class="table-responsive admin-table-wrap">
+            <table class="table align-middle admin-table">
+              <thead>
+                <tr>
+                  <th>Produk</th>
+                  <th>Pembeli</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Bukti</th>
+                  <th class="text-end">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="orderRows">
+                <tr>
+                  <td colspan="6" class="text-center text-muted py-4">Memuat order...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card-nb admin-section" id="adminSettingsSection">
+          <div class="admin-section-head">
+            <div>
+              <h2 class="h5 fw-bold mb-1">
+                <i class="bi bi-sliders text-green me-2"></i>
+                Setting Platform
+              </h2>
+              <p class="text-muted small mb-0">
+                Maintenance mode, buka/tutup register, harga premium, dan WhatsApp admin.
+              </p>
+            </div>
+          </div>
+
+          <form id="adminSettingsForm" class="admin-settings-form">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="form-check form-switch admin-setting-box">
+                  <input class="form-check-input" id="maintenanceMode" type="checkbox">
+                  <label class="form-check-label fw-bold" for="maintenanceMode">Maintenance Mode</label>
+                  <div class="small text-muted">Jika aktif, user biasa diarahkan ke maintenance.html.</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-check form-switch admin-setting-box">
+                  <input class="form-check-input" id="allowRegister" type="checkbox">
+                  <label class="form-check-label fw-bold" for="allowRegister">Izinkan Register</label>
+                  <div class="small text-muted">Matikan kalau pendaftaran sementara ditutup.</div>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <label class="form-label fw-semibold" for="maintenanceMessage">Pesan Maintenance</label>
+                <textarea class="form-control" id="maintenanceMessage" rows="3" placeholder="Website sedang maintenance. Silakan coba lagi nanti."></textarea>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold" for="premiumPrice">Harga Premium</label>
+                <input class="form-control" id="premiumPrice" min="0" placeholder="80000" type="number">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold" for="adminWhatsApp">WhatsApp Admin</label>
+                <input class="form-control" id="adminWhatsApp" placeholder="628xxxx">
+              </div>
+            </div>
+            <div class="d-flex flex-wrap gap-2 mt-4">
+              <button class="btn btn-nb" type="submit" id="adminSaveSettingsBtn">
+                <i class="bi bi-save me-1"></i>
+                Simpan Setting
+              </button>
+              <button class="btn btn-outline-nb" type="button" id="adminResetSettingsBtn">
+                <i class="bi bi-arrow-counterclockwise me-1"></i>
+                Muat Ulang
+              </button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </main>
   </div>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-  </script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-  </script>
-  <script defer="" src="assets/js/config.js">
-  </script>
-  <script defer="" src="assets/js/supabase-client.js">
-  </script>
-  <script defer="" src="assets/js/common.js">
-  </script>
-  <script defer="" src="assets/js/admin.js">
-  </script>
- </body>
+
+  <div class="modal fade" id="adminUserModal" tabindex="-1" aria-labelledby="adminUserModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content admin-modal">
+        <div class="modal-header">
+          <div>
+            <h5 class="modal-title fw-black" id="adminUserModalTitle">Detail User</h5>
+            <small class="text-muted" id="adminUserModalSubtitle">-</small>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+        </div>
+        <div class="modal-body" id="adminUserModalBody">
+          <div class="text-muted">Memuat detail...</div>
+        </div>
+        <div class="modal-footer flex-wrap justify-content-between">
+          <div class="small text-muted">Aksi ini hanya mengubah status sistem user, tidak menghapus data toko.</div>
+          <div class="d-flex flex-wrap gap-2">
+            <button type="button" class="btn btn-outline-nb" id="modalPlanBtn">Ubah Plan</button>
+            <button type="button" class="btn btn-outline-danger" id="modalBlockBtn">Blokir</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="assets/js/config.js"></script>
+  <script defer src="assets/js/supabase-client.js"></script>
+  <script defer src="assets/js/common.js"></script>
+  <script defer src="assets/js/admin.js"></script>
+</body>
 </html>
