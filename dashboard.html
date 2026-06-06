@@ -20,52 +20,52 @@
       </div>
 
       <nav>
-        <a class="side-link" data-nav="dashboard" href="dashboard.html">
+        <a class="side-link" data-nav="dashboard" href="dashboard">
           <i class="bi bi-grid-1x2"></i>
           Dashboard
         </a>
-        <a class="side-link" data-nav="profile" href="profile.html">
+        <a class="side-link" data-nav="profile" href="profile">
           <i class="bi bi-person"></i>
           Profil
         </a>
-        <a class="side-link" data-nav="products" href="products.html">
+        <a class="side-link" data-nav="products" href="products">
           <i class="bi bi-bag"></i>
           Produk
         </a>
-        <a class="side-link" data-nav="links" href="links.html">
+        <a class="side-link" data-nav="links" href="links">
           <i class="bi bi-link-45deg"></i>
           Link Custom
         </a>
-        <a class="side-link" data-nav="social" href="social.html">
+        <a class="side-link" data-nav="social" href="social">
           <i class="bi bi-share"></i>
           Sosial Media
         </a>
-        <a class="side-link" data-nav="gallery" href="gallery.html">
+        <a class="side-link" data-nav="gallery" href="gallery">
           <i class="bi bi-images"></i>
           Gallery
         </a>
-        <a class="side-link" data-nav="themes" href="themes.html">
+        <a class="side-link" data-nav="themes" href="themes">
           <i class="bi bi-palette"></i>
           Tema
         </a>
-        <a class="side-link" data-nav="checkout" href="checkout-settings.html">
+        <a class="side-link" data-nav="checkout" href="checkout-settings">
           <i class="bi bi-qr-code"></i>
           Checkout
         </a>
-        <a class="side-link" data-nav="orders" href="orders.html">
+        <a class="side-link" data-nav="orders" href="orders">
           <i class="bi bi-receipt"></i>
           Pesanan
         </a>
-        <a class="side-link" data-nav="upgrade" href="upgrade.html">
+        <a class="side-link" data-nav="upgrade" href="upgrade">
           <i class="bi bi-stars"></i>
           Upgrade
         </a>
-        <a class="side-link d-none" data-admin-only data-nav="admin" href="admin.html">
+        <a class="side-link d-none" data-admin-only data-nav="admin" href="admin">
           <i class="bi bi-shield-lock"></i>
           Admin
         </a>
         <hr>
-        <a class="side-link" id="sidebarPublicPreview" href="u.html?username=demo" target="_blank" rel="noopener">
+        <a class="side-link" id="sidebarPublicPreview" href="u?username=demo" target="_blank" rel="noopener">
           <i class="bi bi-eye"></i>
           Lihat Toko
         </a>
@@ -103,7 +103,7 @@
               </p>
               <div class="dashboard-url-box">
                 <i class="bi bi-link-45deg"></i>
-                <input id="publicUrlInput" class="form-control" value="u.html?username=demo" readonly>
+                <input id="publicUrlInput" class="form-control" value="u?username=demo" readonly>
                 <button id="copyPublicUrl" class="btn btn-outline-nb" type="button">
                   <i class="bi bi-copy"></i>
                 </button>
@@ -123,11 +123,11 @@
                 </div>
                 <div class="plan-expiry" id="planExpiry">Upgrade kapan saja untuk membuka QRIS dan gallery.</div>
                 <div class="d-flex flex-wrap gap-2 mt-3">
-                  <a class="btn btn-nb btn-sm" id="openPublicPage" href="u.html?username=demo" target="_blank" rel="noopener">
+                  <a class="btn btn-nb btn-sm" id="openPublicPage" href="u?username=demo" target="_blank" rel="noopener">
                     <i class="bi bi-eye me-1"></i>
                     Preview toko
                   </a>
-                  <a class="btn btn-outline-nb btn-sm" href="upgrade.html">
+                  <a class="btn btn-outline-nb btn-sm" href="upgrade">
                     <i class="bi bi-lightning-charge me-1"></i>
                     Upgrade
                   </a>
@@ -182,7 +182,7 @@
                 <div id="setupProgressBar" class="progress-bar" style="width:0%"></div>
               </div>
               <div class="setup-list">
-                <a class="setup-item" id="setupProfile" href="profile.html">
+                <a class="setup-item" id="setupProfile" href="profile">
                   <span class="setup-icon"><i class="bi bi-person"></i></span>
                   <div>
                     <b>Profil toko</b>
@@ -190,7 +190,7 @@
                   </div>
                   <i class="bi bi-chevron-right ms-auto"></i>
                 </a>
-                <a class="setup-item" id="setupProducts" href="products.html">
+                <a class="setup-item" id="setupProducts" href="products">
                   <span class="setup-icon"><i class="bi bi-bag"></i></span>
                   <div>
                     <b>Produk</b>
@@ -198,7 +198,7 @@
                   </div>
                   <i class="bi bi-chevron-right ms-auto"></i>
                 </a>
-                <a class="setup-item" id="setupLinks" href="links.html">
+                <a class="setup-item" id="setupLinks" href="links">
                   <span class="setup-icon"><i class="bi bi-link-45deg"></i></span>
                   <div>
                     <b>Link & sosial</b>
@@ -206,7 +206,7 @@
                   </div>
                   <i class="bi bi-chevron-right ms-auto"></i>
                 </a>
-                <a class="setup-item" id="setupCheckout" href="checkout-settings.html">
+                <a class="setup-item" id="setupCheckout" href="checkout-settings">
                   <span class="setup-icon"><i class="bi bi-qr-code"></i></span>
                   <div>
                     <b>Checkout</b>
@@ -279,7 +279,7 @@
                   <h2 class="h5 fw-black mb-1">Pesanan terbaru</h2>
                   <p class="text-muted mb-0">5 order terakhir yang masuk ke toko kamu.</p>
                 </div>
-                <a href="orders.html" class="btn btn-outline-nb btn-sm">Lihat semua</a>
+                <a href="orders" class="btn btn-outline-nb btn-sm">Lihat semua</a>
               </div>
               <div class="table-responsive dashboard-table-wrap">
                 <table class="table align-middle mb-0">
@@ -310,19 +310,19 @@
                 </div>
               </div>
               <div class="quick-action-grid">
-                <a href="products.html" class="quick-action-card">
+                <a href="products" class="quick-action-card">
                   <i class="bi bi-plus-circle"></i>
                   <span>Tambah Produk</span>
                 </a>
-                <a href="profile.html" class="quick-action-card">
+                <a href="profile" class="quick-action-card">
                   <i class="bi bi-person-gear"></i>
                   <span>Edit Profil</span>
                 </a>
-                <a href="checkout-settings.html" class="quick-action-card">
+                <a href="checkout-settings" class="quick-action-card">
                   <i class="bi bi-qr-code"></i>
                   <span>Checkout</span>
                 </a>
-                <a href="themes.html" class="quick-action-card">
+                <a href="themes" class="quick-action-card">
                   <i class="bi bi-palette"></i>
                   <span>Ganti Tema</span>
                 </a>

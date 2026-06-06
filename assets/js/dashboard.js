@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const pendingOrders = orders.filter(order => order.payment_status === 'pending');
     const revenue = paidOrders.reduce((sum, order) => sum + Number(order.total_price || 0), 0);
     const username = profile?.username || 'demo';
-    const publicUrl = `${location.origin}${location.pathname.replace(/[^/]*$/, '')}u.html?username=${encodeURIComponent(username)}`;
+    const publicUrl = `${location.origin}${location.pathname.replace(/[^/]*$/, '')}u?username=${encodeURIComponent(username)}`;
 
     document.querySelectorAll('[data-user-name]').forEach(element => {
       element.textContent = profile?.display_name || user.email;

@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     logout.addEventListener('click', async event => {
       event.preventDefault();
       await NB.signOut();
-      location.href = 'login.html';
+      location.href = 'login';
     });
   }
 
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   let profile = null;
 
   if (document.body.dataset.protected === 'true' && !user) {
-    location.href = 'login.html';
+    location.href = 'login';
     return;
   }
 
@@ -79,14 +79,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   try {
     const settings = await NB.getSettings();
-    const page = location.pathname.split('/').pop() || 'index.html';
-    const isMaintenancePage = page === 'maintenance.html';
-    const isLoginPage = page === 'login.html';
+    const page = location.pathname.split('/').pop() || '/';
+    const isMaintenancePage = page === 'maintenance';
+    const isLoginPage = page === 'login';
     const isAdmin = profile?.role === 'admin';
 
     if (settings.maintenance_mode && !isAdmin && !isMaintenancePage && !isLoginPage) {
       sessionStorage.setItem('nb_maintenance_message', settings.maintenance_message || 'Website sedang maintenance.');
-      location.href = 'maintenance.html';
+      location.href = 'maintenance';
       return;
     }
   } catch (error) {

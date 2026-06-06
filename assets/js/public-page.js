@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const params = new URLSearchParams(location.search);
   const pathLast = location.pathname.split('/').filter(Boolean).pop();
-  const username = params.get('username') || params.get('u') || (pathLast && pathLast !== 'u.html' ? pathLast : 'demo');
+  const username = params.get('username') || params.get('u') || (pathLast && !['u', 'u.html'].includes(pathLast) ? pathLast : 'demo');
 
   const demoProfile = {
     user_id: 'demo-user',
@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (!product) return;
       const mode = checkout.checkout_mode || 'whatsapp';
       if (!demoModePage && premium && checkout.qris_enabled && (mode === 'qris_manual' || mode === 'qris_whatsapp')) {
-        location.href = `checkout.html?username=${encodeURIComponent(profile.username)}&product=${encodeURIComponent(product.id)}`;
+        location.href = `checkout?username=${encodeURIComponent(profile.username)}&product=${encodeURIComponent(product.id)}`;
         return;
       }
 

@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const user = await NB.signIn(loginEmail.value.trim(), loginPassword.value);
         const profile = user ? await NB.getProfile(user.id) : null;
         nbToast('Login berhasil.');
-        location.href = profile?.role === 'admin' ? 'admin.html' : 'dashboard.html';
+        location.href = profile?.role === 'admin' ? 'admin' : 'dashboard';
       } catch (error) {
         nbToast(error.message || 'Gagal login.', 'danger');
       } finally {
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         await NB.signUp(registerEmail.value.trim(), registerPassword.value, registerName.value.trim());
         nbToast('Akun berhasil dibuat. Plan kamu otomatis Free.');
-        location.href = 'dashboard.html';
+        location.href = 'dashboard';
       } catch (error) {
         nbToast(error.message || 'Gagal daftar.', 'danger');
       } finally {

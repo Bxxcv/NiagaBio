@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         </div>
         <h2 class="fw-black mb-2">Akses ditolak</h2>
         <p class="text-muted mb-4">Halaman ini khusus admin NiagaBio. Login memakai akun admin master.</p>
-        <a href="dashboard.html" class="btn btn-nb">Kembali ke Dashboard</a>
+        <a href="dashboard" class="btn btn-nb">Kembali ke Dashboard</a>
       </section>
     `;
   }
@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     refs.userRows.innerHTML = rows.map(profile => {
       const isSelf = profile.user_id === state.currentUser?.id;
-      const publicUrl = profile.username ? `u.html?username=${encodeURIComponent(profile.username)}` : '#';
+      const publicUrl = profile.username ? `u?username=${encodeURIComponent(profile.username)}` : '#';
 
       return `
         <tr>

@@ -405,7 +405,7 @@
   async function requireAuth() {
     const user = await currentUser();
     if (!user) {
-      location.href = 'login.html';
+      location.href = 'login';
       return null;
     }
     return user;

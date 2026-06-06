@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const params = new URLSearchParams(location.search);
-  const username = params.get('username') || 'demo';
-  const productId = params.get('product');
+  const parts = location.pathname.split('/').filter(Boolean);
+  const username = params.get('username') || (parts[0] === 'checkout' && parts[1]) || 'demo';
+  const productId = params.get('product') || (parts[0] === 'checkout' && parts[2]) || null;
 
   try {
     const profile = await NB.getProfileByUsername(username);
