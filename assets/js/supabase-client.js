@@ -500,6 +500,33 @@
     return rows[index >= 0 ? index : rows.length - 1];
   }
 
+
+  async function setProfileTheme(themeId) {
+    const cleanTheme = String(themeId || 'service').trim().toLowerCase();
+
+    if (sb) {
+      const { data, error } = await sb.rpc('set_profile_theme', { new_theme: cleanTheme });
+      if (error) throw error;
+      return data;
+    }
+
+    const user = await currentUser();
+    if (!user) throw new Error('Kamu harus login dulu.');
+
+    const rows = read(LS.profiles, []);
+    const index = rows.findIndex(profile => profile.user_id === user.id);
+    if (index < 0) throw new Error('Profile tidak ditemukan.');
+
+    const profile = rows[index];
+    const selected = themes.find(theme => theme.id === cleanTheme);
+    if (!selected) throw new Error('Tema tidak valid.');
+    if (selected.premium && !isPremium(profile)) throw new Error('Tema ini khusus Premium.');
+
+    rows[index] = { ...profile, theme_name: cleanTheme, updated_at: now() };
+    write(LS.profiles, rows);
+    return rows[index];
+  }
+
   async function list(table, userId, field = 'user_id') {
     if (sb) {
       let query = sb.from(table).select('*').eq(field, userId);
@@ -663,6 +690,7 @@
     getProfile,
     getProfileByUsername,
     upsertProfile,
+    setProfileTheme,
     list,
     save,
     remove,

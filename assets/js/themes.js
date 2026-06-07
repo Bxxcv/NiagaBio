@@ -69,18 +69,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         try {
-          await NB.upsertProfile({
-            user_id: user.id,
-            email: profile?.email || user.email,
-            username: profile?.username || NB.slugify(user.email.split('@')[0]),
-            display_name: profile?.display_name || user.email.split('@')[0],
-            bio: profile?.bio || '',
-            avatar_url: profile?.avatar_url || 'assets/img/logo.jpg',
-            whatsapp_number: profile?.whatsapp_number || '',
-            theme_name: themeId
-          });
-
-          await refreshProfile();
+          const updatedProfile = await NB.setProfileTheme(themeId);
+          profile = updatedProfile || await NB.getProfile(user.id);
+          currentTheme = profile?.theme_name || 'service';
           render();
 
           if (currentTheme !== themeId) {
