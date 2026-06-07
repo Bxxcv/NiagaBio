@@ -79,14 +79,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   try {
     const settings = await NB.getSettings();
-    const page = location.pathname.split('/').pop() || '/';
+    const page = (location.pathname.split('/').filter(Boolean).pop() || 'index').replace(/\.html$/i, '');
+    const maintenanceEnabled = settings.maintenance_mode === true || settings.maintenance_mode === 'true' || settings.maintenance_mode === 1;
     const isMaintenancePage = page === 'maintenance';
     const isLoginPage = page === 'login';
-    const isAdmin = profile?.role === 'admin';
+    const isAdmin = String(profile?.role || '').toLowerCase() === 'admin';
 
-    if (settings.maintenance_mode && !isAdmin && !isMaintenancePage && !isLoginPage) {
+    if (maintenanceEnabled && !isAdmin && !isMaintenancePage && !isLoginPage) {
+      window.NB_MAINTENANCE_REDIRECTING = true;
       sessionStorage.setItem('nb_maintenance_message', settings.maintenance_message || 'Website sedang maintenance.');
-      location.href = 'maintenance';
+      location.replace('maintenance');
       return;
     }
   } catch (error) {

@@ -447,7 +447,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
-      state.settings = await NB.saveSettings({
+      await NB.saveSettings({
         maintenance_mode: refs.maintenanceMode?.checked,
         maintenance_message: refs.maintenanceMessage?.value.trim(),
         allow_register: refs.allowRegister?.checked,
@@ -455,7 +455,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         admin_whatsapp: refs.adminWhatsApp?.value.trim()
       });
 
-      nbToast('Setting platform berhasil disimpan.');
+      state.settings = await NB.getSettings();
+      nbToast('Setting platform berhasil disimpan dan diverifikasi.');
       renderSettings();
       renderSystemBadges();
     } catch (error) {

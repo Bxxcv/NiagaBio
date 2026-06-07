@@ -1940,3 +1940,16 @@ body.is-admin [data-admin-only] {
   outline:3px solid rgba(15,159,104,.25);
   outline-offset:3px
 }
+
+.theme-lock {
+  margin-top: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: #fff7e6;
+  color: #9a5b00;
+  font-size: .78rem;
+  font-weight: 800;
+}

@@ -138,17 +138,46 @@
   }
 
   function socialIcon(platform) {
+    const key = String(platform || '').toLowerCase().trim();
     return {
       instagram: 'bi-instagram',
       whatsapp: 'bi-whatsapp',
+      wa: 'bi-whatsapp',
       tiktok: 'bi-tiktok',
       facebook: 'bi-facebook',
       youtube: 'bi-youtube',
       x: 'bi-twitter-x',
+      twitter: 'bi-twitter-x',
       telegram: 'bi-telegram',
       shopee: 'bi-bag-heart',
+      tokopedia: 'bi-shop-window',
+      lazada: 'bi-shop',
+      marketplace: 'bi-shop-window',
+      maps: 'bi-geo-alt',
       website: 'bi-globe2'
-    }[platform] || 'bi-link-45deg';
+    }[key] || 'bi-link-45deg';
+  }
+
+  function detectLinkIcon(url = '', title = '') {
+    const value = `${url} ${title}`.toLowerCase();
+
+    if (/wa\.me|whatsapp|api\.whatsapp|chat\.whatsapp/.test(value)) return 'bi-whatsapp';
+    if (/instagram\.com|(^|\s)ig($|\s)|instagram/.test(value)) return 'bi-instagram';
+    if (/tiktok\.com|tiktok/.test(value)) return 'bi-tiktok';
+    if (/facebook\.com|fb\.com|facebook/.test(value)) return 'bi-facebook';
+    if (/youtube\.com|youtu\.be|youtube/.test(value)) return 'bi-youtube';
+    if (/telegram\.me|t\.me|telegram/.test(value)) return 'bi-telegram';
+    if (/shopee\.co|shopee/.test(value)) return 'bi-bag-heart';
+    if (/tokopedia\.com|tokopedia/.test(value)) return 'bi-shop-window';
+    if (/lazada\.co|lazada/.test(value)) return 'bi-shop';
+    if (/maps\.app\.goo\.gl|google\.com\/maps|maps|lokasi|alamat/.test(value)) return 'bi-geo-alt';
+    if (/mailto:|email|gmail/.test(value)) return 'bi-envelope';
+    if (/tel:|telepon|phone/.test(value)) return 'bi-telephone';
+    if (/drive\.google|docs\.google/.test(value)) return 'bi-file-earmark-text';
+    if (/github\.com|github/.test(value)) return 'bi-github';
+    if (/price|harga|katalog|catalog|produk|product/.test(value)) return 'bi-bag';
+
+    return 'bi-link-45deg';
   }
 
   function getLimits(plan) {
@@ -156,9 +185,22 @@
   }
 
   function isPremium(profile) {
-    if (!profile || profile.status === 'blocked' || profile.plan !== 'premium') return false;
-    if (!profile.plan_end_date) return true;
-    return new Date(profile.plan_end_date).getTime() > Date.now();
+    if (!profile) return false;
+
+    const status = String(profile.status || 'active').toLowerCase();
+    if (status === 'blocked') return false;
+
+    const role = String(profile.role || '').toLowerCase();
+    const plan = String(profile.plan || '').toLowerCase();
+    if (role !== 'admin' && plan !== 'premium') return false;
+
+    const endDate = profile.plan_end_date;
+    if (!endDate || endDate === 'null' || endDate === 'undefined') return true;
+
+    const timestamp = new Date(endDate).getTime();
+    if (Number.isNaN(timestamp)) return true;
+
+    return timestamp > Date.now();
   }
 
   function whatsappUrl(phone, text) {
@@ -608,6 +650,7 @@
     escapeHtml,
     normalizePhone,
     socialIcon,
+    detectLinkIcon,
     getLimits,
     isPremium,
     whatsappUrl,

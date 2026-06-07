@@ -1,5 +1,23 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const root = document.getElementById('publicRoot');
+
+  try {
+    const settings = await NB.getSettings();
+    const maintenanceEnabled = settings.maintenance_mode === true || settings.maintenance_mode === 'true' || settings.maintenance_mode === 1;
+    if (maintenanceEnabled) {
+      const loggedUser = await NB.currentUser();
+      const loggedProfile = loggedUser ? await NB.getProfile(loggedUser.id) : null;
+      const isAdmin = String(loggedProfile?.role || '').toLowerCase() === 'admin';
+      if (!isAdmin) {
+        sessionStorage.setItem('nb_maintenance_message', settings.maintenance_message || 'Website sedang maintenance.');
+        location.replace('maintenance');
+        return;
+      }
+    }
+  } catch (error) {
+    console.warn('[NiagaBio] Public maintenance guard dilewati:', error.message);
+  }
+
   const params = new URLSearchParams(location.search);
   const pathLast = location.pathname.split('/').filter(Boolean).pop();
   const pathUsername = pathLast && !['u', 'u.html'].includes(pathLast) ? pathLast : '';
@@ -90,9 +108,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function linkButton(link) {
+    const icon = link.icon && link.icon !== 'bi-link-45deg'
+      ? link.icon
+      : NB.detectLinkIcon(link.url, link.title);
+
     return `
       <a class="public-link" href="${NB.escapeHtml(link.url)}" target="_blank" rel="noopener">
-        <span><i class="bi ${NB.escapeHtml(link.icon || 'bi-link-45deg')}"></i></span>
+        <span><i class="bi ${NB.escapeHtml(icon)}"></i></span>
         <strong>${NB.escapeHtml(link.title)}</strong>
         <i class="bi bi-arrow-up-right public-link-arrow"></i>
       </a>

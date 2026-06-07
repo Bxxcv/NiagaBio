@@ -135,9 +135,21 @@
          </div>
          <div class="mb-3">
           <label class="form-label">
-           Bootstrap Icon class
+           Logo/Icon link
           </label>
-          <input class="form-control" id="linkIcon" value="bi-link-45deg"/>
+          <input class="form-control" id="linkIcon" list="linkIconOptions" placeholder="Otomatis dari URL" value="bi-link-45deg"/>
+          <datalist id="linkIconOptions">
+           <option value="bi-whatsapp"></option>
+           <option value="bi-instagram"></option>
+           <option value="bi-tiktok"></option>
+           <option value="bi-bag-heart"></option>
+           <option value="bi-shop-window"></option>
+           <option value="bi-geo-alt"></option>
+           <option value="bi-globe2"></option>
+          </datalist>
+          <div class="form-text">
+           Isi URL WhatsApp/Shopee/Tokopedia/Instagram, logo akan terdeteksi otomatis.
+          </div>
          </div>
          <div class="form-check mb-3">
           <input checked="" class="form-check-input" id="linkActive" type="checkbox"/>

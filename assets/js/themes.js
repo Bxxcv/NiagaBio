@@ -8,14 +8,32 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (!grid) return;
 
   let profile = await NB.getProfile(user.id);
-  const premium = NB.isPremium(profile);
   let currentTheme = profile?.theme_name || 'service';
+
+  function isPremiumNow() {
+    return NB.isPremium(profile);
+  }
 
   function publicUrl() {
     return `u?username=${encodeURIComponent(profile?.username || 'demo')}`;
   }
 
+  async function refreshProfile() {
+    profile = await NB.getProfile(user.id);
+    currentTheme = profile?.theme_name || 'service';
+    return profile;
+  }
+
+  function planHint() {
+    const plan = profile?.plan || 'free';
+    const status = profile?.status || 'active';
+    const end = profile?.plan_end_date ? ` sampai ${new Date(profile.plan_end_date).toLocaleDateString('id-ID')}` : '';
+    return `${plan}/${status}${end}`;
+  }
+
   function render() {
+    const premium = isPremiumNow();
+
     grid.innerHTML = NB.themes.map(theme => `
       <div class="col-md-6 col-xl-4">
         <button class="theme-card ${currentTheme === theme.id ? 'active' : ''} ${theme.premium && !premium ? 'locked' : ''}" data-theme="${theme.id}" type="button">
@@ -27,6 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             </div>
             ${currentTheme === theme.id ? '<span class="badge-soft">Aktif</span>' : ''}
           </div>
+          ${theme.premium && !premium ? '<div class="theme-lock"><i class="bi bi-lock"></i> Khusus Premium</div>' : ''}
         </button>
       </div>
     `).join('');
@@ -41,8 +60,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         const selected = NB.themes.find(theme => theme.id === themeId);
         if (!selected) return;
 
+        await refreshProfile();
+        const premium = isPremiumNow();
+
         if (selected.premium && !premium) {
-          nbToast('Tema ini khusus Premium. Upgrade dulu ya bang.', 'warning');
+          nbToast(`Tema ini khusus Premium. Status akun terbaca: ${planHint()}. Logout/login ulang kalau baru di-upgrade.`, 'warning');
           return;
         }
 
@@ -58,12 +80,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             theme_name: themeId
           });
 
-          profile = await NB.getProfile(user.id);
-          currentTheme = profile?.theme_name || 'service';
+          await refreshProfile();
           render();
 
           if (currentTheme !== themeId) {
-            nbToast('Tema belum berubah. Pastikan akun ini Premium jika memilih tema Premium.', 'warning');
+            nbToast(`Tema belum berubah. Status akun terbaca: ${planHint()}. Coba logout/login ulang atau cek plan user di Admin Master.`, 'warning');
             return;
           }
 
@@ -82,7 +103,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         <a id="openThemePreview" class="btn btn-nb btn-sm" href="${NB.escapeHtml(publicUrl())}" target="_blank" rel="noopener">
           <i class="bi bi-eye"></i> Lihat Halaman Toko
         </a>
-        <span class="small text-muted align-self-center">Buka preview pakai link ini, jangan /u kosong.</span>
+        <span class="small text-muted align-self-center">Kalau baru upgrade premium, logout/login ulang kalau badge belum berubah.</span>
       </div>
     `);
   }
