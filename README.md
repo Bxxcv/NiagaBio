@@ -1,6 +1,6 @@
 # NiagaBio
 
-NiagaBio adalah link bio + katalog produk untuk seller/UMKM.
+NiagaBio adalah link bio + katalog produk untuk UMKM/pelaku usaha.
 
 Stack:
 

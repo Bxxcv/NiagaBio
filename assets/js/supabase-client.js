@@ -702,6 +702,21 @@
     return rows[rows.length - 1];
   }
 
+
+  async function resetSalesRecap(userId) {
+    if (sb) {
+      const { data, error } = await sb.rpc('reset_my_sales_recap');
+      if (error) throw error;
+      return data;
+    }
+
+    const user = await currentUser();
+    const sellerId = userId || user?.id;
+    if (!sellerId) throw new Error('Session tidak ditemukan.');
+    write(LS.orders, read(LS.orders, []).filter(order => order.seller_id !== sellerId));
+    return true;
+  }
+
   async function adminReviewPremiumRequest(requestId, action = 'approved', days = 30) {
     if (sb) {
       const { data, error } = await sb.rpc('admin_review_premium_request', {
@@ -797,6 +812,7 @@
     saveSettings,
     adminUpdateProfile,
     createPremiumRequest,
+    resetSalesRecap,
     adminReviewPremiumRequest,
     adminSoftDeleteUser
   };

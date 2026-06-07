@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       <section class="checkout-success card-nb">
         <div class="success-icon"><i class="bi bi-check2-circle"></i></div>
         <h1>Pesanan berhasil dikirim</h1>
-        <p>Order kamu masuk dengan status <b>pending</b>. Seller akan cek bukti pembayaran dan mengubah status jadi paid.</p>
+        <p>Pesanan kamu sudah tercatat. Penjual akan mengecek pembayaran dan memperbarui status pesanan.</p>
         <div class="checkout-success-summary">
           <span>Produk</span><strong>${NB.escapeHtml(product.name)}</strong>
           <span>Jumlah</span><strong>${NB.escapeHtml(quantity)}</strong>
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         </div>
         <div class="d-grid gap-2 mt-4">
           <a class="btn btn-nb" href="${NB.escapeHtml(NB.whatsappUrl(profile.whatsapp_number, waText))}" target="_blank" rel="noopener">
-            <i class="bi bi-whatsapp me-1"></i>Konfirmasi ke Seller
+            <i class="bi bi-whatsapp me-1"></i>Kirim WhatsApp
           </a>
           <a class="btn btn-outline-nb" href="${storeUrl(profile)}">
             <i class="bi bi-arrow-left me-1"></i>Kembali ke Toko
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             <div>
               <p class="eyebrow mb-2">QRIS manual</p>
               <h2>Scan, bayar, lalu kirim bukti</h2>
-              <p>Order akan masuk ke dashboard seller sebagai pending sampai dikonfirmasi paid.</p>
+              <p>Pesanan akan masuk ke dashboard toko dan menunggu pengecekan pembayaran.</p>
             </div>
             <img class="checkout-qris" src="${NB.escapeHtml(checkout.qris_image_url)}" alt="QRIS ${NB.escapeHtml(checkout.qris_name || profile.display_name || '')}">
           </div>
@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           <div class="checkout-note">
             <i class="bi bi-info-circle"></i>
             <div>
-              <b>${NB.escapeHtml(checkout.qris_name || profile.display_name || 'QRIS Seller')}</b>
+              <b>${NB.escapeHtml(checkout.qris_name || profile.display_name || 'QRIS Toko')}</b>
               <span>${NB.escapeHtml(checkout.payment_note || 'Pastikan nominal sesuai total pesanan sebelum kirim bukti.')}</span>
             </div>
           </div>
@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <i class="bi bi-send me-1"></i>Kirim Pesanan
               </button>
               <a class="btn btn-outline-nb" href="${NB.escapeHtml(NB.whatsappUrl(sellerPhone, orderMessage({ profile, product, quantity: 1 })))}" target="_blank" rel="noopener">
-                <i class="bi bi-whatsapp me-1"></i>Tanya Seller
+                <i class="bi bi-whatsapp me-1"></i>Tanya Penjual
               </a>
             </div>
           </form>
@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             proofUrl = await NB.uploadFile(proofInput.files[0], 'proofs');
           } catch (uploadError) {
             console.warn('[NiagaBio] Bukti bayar gagal diupload:', uploadError.message);
-            nbToast('Bukti gagal diupload. Order tetap dibuat, kamu bisa konfirmasi lewat WhatsApp.', 'warning');
+            nbToast('Bukti gagal diupload. Pesanan tetap dibuat, kamu bisa kirim bukti lewat WhatsApp.', 'warning');
           }
         }
 
@@ -210,12 +210,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         successView({ profile, product, quantity, total: Number(product.price || 0) * quantity, buyerName, buyerPhone });
       } catch (error) {
-        nbToast(error.message || 'Gagal membuat pesanan.', 'danger');
+        nbToast(error.message || 'Gagal mengirim pesanan.', 'danger');
         button.disabled = false;
         button.innerHTML = '<i class="bi bi-send me-1"></i>Kirim Pesanan';
       }
     });
   } catch (error) {
-    empty(`Gagal memuat checkout: ${error.message || 'error tidak diketahui'}`);
+    empty(`Gagal memuat checkout: ${error.message || 'terjadi masalah'}`);
   }
 });

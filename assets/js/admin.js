@@ -101,8 +101,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function orderBadge(status) {
-    if (status === 'paid') return '<span class="badge text-bg-success">Paid</span>';
-    if (status === 'cancelled') return '<span class="badge text-bg-secondary">Cancelled</span>';
+    if (status === 'paid') return '<span class="badge text-bg-success">Selesai</span>';
+    if (status === 'cancelled') return '<span class="badge text-bg-secondary">Batal</span>';
     return '<span class="badge text-bg-warning">Pending</span>';
   }
 
@@ -316,7 +316,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           <td>
             <div class="fw-bold">${safe(order.product_name || 'Produk')}</div>
             <small class="text-muted">${formatDateTime(order.created_at)}</small>
-            ${seller ? `<div class="small text-muted">Seller: @${safe(seller.username || seller.email)}</div>` : ''}
+            ${seller ? `<div class="small text-muted">Toko: @${safe(seller.username || seller.email)}</div>` : ''}
           </td>
           <td><div class="fw-semibold">${safe(order.buyer_name || '-')}</div><small class="text-muted">${safe(order.buyer_phone || '-')}</small></td>
           <td><div class="fw-bold">${NB.money(order.total_price)}</div><small class="text-muted">Qty ${safe(order.quantity || 1)}</small></td>
@@ -324,8 +324,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           <td>${order.proof_image_url ? `<a class="btn btn-sm btn-outline-nb" href="${safe(order.proof_image_url)}" target="_blank" rel="noopener">Buka Bukti</a>` : '<span class="text-muted">-</span>'}</td>
           <td class="text-end">
             <div class="admin-action-row justify-content-end">
-              <button class="btn btn-sm btn-success" type="button" data-order-paid="${safe(order.id)}" ${order.payment_status === 'paid' ? 'disabled' : ''}>Paid</button>
-              <button class="btn btn-sm btn-outline-danger" type="button" data-order-cancel="${safe(order.id)}" ${order.payment_status === 'cancelled' ? 'disabled' : ''}>Cancel</button>
+              <button class="btn btn-sm btn-success" type="button" data-order-paid="${safe(order.id)}" ${order.payment_status === 'paid' ? 'disabled' : ''}>Selesai</button>
+              <button class="btn btn-sm btn-outline-danger" type="button" data-order-cancel="${safe(order.id)}" ${order.payment_status === 'cancelled' ? 'disabled' : ''}>Batal</button>
             </div>
           </td>
         </tr>
@@ -520,12 +520,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   async function updateOrderStatus(orderId, status) {
     const order = state.orders.find(item => item.id === orderId);
     if (!order) return;
-    const label = status === 'paid' ? 'konfirmasi PAID' : 'cancel';
+    const label = status === 'paid' ? 'tandai pesanan selesai' : 'batalkan pesanan';
     if (!confirm(`Yakin ingin ${label} order ini?`)) return;
 
     try {
       await NB.save('orders', { ...order, payment_status: status, paid_at: status === 'paid' ? NB.now() : null });
-      nbToast(status === 'paid' ? 'Order berhasil dikonfirmasi paid.' : 'Order berhasil dibatalkan.');
+      nbToast(status === 'paid' ? 'Pesanan ditandai selesai.' : 'Pesanan dibatalkan.');
       await refresh();
     } catch (error) {
       nbToast(error.message || 'Gagal update order.', 'danger');

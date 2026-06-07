@@ -276,6 +276,27 @@ document.addEventListener('DOMContentLoaded', async () => {
       : '<div class="public-trust-badge is-free"><i class="bi bi-shop"></i> Toko aktif NiagaBio</div>';
   }
 
+
+  function updateStoreMeta(profile) {
+    const title = `${profile.display_name || profile.username || 'Toko'} - NiagaBio`;
+    const desc = profile.bio || 'Lihat produk, link penting, dan checkout toko ini di NiagaBio.';
+    const image = profile.avatar_url || `${location.origin}/assets/img/logo-panjang.jpg`;
+
+    document.title = title;
+    [
+      ['meta[name="description"]', desc],
+      ['meta[property="og:title"]', title],
+      ['meta[property="og:description"]', desc],
+      ['meta[property="og:image"]', image],
+      ['meta[name="twitter:title"]', title],
+      ['meta[name="twitter:description"]', desc],
+      ['meta[name="twitter:image"]', image]
+    ].forEach(([selector, value]) => {
+      const el = document.querySelector(selector);
+      if (el) el.setAttribute('content', value);
+    });
+  }
+
   function renderShell({ profile, themeName, premium, products, links, socials, gallery }) {
     const year = new Date().getFullYear();
     const displayName = profile.display_name || 'NiagaBio Store';
@@ -399,6 +420,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const premium = NB.isPremium(profile);
     const themeName = premium ? safeTheme(profile.theme_name || 'service') : safeTheme(['service', 'minimal'].includes(profile.theme_name) ? profile.theme_name : 'service');
+    updateStoreMeta(profile);
 
     document.body.className = document.body.className
       .split(' ')
@@ -455,6 +477,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     }
   } catch (error) {
-    root.innerHTML = `<div class="empty-state">Gagal memuat toko: ${NB.escapeHtml(error.message || 'error tidak diketahui')}</div>`;
+    root.innerHTML = `<div class="empty-state">Gagal memuat toko: ${NB.escapeHtml(error.message || 'terjadi masalah')}</div>`;
   }
 });

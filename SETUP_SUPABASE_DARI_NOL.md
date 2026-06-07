@@ -107,7 +107,7 @@ Clear site data browser / buka incognito.
 7. Admin bisa upgrade user premium
 8. Premium bisa gallery + QRIS/manual checkout
 9. Order dari public page masuk pending
-10. Admin/seller bisa ubah order jadi paid/cancelled
+10. Admin/toko bisa menandai pesanan selesai atau batal
 
 ## Manual yang wajib diganti
 
@@ -137,3 +137,12 @@ supabase/04_upgrade_requests_admin_tools.sql
 ```
 
 Kalau kamu setup dari nol memakai `supabase/01_schema_clean_run_this.sql` versi v13, patch v13 sudah ikut di bagian akhir schema.
+
+
+## Patch tambahan v21
+
+Kalau memakai database yang sudah jalan, jalankan file ini sekali di SQL Editor supaya tombol Reset Rekap aktif:
+
+```txt
+supabase/05_reset_sales_recap.sql
+```

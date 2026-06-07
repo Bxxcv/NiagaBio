@@ -54,27 +54,28 @@
     <div class="content-wrap orders-final-page">
      <section class="orders-hero card-nb p-4 mb-4">
       <div>
-       <p class="eyebrow mb-2">Sales overview</p>
+       <p class="eyebrow mb-2">Ringkasan toko</p>
        <h2 class="fw-black mb-1">Rekap penjualan toko</h2>
-       <p class="text-muted mb-0">Data dihitung dari order yang masuk ke toko kamu.</p>
+       <p class="text-muted mb-0">Data dihitung dari pesanan yang masuk ke toko kamu.</p>
       </div>
       <div class="orders-hero-actions">
        <button class="btn btn-outline-nb" id="exportCsvBtn" type="button"><i class="bi bi-download me-1"></i>Export CSV</button>
+       <button class="btn btn-outline-danger" id="resetRecapBtn" type="button"><i class="bi bi-trash3 me-1"></i>Reset Rekap</button>
        <button class="btn btn-nb" id="printBtn" type="button"><i class="bi bi-printer me-1"></i>Print</button>
       </div>
      </section>
 
      <div class="row g-3 g-xl-4 mb-4">
-      <div class="col-6 col-xl-3"><div class="card-nb metric sales-metric"><span>Omset Paid</span><div class="value fs-4" id="orderOmset">Rp0</div></div></div>
-      <div class="col-6 col-xl-3"><div class="card-nb metric sales-metric"><span>Total Order</span><div class="value" id="orderTotal">0</div></div></div>
-      <div class="col-6 col-xl-3"><div class="card-nb metric sales-metric"><span>Pending</span><div class="value" id="orderPending">0</div></div></div>
-      <div class="col-6 col-xl-3"><div class="card-nb metric sales-metric"><span>Paid</span><div class="value" id="orderPaid">0</div></div></div>
+      <div class="col-6 col-xl-3"><div class="card-nb metric sales-metric"><span>Omset Selesai</span><div class="value fs-4" id="orderOmset">Rp0</div></div></div>
+      <div class="col-6 col-xl-3"><div class="card-nb metric sales-metric"><span>Total Pesanan</span><div class="value" id="orderTotal">0</div></div></div>
+      <div class="col-6 col-xl-3"><div class="card-nb metric sales-metric"><span>Menunggu</span><div class="value" id="orderPending">0</div></div></div>
+      <div class="col-6 col-xl-3"><div class="card-nb metric sales-metric"><span>Selesai</span><div class="value" id="orderSelesai">0</div></div></div>
      </div>
 
      <div class="row g-4 mb-4">
-      <div class="col-lg-4"><div class="card-nb p-4 h-100"><p class="text-muted mb-1">Nominal Pending</p><h2 class="h4 fw-black text-green mb-0" id="orderPendingNominal">Rp0</h2><small class="text-muted">Belum masuk omset paid.</small></div></div>
-      <div class="col-lg-4"><div class="card-nb p-4 h-100"><p class="text-muted mb-1">Rata-rata Order Paid</p><h2 class="h4 fw-black mb-0" id="orderAverage">Rp0</h2><small class="text-muted">Nilai rata-rata per order paid.</small></div></div>
-      <div class="col-lg-4"><div class="card-nb p-4 h-100"><p class="text-muted mb-1">Produk Terlaris</p><h2 class="h5 fw-black mb-0" id="orderBestProduct">-</h2><small class="text-muted">Berdasarkan omzet paid.</small></div></div>
+      <div class="col-lg-4"><div class="card-nb p-4 h-100"><p class="text-muted mb-1">Nominal Menunggu</p><h2 class="h4 fw-black text-green mb-0" id="orderPendingNominal">Rp0</h2><small class="text-muted">Belum masuk omset selesai.</small></div></div>
+      <div class="col-lg-4"><div class="card-nb p-4 h-100"><p class="text-muted mb-1">Rata-rata Order Selesai</p><h2 class="h4 fw-black mb-0" id="orderAverage">Rp0</h2><small class="text-muted">Nilai rata-rata pesanan selesai.</small></div></div>
+      <div class="col-lg-4"><div class="card-nb p-4 h-100"><p class="text-muted mb-1">Produk Terlaris</p><h2 class="h5 fw-black mb-0" id="orderBestProduct">-</h2><small class="text-muted">Berdasarkan omset selesai.</small></div></div>
      </div>
 
      <section class="card-nb p-4 mb-4 order-filter-card">
@@ -91,8 +92,8 @@
         <select class="form-select" id="statusFilter">
          <option value="all">Semua</option>
          <option value="pending">Pending</option>
-         <option value="paid">Paid</option>
-         <option value="cancelled">Cancelled</option>
+         <option value="selesai">Selesai</option>
+         <option value="batal">Batal</option>
         </select>
        </div>
        <div class="col-6 col-lg-2">
@@ -116,13 +117,13 @@
         <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
          <div>
           <h2 class="h5 fw-bold mb-1">Rekap Produk Terjual</h2>
-          <p class="text-muted mb-0 small">Hanya menghitung order berstatus paid.</p>
+          <p class="text-muted mb-0 small">Hanya menghitung pesanan yang sudah selesai.</p>
          </div>
-         <span class="badge-soft" id="orderCancelled">0 batal</span>
+         <span class="badge-soft" id="orderBatal">0 batal</span>
         </div>
         <div class="table-responsive">
          <table class="table align-middle sales-recap-table">
-          <thead><tr><th>Produk</th><th>Paid</th><th>Qty</th><th>Omset</th></tr></thead>
+          <thead><tr><th>Produk</th><th>Selesai</th><th>Qty</th><th>Omset</th></tr></thead>
           <tbody id="recapRows"></tbody>
          </table>
         </div>
@@ -133,7 +134,7 @@
         <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
          <div>
           <h2 class="h5 fw-bold mb-1">Pesanan Masuk</h2>
-          <p class="text-muted mb-0 small">Klik Paid setelah pembayaran valid.</p>
+          <p class="text-muted mb-0 small">Tandai selesai setelah pembayaran valid.</p>
          </div>
          <span class="badge-soft" id="filteredCount">0 order</span>
         </div>

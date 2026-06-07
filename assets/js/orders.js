@@ -9,9 +9,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   let filteredOrders = [];
 
   function badge(status) {
-    if (status === 'paid') return '<span class="badge text-bg-success">paid</span>';
-    if (status === 'cancelled') return '<span class="badge text-bg-secondary">cancelled</span>';
-    return '<span class="badge text-bg-warning">pending</span>';
+    if (status === 'paid') return '<span class="badge text-bg-success">selesai</span>';
+    if (status === 'cancelled') return '<span class="badge text-bg-secondary">batal</span>';
+    return '<span class="badge text-bg-warning">menunggu</span>';
   }
 
   function formatDate(value) {
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function buyerWaUrl(order) {
     const phone = String(order.buyer_phone || '').replace(/[^0-9+]/g, '');
-    const text = `Halo kak ${order.buyer_name || ''}, order ${order.product_name || 'produk'} kamu statusnya ${order.payment_status || 'pending'}.`;
+    const text = `Halo kak ${order.buyer_name || ''}, pesanan ${order.product_name || 'produk'} kamu statusnya ${order.payment_status || 'pending'}.`;
     return phone ? NB.whatsappUrl(phone, text) : '#';
   }
 
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         <td class="text-end">
           <div class="btn-group btn-group-sm">
             <a class="btn btn-outline-success ${order.buyer_phone ? '' : 'disabled'}" href="${NB.escapeHtml(buyerWaUrl(order))}" target="_blank" rel="noopener" title="WhatsApp pembeli"><i class="bi bi-whatsapp"></i></a>
-            <button class="btn btn-success" data-paid="${NB.escapeHtml(order.id)}" ${order.payment_status === 'paid' ? 'disabled' : ''}>Paid</button>
+            <button class="btn btn-success" data-paid="${NB.escapeHtml(order.id)}" ${order.payment_status === 'paid' ? 'disabled' : ''}>Selesai</button>
             <button class="btn btn-outline-danger" data-cancel="${NB.escapeHtml(order.id)}" ${order.payment_status === 'cancelled' ? 'disabled' : ''}>Batal</button>
           </div>
         </td>
@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         <div class="order-card-proof">${proofHtml(order)}</div>
         <div class="order-card-actions">
           <a class="btn btn-outline-success ${order.buyer_phone ? '' : 'disabled'}" href="${NB.escapeHtml(buyerWaUrl(order))}" target="_blank" rel="noopener"><i class="bi bi-whatsapp me-1"></i>WA</a>
-          <button class="btn btn-success" data-paid="${NB.escapeHtml(order.id)}" ${order.payment_status === 'paid' ? 'disabled' : ''}>Paid</button>
+          <button class="btn btn-success" data-paid="${NB.escapeHtml(order.id)}" ${order.payment_status === 'paid' ? 'disabled' : ''}>Selesai</button>
           <button class="btn btn-outline-danger" data-cancel="${NB.escapeHtml(order.id)}" ${order.payment_status === 'cancelled' ? 'disabled' : ''}>Batal</button>
         </div>
       </article>
@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           <td>${item.qty}</td>
           <td class="fw-bold text-green">${NB.money(item.revenue)}</td>
         </tr>
-      `).join('') || '<tr><td colspan="4" class="text-center text-muted">Belum ada penjualan paid.</td></tr>';
+      `).join('') || '<tr><td colspan="4" class="text-center text-muted">Belum ada pesanan selesai.</td></tr>';
     }
   }
 
@@ -188,15 +188,34 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   async function updateStatus(order, status) {
     if (!order) return;
-    const label = status === 'paid' ? 'konfirmasi paid' : 'batalkan order';
+    const label = status === 'paid' ? 'tandai pesanan selesai' : 'batalkan pesanan';
     if (!confirm(`Yakin mau ${label}?`)) return;
 
     try {
       await NB.save('orders', { ...order, payment_status: status, paid_at: status === 'paid' ? NB.now() : null });
-      nbToast(status === 'paid' ? 'Order dikonfirmasi paid.' : 'Order dibatalkan.');
+      nbToast(status === 'paid' ? 'Pesanan ditandai selesai.' : 'Pesanan dibatalkan.');
       await loadOrders();
     } catch (error) {
       nbToast(error.message || 'Gagal update order.', 'danger');
+    }
+  }
+
+
+  async function resetRecapData() {
+    if (!allOrders.length) {
+      nbToast('Belum ada pesanan untuk direset.', 'warning');
+      return;
+    }
+
+    const ok = confirm('Reset rekap akan menghapus semua pesanan toko kamu. Lanjutkan?');
+    if (!ok) return;
+
+    try {
+      await NB.resetSalesRecap(user.id);
+      nbToast('Rekap penjualan berhasil direset.');
+      await loadOrders();
+    } catch (error) {
+      nbToast(error.message || 'Gagal reset rekap. Jalankan patch SQL 05 jika fitur ini belum aktif.', 'danger');
     }
   }
 
@@ -248,6 +267,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   $('exportCsvBtn')?.addEventListener('click', exportCsv);
+  $('resetRecapBtn')?.addEventListener('click', resetRecapData);
   $('printBtn')?.addEventListener('click', () => window.print());
 
   try {

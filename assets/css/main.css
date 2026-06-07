@@ -3676,6 +3676,14 @@ html { scroll-behavior: smooth; }
   background: rgba(255,255,255,.86);
   backdrop-filter: blur(14px);
 }
+.checkout-navbar-title {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  color: var(--nb-green-dark);
+  font-weight: 900;
+  letter-spacing: -.02em;
+}
 .checkout-wrap {
   padding-top: 30px;
   padding-bottom: 54px;

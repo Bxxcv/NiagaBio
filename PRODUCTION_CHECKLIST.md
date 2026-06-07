@@ -24,7 +24,7 @@ Gunakan checklist ini sebelum promosi ke user baru.
 - [ ] User Premium bisa ganti tema.
 - [ ] Produk tampil di public page.
 - [ ] Checkout membuat order pending.
-- [ ] Seller bisa confirm paid/cancel.
+- [ ] Seller bisa confirm selesai/batal.
 - [ ] Rekap penjualan dan export CSV jalan.
 - [ ] Maintenance mode dites dari incognito/non-admin.
 

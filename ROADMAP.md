@@ -38,8 +38,8 @@ Status: selesai di versi awal.
 ## Phase 4 - Monetization
 
 - Upgrade premium manual via admin
-- QRIS manual checkout untuk seller premium
-- Dashboard omset seller
+- QRIS manual checkout untuk pengguna premium
+- Dashboard omset toko
 - Monitoring order admin
 
 ## Phase 5 - Next Feature
