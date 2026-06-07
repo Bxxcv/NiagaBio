@@ -216,6 +216,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
   } catch (error) {
-    empty(`Gagal memuat checkout: ${error.message || 'Unknown error'}`);
+    empty(`Gagal memuat checkout: ${error.message || 'error tidak diketahui'}`);
   }
 });

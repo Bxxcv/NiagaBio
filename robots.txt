@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /products
+Disallow: /links
+Disallow: /social
+Disallow: /gallery
+Disallow: /themes
+Disallow: /checkout-settings
+Disallow: /orders
+Disallow: /upgrade
+Sitemap: https://niaga-bio.vercel.app/sitemap.xml

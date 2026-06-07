@@ -185,3 +185,10 @@ body { background: #f6faf8; }
   [data-reveal], [data-reveal].is-visible { opacity: 1; transform: none; transition: none; }
   .feature-card,.price-card,.dashboard-preview,.phone-mock,.stat-card { transition: none; }
 }
+
+@media (max-width: 575px) {
+  .footer .container {
+    justify-content: center !important;
+    text-align: center;
+  }
+}

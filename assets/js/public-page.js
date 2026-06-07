@@ -455,6 +455,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     }
   } catch (error) {
-    root.innerHTML = `<div class="empty-state">Gagal memuat toko: ${NB.escapeHtml(error.message || 'Unknown error')}</div>`;
+    root.innerHTML = `<div class="empty-state">Gagal memuat toko: ${NB.escapeHtml(error.message || 'error tidak diketahui')}</div>`;
   }
 });
