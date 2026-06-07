@@ -33,3 +33,10 @@ Gunakan checklist ini sebelum promosi ke user baru.
 - [ ] Harga premium benar.
 - [ ] WhatsApp admin benar.
 - [ ] Halaman privacy, terms, dan refund sudah dibaca ulang.
+
+## Final Hardening
+- [ ] Deploy terakhir sudah memakai zip/source terbaru.
+- [ ] `vercel.json` sudah ikut ter-upload.
+- [ ] `/privacy`, `/terms`, `/refund`, `/robots.txt`, `/sitemap.xml`, dan `/site.webmanifest` bisa dibuka.
+- [ ] Legal page tidak menampilkan error console walau tidak memuat Supabase client.
+- [ ] Test dari incognito setelah clear cache.

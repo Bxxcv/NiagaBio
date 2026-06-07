@@ -15,9 +15,9 @@ Stack:
 - assets/js/config.js: config Supabase
 - supabase/01_schema_clean_run_this.sql: schema utama dari nol
 - supabase/02_bootstrap_admin_after_signup.sql: jadikan email owner sebagai admin
-- admin.html: Admin Master khusus owner
-- dashboard.html: dashboard seller/user
-- u.html: public page toko
+- `/admin`: Admin Master khusus owner
+- `/dashboard`: dashboard seller/user
+- `/u?username=...`: public page toko
 
 ## Setup cepat
 
@@ -34,3 +34,7 @@ Edit assets/js/config.js:
 - DEMO_MODE: false setelah schema sukses
 
 Jangan pernah taruh service_role key di frontend.
+
+## Status release
+
+Versi ini adalah production candidate. Jalankan checklist di `PRODUCTION_CHECKLIST.md` sebelum promosi ke user baru.

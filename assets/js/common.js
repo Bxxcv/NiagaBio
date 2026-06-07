@@ -40,14 +40,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (window.innerWidth >= 992) setSidebar(false);
   });
 
+  const hasNBClient = Boolean(window.NB);
+
   const logout = document.querySelector('[data-logout]');
-  if (logout) {
+  if (logout && hasNBClient) {
     logout.addEventListener('click', async event => {
       event.preventDefault();
       await NB.signOut();
       location.href = 'login';
     });
   }
+
+  // Halaman publik/legal hanya memuat common.js tanpa Supabase client.
+  // Jangan jalankan auth/maintenance guard kalau NB belum tersedia.
+  if (!hasNBClient) return;
 
   const user = await NB.currentUser();
   let profile = null;
@@ -124,6 +130,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
+
+function nbEscape(value) {
+  if (window.NB?.escapeHtml) return NB.escapeHtml(value);
+  return String(value ?? '').replace(/[&<>"]/g, char => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;'
+  }[char]));
+}
+
 function nbToast(message, type = 'success') {
   let wrapper = document.querySelector('.toast-container');
   if (!wrapper) {
@@ -137,7 +154,7 @@ function nbToast(message, type = 'success') {
   wrapper.insertAdjacentHTML('beforeend', `
     <div id="${id}" class="toast ${className}" role="alert">
       <div class="d-flex">
-        <div class="toast-body fw-semibold">${NB.escapeHtml(message)}</div>
+        <div class="toast-body fw-semibold">${nbEscape(message)}</div>
         <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
       </div>
     </div>
@@ -158,5 +175,5 @@ function setActiveSide(key) {
 }
 
 function loadingHtml(text = 'Memuat data...') {
-  return `<div class="empty-state"><div class="spinner-border text-success mb-3"></div><p class="mb-0">${NB.escapeHtml(text)}</p></div>`;
+  return `<div class="empty-state"><div class="spinner-border text-success mb-3"></div><p class="mb-0">${nbEscape(text)}</p></div>`;
 }

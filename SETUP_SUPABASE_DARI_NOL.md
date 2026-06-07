@@ -98,9 +98,9 @@ Clear site data browser / buka incognito.
 
 ## 8. Tes wajib
 
-1. Login admin: harus masuk admin.html
-2. Register user biasa: harus masuk dashboard.html
-3. User biasa buka admin.html: harus ditolak
+1. Login admin: harus masuk `/admin`
+2. Register user biasa: harus masuk `/dashboard`
+3. User biasa buka `/admin`: harus ditolak
 4. Free max 5 produk
 5. Free max 3 social
 6. Free tidak bisa gallery
@@ -124,8 +124,8 @@ File: supabase/02_bootstrap_admin_after_signup.sql
 
 Admin panel:
 
-- Ubah admin_whatsapp dari admin.html setelah login admin.
-- Ubah premium_price dari admin.html setelah login admin.
+- Ubah admin_whatsapp dari `/admin` setelah login admin.
+- Ubah premium_price dari `/admin` setelah login admin.
 
 
 ## Patch v13 tambahan
