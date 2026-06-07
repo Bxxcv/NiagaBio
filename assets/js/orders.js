@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (!user) return;
 
   const $ = id => document.getElementById(id);
+  let allOrders = [];
+  let filteredOrders = [];
 
   function badge(status) {
     if (status === 'paid') return '<span class="badge text-bg-success">paid</span>';
@@ -16,6 +18,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return '-';
     return date.toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  }
+
+  function isInsideDateFilter(order, filter) {
+    if (filter === 'all') return true;
+    const created = new Date(order.created_at);
+    if (Number.isNaN(created.getTime())) return false;
+
+    const now = new Date();
+    if (filter === 'today') {
+      return created.toDateString() === now.toDateString();
+    }
+
+    const days = filter === '7d' ? 7 : 30;
+    const minTime = now.getTime() - days * 24 * 60 * 60 * 1000;
+    return created.getTime() >= minTime;
   }
 
   function buildProductRecap(orders) {
@@ -32,8 +49,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     return Array.from(map.values()).sort((a, b) => b.revenue - a.revenue);
   }
 
-  async function render() {
-    const orders = await NB.list('orders', user.id, 'seller_id');
+  function computeSummary(orders) {
     const paid = orders.filter(order => order.payment_status === 'paid');
     const pending = orders.filter(order => order.payment_status === 'pending');
     const cancelled = orders.filter(order => order.payment_status === 'cancelled');
@@ -42,11 +58,106 @@ document.addEventListener('DOMContentLoaded', async () => {
     const averageOrder = paid.length ? Math.round(totalOmset / paid.length) : 0;
     const productRecap = buildProductRecap(orders);
 
+    return { paid, pending, cancelled, totalOmset, pendingNominal, averageOrder, productRecap };
+  }
+
+  function applyFilters() {
+    const query = ($('orderSearch')?.value || '').toLowerCase().trim();
+    const status = $('statusFilter')?.value || 'all';
+    const dateFilter = $('dateFilter')?.value || 'all';
+
+    filteredOrders = allOrders.filter(order => {
+      const text = `${order.product_name || ''} ${order.buyer_name || ''} ${order.buyer_phone || ''} ${order.payment_method || ''}`.toLowerCase();
+      const matchText = !query || text.includes(query);
+      const matchStatus = status === 'all' || order.payment_status === status;
+      const matchDate = isInsideDateFilter(order, dateFilter);
+      return matchText && matchStatus && matchDate;
+    });
+
+    renderTables(filteredOrders);
+  }
+
+  function proofHtml(order) {
+    return order.proof_image_url
+      ? `<a href="${NB.escapeHtml(order.proof_image_url)}" target="_blank" rel="noopener"><img src="${NB.escapeHtml(order.proof_image_url)}" class="proof-img" alt="Bukti bayar"></a>`
+      : '<span class="text-muted">-</span>';
+  }
+
+  function buyerWaUrl(order) {
+    const phone = String(order.buyer_phone || '').replace(/[^0-9+]/g, '');
+    const text = `Halo kak ${order.buyer_name || ''}, order ${order.product_name || 'produk'} kamu statusnya ${order.payment_status || 'pending'}.`;
+    return phone ? NB.whatsappUrl(phone, text) : '#';
+  }
+
+  function rowHtml(order) {
+    return `
+      <tr>
+        <td>
+          <div class="fw-bold">${NB.escapeHtml(order.product_name || '-')}</div>
+          <small class="text-muted">${formatDate(order.created_at)}</small>
+        </td>
+        <td>
+          <div>${NB.escapeHtml(order.buyer_name || '-')}</div>
+          <small>${NB.escapeHtml(order.buyer_phone || '-')}</small>
+        </td>
+        <td>${NB.money(order.total_price)}<br><small class="text-muted">Qty ${NB.escapeHtml(order.quantity || 1)}</small></td>
+        <td>${proofHtml(order)}</td>
+        <td>${badge(order.payment_status)}</td>
+        <td class="text-end">
+          <div class="btn-group btn-group-sm">
+            <a class="btn btn-outline-success ${order.buyer_phone ? '' : 'disabled'}" href="${NB.escapeHtml(buyerWaUrl(order))}" target="_blank" rel="noopener" title="WhatsApp pembeli"><i class="bi bi-whatsapp"></i></a>
+            <button class="btn btn-success" data-paid="${NB.escapeHtml(order.id)}" ${order.payment_status === 'paid' ? 'disabled' : ''}>Paid</button>
+            <button class="btn btn-outline-danger" data-cancel="${NB.escapeHtml(order.id)}" ${order.payment_status === 'cancelled' ? 'disabled' : ''}>Batal</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }
+
+  function cardHtml(order) {
+    return `
+      <article class="order-card-mobile">
+        <div class="order-card-head">
+          <div>
+            <strong>${NB.escapeHtml(order.product_name || '-')}</strong>
+            <small>${formatDate(order.created_at)}</small>
+          </div>
+          ${badge(order.payment_status)}
+        </div>
+        <div class="order-card-body">
+          <div><span>Pembeli</span><b>${NB.escapeHtml(order.buyer_name || '-')}</b></div>
+          <div><span>WhatsApp</span><b>${NB.escapeHtml(order.buyer_phone || '-')}</b></div>
+          <div><span>Qty</span><b>${NB.escapeHtml(order.quantity || 1)}</b></div>
+          <div><span>Total</span><b>${NB.money(order.total_price)}</b></div>
+        </div>
+        <div class="order-card-proof">${proofHtml(order)}</div>
+        <div class="order-card-actions">
+          <a class="btn btn-outline-success ${order.buyer_phone ? '' : 'disabled'}" href="${NB.escapeHtml(buyerWaUrl(order))}" target="_blank" rel="noopener"><i class="bi bi-whatsapp me-1"></i>WA</a>
+          <button class="btn btn-success" data-paid="${NB.escapeHtml(order.id)}" ${order.payment_status === 'paid' ? 'disabled' : ''}>Paid</button>
+          <button class="btn btn-outline-danger" data-cancel="${NB.escapeHtml(order.id)}" ${order.payment_status === 'cancelled' ? 'disabled' : ''}>Batal</button>
+        </div>
+      </article>
+    `;
+  }
+
+  function attachActions(orders) {
+    document.querySelectorAll('[data-paid]').forEach(button => {
+      button.addEventListener('click', async () => updateStatus(orders.find(item => String(item.id) === String(button.dataset.paid)), 'paid'));
+    });
+
+    document.querySelectorAll('[data-cancel]').forEach(button => {
+      button.addEventListener('click', async () => updateStatus(orders.find(item => String(item.id) === String(button.dataset.cancel)), 'cancelled'));
+    });
+  }
+
+  function renderSummary(orders) {
+    const { paid, pending, cancelled, totalOmset, pendingNominal, averageOrder, productRecap } = computeSummary(orders);
+
     $('orderOmset').textContent = NB.money(totalOmset);
     $('orderPending').textContent = pending.length;
     $('orderPaid').textContent = paid.length;
     if ($('orderTotal')) $('orderTotal').textContent = orders.length;
-    if ($('orderCancelled')) $('orderCancelled').textContent = cancelled.length;
+    if ($('orderCancelled')) $('orderCancelled').textContent = `${cancelled.length} batal`;
     if ($('orderPendingNominal')) $('orderPendingNominal').textContent = NB.money(pendingNominal);
     if ($('orderAverage')) $('orderAverage').textContent = NB.money(averageOrder);
     if ($('orderBestProduct')) $('orderBestProduct').textContent = productRecap[0]?.product || '-';
@@ -61,45 +172,88 @@ document.addEventListener('DOMContentLoaded', async () => {
         </tr>
       `).join('') || '<tr><td colspan="4" class="text-center text-muted">Belum ada penjualan paid.</td></tr>';
     }
+  }
 
-    $('orderRows').innerHTML = orders.map(order => `
-      <tr>
-        <td>
-          <div class="fw-bold">${NB.escapeHtml(order.product_name)}</div>
-          <small class="text-muted">${formatDate(order.created_at)}</small>
-        </td>
-        <td>${NB.escapeHtml(order.buyer_name)}<br><small>${NB.escapeHtml(order.buyer_phone)}</small></td>
-        <td>${NB.money(order.total_price)}<br><small class="text-muted">Qty ${NB.escapeHtml(order.quantity || 1)}</small></td>
-        <td>${NB.escapeHtml(order.payment_method)}</td>
-        <td>${order.proof_image_url ? `<a href="${NB.escapeHtml(order.proof_image_url)}" target="_blank"><img src="${NB.escapeHtml(order.proof_image_url)}" class="proof-img" alt="Bukti"></a>` : '-'}</td>
-        <td>${badge(order.payment_status)}</td>
-        <td class="text-end">
-          <button class="btn btn-sm btn-success" data-paid="${NB.escapeHtml(order.id)}" ${order.payment_status === 'paid' ? 'disabled' : ''}>Paid</button>
-          <button class="btn btn-sm btn-outline-danger" data-cancel="${NB.escapeHtml(order.id)}" ${order.payment_status === 'cancelled' ? 'disabled' : ''}>Batal</button>
-        </td>
-      </tr>
-    `).join('') || '<tr><td colspan="7" class="text-center text-muted">Belum ada pesanan.</td></tr>';
+  function renderTables(orders) {
+    renderSummary(orders);
+    if ($('filteredCount')) $('filteredCount').textContent = `${orders.length} order`;
 
-    document.querySelectorAll('[data-paid]').forEach(button => {
-      button.addEventListener('click', async () => updateStatus(orders.find(item => String(item.id) === String(button.dataset.paid)), 'paid'));
-    });
-
-    document.querySelectorAll('[data-cancel]').forEach(button => {
-      button.addEventListener('click', async () => updateStatus(orders.find(item => String(item.id) === String(button.dataset.cancel)), 'cancelled'));
-    });
+    const empty = '<tr><td colspan="6" class="text-center text-muted py-4">Belum ada pesanan sesuai filter.</td></tr>';
+    $('orderRows').innerHTML = orders.map(rowHtml).join('') || empty;
+    if ($('orderCards')) {
+      $('orderCards').innerHTML = orders.map(cardHtml).join('') || '<div class="empty-state py-4">Belum ada pesanan sesuai filter.</div>';
+    }
+    attachActions(orders);
   }
 
   async function updateStatus(order, status) {
     if (!order) return;
+    const label = status === 'paid' ? 'konfirmasi paid' : 'batalkan order';
+    if (!confirm(`Yakin mau ${label}?`)) return;
 
     try {
       await NB.save('orders', { ...order, payment_status: status, paid_at: status === 'paid' ? NB.now() : null });
       nbToast(status === 'paid' ? 'Order dikonfirmasi paid.' : 'Order dibatalkan.');
-      render();
+      await loadOrders();
     } catch (error) {
       nbToast(error.message || 'Gagal update order.', 'danger');
     }
   }
 
-  render();
+  function exportCsv() {
+    const header = ['Tanggal', 'Produk', 'Pembeli', 'WhatsApp', 'Qty', 'Total', 'Metode', 'Status'];
+    const lines = filteredOrders.map(order => [
+      formatDate(order.created_at),
+      order.product_name || '',
+      order.buyer_name || '',
+      order.buyer_phone || '',
+      order.quantity || 1,
+      order.total_price || 0,
+      order.payment_method || '',
+      order.payment_status || ''
+    ]);
+
+    const csv = [header, ...lines]
+      .map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(','))
+      .join('\n');
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `rekap-niagabio-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  async function loadOrders() {
+    allOrders = await NB.list('orders', user.id, 'seller_id');
+    filteredOrders = [...allOrders];
+    applyFilters();
+  }
+
+  ['orderSearch', 'statusFilter', 'dateFilter'].forEach(id => {
+    const el = $(id);
+    if (el) el.addEventListener('input', applyFilters);
+    if (el) el.addEventListener('change', applyFilters);
+  });
+
+  $('resetFilterBtn')?.addEventListener('click', () => {
+    if ($('orderSearch')) $('orderSearch').value = '';
+    if ($('statusFilter')) $('statusFilter').value = 'all';
+    if ($('dateFilter')) $('dateFilter').value = 'all';
+    applyFilters();
+  });
+
+  $('exportCsvBtn')?.addEventListener('click', exportCsv);
+  $('printBtn')?.addEventListener('click', () => window.print());
+
+  try {
+    await loadOrders();
+  } catch (error) {
+    nbToast(error.message || 'Gagal memuat pesanan.', 'danger');
+    if ($('orderRows')) $('orderRows').innerHTML = '<tr><td colspan="6" class="text-center text-danger">Gagal memuat pesanan.</td></tr>';
+  }
 });

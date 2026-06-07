@@ -1,231 +1,160 @@
 <!DOCTYPE html>
 <html lang="id">
  <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1" name="viewport"/>
-  <title>
-   Pesanan - NiagaBio
-  </title>
-  <meta content="NiagaBio adalah link bio + katalog produk untuk seller dan UMKM." name="description"/>
-  <link href="assets/img/logo.jpg" rel="icon"/>
-  <link href="https://cdn.jsdelivr.net" rel="preconnect"/>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
-  <link href="assets/css/main.css" rel="stylesheet"/>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <title>Pesanan - NiagaBio</title>
+  <meta content="Kelola pesanan, bukti pembayaran, dan rekap penjualan NiagaBio." name="description" />
+  <link href="assets/img/logo.jpg" rel="icon" />
+  <link href="https://cdn.jsdelivr.net" rel="preconnect" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="assets/css/main.css" rel="stylesheet" />
  </head>
  <body data-protected="true">
   <div class="app-shell">
    <aside class="sidebar">
     <div class="d-flex align-items-center gap-2 mb-4">
-     <img alt="NiagaBio" class="nb-logo-sm" src="assets/img/logo.jpg"/>
-     <span class="h4 fw-black text-green mb-0">
-      NiagaBio
-     </span>
+     <img alt="NiagaBio" class="nb-logo-sm" src="assets/img/logo.jpg" />
+     <span class="h4 fw-black text-green mb-0">NiagaBio</span>
     </div>
     <nav>
-     <a class="side-link" data-nav="dashboard" href="dashboard">
-      <i class="bi bi-grid-1x2">
-      </i>
-      Dashboard
-     </a>
-     <a class="side-link" data-nav="profile" href="profile">
-      <i class="bi bi-person">
-      </i>
-      Profil
-     </a>
-     <a class="side-link" data-nav="products" href="products">
-      <i class="bi bi-bag">
-      </i>
-      Produk
-     </a>
-     <a class="side-link" data-nav="links" href="links">
-      <i class="bi bi-link-45deg">
-      </i>
-      Link Custom
-     </a>
-     <a class="side-link" data-nav="social" href="social">
-      <i class="bi bi-share">
-      </i>
-      Sosial Media
-     </a>
-     <a class="side-link" data-nav="gallery" href="gallery">
-      <i class="bi bi-images">
-      </i>
-      Gallery
-     </a>
-     <a class="side-link" data-nav="themes" href="themes">
-      <i class="bi bi-palette">
-      </i>
-      Tema
-     </a>
-     <a class="side-link" data-nav="checkout" href="checkout-settings">
-      <i class="bi bi-qr-code">
-      </i>
-      Checkout
-     </a>
-     <a class="side-link" data-nav="orders" href="orders">
-      <i class="bi bi-receipt">
-      </i>
-      Pesanan
-     </a>
-     <a class="side-link" data-nav="upgrade" href="upgrade">
-      <i class="bi bi-stars">
-      </i>
-      Upgrade
-     </a>
-     <a class="side-link d-none" data-admin-only="" data-nav="admin" href="admin">
-      <i class="bi bi-shield-lock">
-      </i>
-      Admin
-     </a>
-     <hr/>
-     <a class="side-link" href="u?username=demo" target="_blank">
-      <i class="bi bi-eye">
-      </i>
-      Preview Demo
-     </a>
-     <a class="side-link text-danger" data-logout="" href="#">
-      <i class="bi bi-box-arrow-right">
-      </i>
-      Keluar
-     </a>
+     <a class="side-link" data-nav="dashboard" href="dashboard"><i class="bi bi-grid-1x2"></i>Dashboard</a>
+     <a class="side-link" data-nav="profile" href="profile"><i class="bi bi-person"></i>Profil</a>
+     <a class="side-link" data-nav="products" href="products"><i class="bi bi-bag"></i>Produk</a>
+     <a class="side-link" data-nav="links" href="links"><i class="bi bi-link-45deg"></i>Link Custom</a>
+     <a class="side-link" data-nav="social" href="social"><i class="bi bi-share"></i>Sosial Media</a>
+     <a class="side-link" data-nav="gallery" href="gallery"><i class="bi bi-images"></i>Gallery</a>
+     <a class="side-link" data-nav="themes" href="themes"><i class="bi bi-palette"></i>Tema</a>
+     <a class="side-link" data-nav="checkout" href="checkout-settings"><i class="bi bi-qr-code"></i>Checkout</a>
+     <a class="side-link" data-nav="orders" href="orders"><i class="bi bi-receipt"></i>Pesanan</a>
+     <a class="side-link" data-nav="upgrade" href="upgrade"><i class="bi bi-stars"></i>Upgrade</a>
+     <a class="side-link d-none" data-admin-only data-nav="admin" href="admin"><i class="bi bi-shield-lock"></i>Admin</a>
+     <hr />
+     <a class="side-link" href="u?username=demo" target="_blank"><i class="bi bi-eye"></i>Preview Demo</a>
+     <a class="side-link text-danger" data-logout href="#"><i class="bi bi-box-arrow-right"></i>Keluar</a>
     </nav>
    </aside>
+
    <main class="main-content">
     <header class="topbar">
      <div class="d-flex align-items-center gap-2">
-      <button class="btn btn-outline-nb d-lg-none" data-sidebar-toggle="">
-       <i class="bi bi-list">
-       </i>
+      <button class="btn btn-outline-nb d-lg-none" data-sidebar-toggle>
+       <i class="bi bi-list"></i>
       </button>
       <div>
-       <h1 class="h4 fw-black mb-0">
-        Pesanan
-       </h1>
-       <small class="text-muted">
-        Kelola halaman NiagaBio kamu
-       </small>
+       <h1 class="h4 fw-black mb-0">Pesanan & Rekap</h1>
+       <small class="text-muted">Pantau pembayaran, omset, dan performa produk.</small>
       </div>
      </div>
-     <span class="badge-soft" data-plan="">
-      Free
-     </span>
+     <span class="badge-soft" data-plan>Free</span>
     </header>
-    <div class="content-wrap">
+
+    <div class="content-wrap orders-final-page">
+     <section class="orders-hero card-nb p-4 mb-4">
+      <div>
+       <p class="eyebrow mb-2">Sales overview</p>
+       <h2 class="fw-black mb-1">Rekap penjualan toko</h2>
+       <p class="text-muted mb-0">Data dihitung dari order yang masuk ke toko kamu.</p>
+      </div>
+      <div class="orders-hero-actions">
+       <button class="btn btn-outline-nb" id="exportCsvBtn" type="button"><i class="bi bi-download me-1"></i>Export CSV</button>
+       <button class="btn btn-nb" id="printBtn" type="button"><i class="bi bi-printer me-1"></i>Print</button>
+      </div>
+     </section>
+
      <div class="row g-3 g-xl-4 mb-4">
-      <div class="col-6 col-xl-3">
-       <div class="card-nb metric">
-        <div class="value fs-4" id="orderOmset">Rp0</div>
-        <p class="text-muted mb-0">Omset Paid</p>
-       </div>
-      </div>
-      <div class="col-6 col-xl-3">
-       <div class="card-nb metric">
-        <div class="value" id="orderTotal">0</div>
-        <p class="text-muted mb-0">Total Order</p>
-       </div>
-      </div>
-      <div class="col-6 col-xl-3">
-       <div class="card-nb metric">
-        <div class="value" id="orderPending">0</div>
-        <p class="text-muted mb-0">Pending</p>
-       </div>
-      </div>
-      <div class="col-6 col-xl-3">
-       <div class="card-nb metric">
-        <div class="value" id="orderPaid">0</div>
-        <p class="text-muted mb-0">Paid</p>
-       </div>
-      </div>
+      <div class="col-6 col-xl-3"><div class="card-nb metric sales-metric"><span>Omset Paid</span><div class="value fs-4" id="orderOmset">Rp0</div></div></div>
+      <div class="col-6 col-xl-3"><div class="card-nb metric sales-metric"><span>Total Order</span><div class="value" id="orderTotal">0</div></div></div>
+      <div class="col-6 col-xl-3"><div class="card-nb metric sales-metric"><span>Pending</span><div class="value" id="orderPending">0</div></div></div>
+      <div class="col-6 col-xl-3"><div class="card-nb metric sales-metric"><span>Paid</span><div class="value" id="orderPaid">0</div></div></div>
      </div>
 
      <div class="row g-4 mb-4">
-      <div class="col-lg-4">
-       <div class="card-nb p-4 h-100">
-        <p class="text-muted mb-1">Nominal Pending</p>
-        <h2 class="h4 fw-black text-green mb-0" id="orderPendingNominal">Rp0</h2>
-       </div>
-      </div>
-      <div class="col-lg-4">
-       <div class="card-nb p-4 h-100">
-        <p class="text-muted mb-1">Rata-rata Order Paid</p>
-        <h2 class="h4 fw-black mb-0" id="orderAverage">Rp0</h2>
-       </div>
-      </div>
-      <div class="col-lg-4">
-       <div class="card-nb p-4 h-100">
-        <p class="text-muted mb-1">Produk Terlaris</p>
-        <h2 class="h5 fw-black mb-0" id="orderBestProduct">-</h2>
-        <small class="text-muted">Berdasarkan omzet paid</small>
-       </div>
-      </div>
+      <div class="col-lg-4"><div class="card-nb p-4 h-100"><p class="text-muted mb-1">Nominal Pending</p><h2 class="h4 fw-black text-green mb-0" id="orderPendingNominal">Rp0</h2><small class="text-muted">Belum masuk omset paid.</small></div></div>
+      <div class="col-lg-4"><div class="card-nb p-4 h-100"><p class="text-muted mb-1">Rata-rata Order Paid</p><h2 class="h4 fw-black mb-0" id="orderAverage">Rp0</h2><small class="text-muted">Nilai rata-rata per order paid.</small></div></div>
+      <div class="col-lg-4"><div class="card-nb p-4 h-100"><p class="text-muted mb-1">Produk Terlaris</p><h2 class="h5 fw-black mb-0" id="orderBestProduct">-</h2><small class="text-muted">Berdasarkan omzet paid.</small></div></div>
      </div>
 
-     <div class="card-nb p-4 mb-4">
-      <h2 class="h5 fw-bold mb-3">Rekap Produk Terjual</h2>
-      <div class="table-responsive">
-       <table class="table">
-        <thead>
-         <tr>
-          <th>Produk</th>
-          <th>Order Paid</th>
-          <th>Qty</th>
-          <th>Omset</th>
-         </tr>
-        </thead>
-        <tbody id="recapRows"></tbody>
-       </table>
+     <section class="card-nb p-4 mb-4 order-filter-card">
+      <div class="row g-3 align-items-end">
+       <div class="col-lg-5">
+        <label class="form-label">Cari order</label>
+        <div class="input-icon-wrap">
+         <i class="bi bi-search"></i>
+         <input class="form-control" id="orderSearch" placeholder="Nama pembeli, produk, nomor WA..." />
+        </div>
+       </div>
+       <div class="col-6 col-lg-2">
+        <label class="form-label">Status</label>
+        <select class="form-select" id="statusFilter">
+         <option value="all">Semua</option>
+         <option value="pending">Pending</option>
+         <option value="paid">Paid</option>
+         <option value="cancelled">Cancelled</option>
+        </select>
+       </div>
+       <div class="col-6 col-lg-2">
+        <label class="form-label">Periode</label>
+        <select class="form-select" id="dateFilter">
+         <option value="all">Semua</option>
+         <option value="today">Hari ini</option>
+         <option value="7d">7 hari</option>
+         <option value="30d">30 hari</option>
+        </select>
+       </div>
+       <div class="col-lg-3">
+        <button class="btn btn-outline-nb w-100" id="resetFilterBtn" type="button"><i class="bi bi-arrow-counterclockwise me-1"></i>Reset Filter</button>
+       </div>
       </div>
-     </div>
-     <div class="card-nb p-4">
-      <h2 class="h5 fw-bold mb-3">
-       Pesanan Masuk
-      </h2>
-      <div class="table-responsive">
-       <table class="table">
-        <thead>
-         <tr>
-          <th>
-           Produk
-          </th>
-          <th>
-           Pembeli
-          </th>
-          <th>
-           Total
-          </th>
-          <th>
-           Metode
-          </th>
-          <th>
-           Bukti
-          </th>
-          <th>
-           Status
-          </th>
-          <th>
-          </th>
-         </tr>
-        </thead>
-        <tbody id="orderRows">
-        </tbody>
-       </table>
+     </section>
+
+     <div class="row g-4 mb-4">
+      <div class="col-xl-5">
+       <div class="card-nb p-4 h-100">
+        <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
+         <div>
+          <h2 class="h5 fw-bold mb-1">Rekap Produk Terjual</h2>
+          <p class="text-muted mb-0 small">Hanya menghitung order berstatus paid.</p>
+         </div>
+         <span class="badge-soft" id="orderCancelled">0 batal</span>
+        </div>
+        <div class="table-responsive">
+         <table class="table align-middle sales-recap-table">
+          <thead><tr><th>Produk</th><th>Paid</th><th>Qty</th><th>Omset</th></tr></thead>
+          <tbody id="recapRows"></tbody>
+         </table>
+        </div>
+       </div>
+      </div>
+      <div class="col-xl-7">
+       <div class="card-nb p-4 h-100">
+        <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
+         <div>
+          <h2 class="h5 fw-bold mb-1">Pesanan Masuk</h2>
+          <p class="text-muted mb-0 small">Klik Paid setelah pembayaran valid.</p>
+         </div>
+         <span class="badge-soft" id="filteredCount">0 order</span>
+        </div>
+        <div class="order-list" id="orderCards"></div>
+        <div class="table-responsive order-table-wrap mt-3">
+         <table class="table align-middle">
+          <thead><tr><th>Produk</th><th>Pembeli</th><th>Total</th><th>Bukti</th><th>Status</th><th></th></tr></thead>
+          <tbody id="orderRows"></tbody>
+         </table>
+        </div>
+       </div>
       </div>
      </div>
     </div>
    </main>
   </div>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-  </script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-  </script>
-  <script defer="" src="assets/js/config.js">
-  </script>
-  <script defer="" src="assets/js/supabase-client.js">
-  </script>
-  <script defer="" src="assets/js/common.js">
-  </script>
-  <script defer="" src="assets/js/orders.js">
-  </script>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="assets/js/config.js"></script>
+  <script defer src="assets/js/supabase-client.js"></script>
+  <script defer src="assets/js/common.js"></script>
+  <script defer src="assets/js/orders.js"></script>
  </body>
 </html>
