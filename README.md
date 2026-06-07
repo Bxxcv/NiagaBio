@@ -38,3 +38,14 @@ Jangan pernah taruh service_role key di frontend.
 ## Status release
 
 Versi ini adalah production candidate. Jalankan checklist di `PRODUCTION_CHECKLIST.md` sebelum promosi ke user baru.
+
+
+## Launch assets
+
+Untuk mulai promosi kecil-kecilan, baca:
+
+- `LAUNCH_PACK.md`
+- `PROMOSI_WHATSAPP_INSTAGRAM.md`
+- `SOFT_LAUNCH_CHECKLIST.md`
+
+Gunakan v23 ini untuk soft launch ke 5–10 seller terlebih dahulu sebelum promosi besar.
