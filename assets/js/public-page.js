@@ -149,16 +149,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     `;
   }
 
-  function makePublicUrl(profile) {
-    const origin = location.origin;
-    return `${origin}/u?username=${encodeURIComponent(profile.username || 'demo')}`;
+  function renderVerifiedBadge(premium) {
+    if (!premium) return '';
+    return `
+      <span class="public-verified" title="Toko Premium terverifikasi">
+        <i class="bi bi-patch-check-fill"></i>
+      </span>
+    `;
+  }
+
+  function renderPremiumLine(premium) {
+    return premium
+      ? '<div class="public-trust-badge"><i class="bi bi-patch-check-fill"></i> Toko Premium terverifikasi</div>'
+      : '<div class="public-trust-badge is-free"><i class="bi bi-shop"></i> Toko aktif NiagaBio</div>';
   }
 
   function renderShell({ profile, themeName, premium, products, links, socials, gallery }) {
-    const activeProducts = products.length;
-    const activeLinks = links.length + socials.length;
-    const publicUrl = makePublicUrl(profile);
     const year = new Date().getFullYear();
+    const displayName = profile.display_name || 'NiagaBio Store';
 
     root.innerHTML = `
       <section class="public-shell public-theme-${themeName}" data-theme="${themeName}">
@@ -172,12 +180,16 @@ document.addEventListener('DOMContentLoaded', async () => {
               ${NB.escapeHtml(themeLabel(themeName))}
             </div>
 
-            <img class="public-avatar" src="${NB.escapeHtml(profile.avatar_url || 'assets/img/logo.jpg')}" alt="${NB.escapeHtml(profile.display_name)}">
+            <img class="public-avatar" src="${NB.escapeHtml(profile.avatar_url || 'assets/img/logo.jpg')}" alt="${NB.escapeHtml(displayName)}">
 
             <div class="public-identity">
               <p class="public-kicker">@${NB.escapeHtml(profile.username || 'toko')}</p>
-              <h1>${NB.escapeHtml(profile.display_name || 'NiagaBio Store')}</h1>
+              <h1>
+                <span>${NB.escapeHtml(displayName)}</span>
+                ${renderVerifiedBadge(premium)}
+              </h1>
               <p>${NB.escapeHtml(profile.bio || 'Katalog produk dan link penting toko.')}</p>
+              ${renderPremiumLine(premium)}
             </div>
 
             <div class="public-socials">
@@ -186,21 +198,6 @@ document.addEventListener('DOMContentLoaded', async () => {
           </header>
 
           <div class="public-body">
-            <section class="public-stats" aria-label="Statistik toko">
-              <div>
-                <strong>${activeProducts}</strong>
-                <span>Produk</span>
-              </div>
-              <div>
-                <strong>${activeLinks}</strong>
-                <span>Link</span>
-              </div>
-              <div>
-                <strong>${premium ? 'Premium' : 'Free'}</strong>
-                <span>Paket</span>
-              </div>
-            </section>
-
             ${links.length ? `
               <section class="public-section public-link-section">
                 <div class="public-section-head">
@@ -238,38 +235,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div class="public-gallery-strip">
                   ${gallery.slice(0, 6).map(galleryCard).join('')}
                 </div>
-                ${gallery.length > 6 ? `<p class="small text-muted mt-2 mb-0">+${gallery.length - 6} foto lainnya disimpan di gallery toko.</p>` : ''}
+                ${gallery.length > 6 ? `<p class="small text-muted mt-2 mb-0 text-center">+${gallery.length - 6} foto lainnya disimpan di gallery toko.</p>` : ''}
               </section>
             ` : ''}
 
             <footer class="public-footer">
-              <span>© ${year} ${NB.escapeHtml(profile.display_name || 'Toko NiagaBio')}</span>
+              <span>© ${year} ${NB.escapeHtml(displayName)}</span>
               <span class="public-powered">Powered by NiagaBio</span>
-              <button id="copyPublicLink" type="button">
-                <i class="bi bi-copy"></i> Salin Link
-              </button>
-              <input id="publicUrlValue" value="${NB.escapeHtml(publicUrl)}" readonly>
             </footer>
           </div>
         </div>
       </section>
     `;
-  }
-
-  function bindCopyButton() {
-    const button = document.getElementById('copyPublicLink');
-    const input = document.getElementById('publicUrlValue');
-    if (!button || !input) return;
-
-    button.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(input.value);
-        nbToast('Link toko disalin.');
-      } catch (error) {
-        input.classList.add('is-visible');
-        input.select();
-      }
-    });
   }
 
   try {
@@ -354,7 +331,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     renderProducts(products);
-    bindCopyButton();
 
     const search = document.getElementById('productSearch');
     if (search) {
