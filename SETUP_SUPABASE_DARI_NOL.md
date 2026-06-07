@@ -146,3 +146,8 @@ Kalau memakai database yang sudah jalan, jalankan file ini sekali di SQL Editor 
 ```txt
 supabase/05_reset_sales_recap.sql
 ```
+
+
+## Security Hardening v24
+
+Setelah schema utama berjalan, jalankan juga `supabase/06_security_hardening.sql` di Supabase SQL Editor untuk memperketat storage policy, upload file, premium request, dan admin self-protection. Untuk fresh install, hardening ini sudah disertakan di akhir `supabase/01_schema_clean_run_this.sql`, tetapi file 06 tetap aman dijalankan ulang.

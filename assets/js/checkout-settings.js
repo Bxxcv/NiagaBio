@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   checkoutWhatsApp.value = settings.whatsapp_number || profile?.whatsapp_number || '';
   qrisName.value = settings.qris_name || '';
   paymentNote.value = settings.payment_note || '';
-  qrisPreview.src = settings.qris_image_url || 'assets/img/logo.jpg';
+  qrisPreview.src = NB.normalizeImageUrl(settings.qris_image_url || 'assets/img/logo.jpg', 'assets/img/logo.jpg');
   qrisEnabled.checked = Boolean(settings.qris_enabled);
 
   if (!premium) {
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         checkout_mode: premium ? checkoutMode.value : 'whatsapp',
         whatsapp_number: checkoutWhatsApp.value.trim(),
         qris_enabled: premium ? qrisEnabled.checked : false,
-        qris_image_url: premium ? qrisUrl : '',
+        qris_image_url: premium ? NB.normalizeImageUrl(qrisUrl, '') : '',
         qris_name: qrisName.value.trim(),
         payment_note: paymentNote.value.trim(),
         created_at: settings.created_at || NB.now()

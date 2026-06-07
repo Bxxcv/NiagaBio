@@ -240,7 +240,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         <tr class="${deleted ? 'table-light opacity-75' : ''}">
           <td>
             <div class="admin-user-cell">
-              <img src="${safe(profile.avatar_url || 'assets/img/logo.jpg')}" alt="" class="admin-user-avatar">
+              <img src="${NB.safeImageUrl(profile.avatar_url || 'assets/img/logo.jpg', 'assets/img/logo.jpg')}" alt="" class="admin-user-avatar">
               <div>
                 <div class="fw-bold">${safe(profile.display_name || 'User NiagaBio')} ${roleBadge(profile.role)}</div>
                 <small class="text-muted">${safe(profile.email || '-')}</small>
@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           </td>
           <td>
             <div class="fw-semibold">@${safe(profile.username || '-')}</div>
-            ${profile.username && !deleted ? `<a class="small" href="${publicUrl}" target="_blank" rel="noopener">Lihat toko</a>` : '<small class="text-muted">Toko tidak aktif</small>'}
+            ${profile.username && !deleted ? `<a class="small" href="${NB.safeHref(publicUrl)}" target="_blank" rel="noopener">Lihat toko</a>` : '<small class="text-muted">Toko tidak aktif</small>'}
           </td>
           <td>${planBadge(profile.plan)}</td>
           <td>${statusBadge(profile.status || 'active')}</td>
@@ -321,7 +321,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           <td><div class="fw-semibold">${safe(order.buyer_name || '-')}</div><small class="text-muted">${safe(order.buyer_phone || '-')}</small></td>
           <td><div class="fw-bold">${NB.money(order.total_price)}</div><small class="text-muted">Qty ${safe(order.quantity || 1)}</small></td>
           <td>${orderBadge(order.payment_status)}</td>
-          <td>${order.proof_image_url ? `<a class="btn btn-sm btn-outline-nb" href="${safe(order.proof_image_url)}" target="_blank" rel="noopener">Buka Bukti</a>` : '<span class="text-muted">-</span>'}</td>
+          <td>${order.proof_image_url ? `<a class="btn btn-sm btn-outline-nb" href="${NB.safeHref(order.proof_image_url)}" target="_blank" rel="noopener">Buka Bukti</a>` : '<span class="text-muted">-</span>'}</td>
           <td class="text-end">
             <div class="admin-action-row justify-content-end">
               <button class="btn btn-sm btn-success" type="button" data-order-paid="${safe(order.id)}" ${order.payment_status === 'paid' ? 'disabled' : ''}>Selesai</button>
@@ -382,7 +382,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             ${request.note ? `<div class="small text-muted mt-1">${safe(request.note)}</div>` : ''}
           </td>
           <td>${requestBadge(request.status || 'pending')}</td>
-          <td>${request.proof_url ? `<a class="btn btn-sm btn-outline-nb" href="${safe(request.proof_url)}" target="_blank" rel="noopener">Buka Bukti</a>` : '-'}</td>
+          <td>${request.proof_url ? `<a class="btn btn-sm btn-outline-nb" href="${NB.safeHref(request.proof_url)}" target="_blank" rel="noopener">Buka Bukti</a>` : '-'}</td>
           <td><small>${formatDateTime(request.created_at)}</small></td>
           <td class="text-end">
             <div class="admin-action-row justify-content-end">
@@ -613,7 +613,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         <div class="row g-3">
           <div class="col-md-5">
             <div class="admin-detail-card text-center">
-              <img src="${safe(profile.avatar_url || 'assets/img/logo.jpg')}" alt="" class="admin-detail-avatar mb-3">
+              <img src="${NB.safeImageUrl(profile.avatar_url || 'assets/img/logo.jpg', 'assets/img/logo.jpg')}" alt="" class="admin-detail-avatar mb-3">
               <h3 class="h5 fw-black mb-1">${safe(profile.display_name || 'User NiagaBio')}</h3>
               <p class="text-muted mb-2">${safe(profile.email || '-')}</p>
               <div class="d-flex justify-content-center gap-2 flex-wrap">${planBadge(profile.plan)}${statusBadge(profile.status || 'active')}${roleBadge(profile.role)}</div>
@@ -640,7 +640,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               <div class="admin-product-mini-list">
                 ${userProducts.map(product => `
                   <div class="admin-product-mini-item">
-                    <img src="${safe(product.image_url || 'assets/img/placeholder-product.svg')}" alt="">
+                    <img src="${NB.safeImageUrl(product.image_url || 'assets/img/placeholder-product.svg')}" alt="">
                     <div class="flex-grow-1">
                       <b>${safe(product.name || 'Produk')}</b>
                       <small>${NB.money(product.price)} ${product.category ? `• ${safe(product.category)}` : ''}</small>

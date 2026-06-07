@@ -40,10 +40,10 @@ document.addEventListener('DOMContentLoaded', async () => {
           <span>Total</span><strong>${NB.money(total)}</strong>
         </div>
         <div class="d-grid gap-2 mt-4">
-          <a class="btn btn-nb" href="${NB.escapeHtml(NB.whatsappUrl(profile.whatsapp_number, waText))}" target="_blank" rel="noopener">
+          <a class="btn btn-nb" href="${NB.safeHref(NB.whatsappUrl(profile.whatsapp_number, waText))}" target="_blank" rel="noopener">
             <i class="bi bi-whatsapp me-1"></i>Kirim WhatsApp
           </a>
-          <a class="btn btn-outline-nb" href="${storeUrl(profile)}">
+          <a class="btn btn-outline-nb" href="${NB.safeHref(storeUrl(profile))}">
             <i class="bi bi-arrow-left me-1"></i>Kembali ke Toko
           </a>
         </div>
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     root.innerHTML = `
       <div class="checkout-backbar">
-        <a class="btn btn-outline-nb" href="${storeUrl(profile)}">
+        <a class="btn btn-outline-nb" href="${NB.safeHref(storeUrl(profile))}">
           <i class="bi bi-arrow-left me-1"></i>Kembali ke Toko
         </a>
         <span><i class="bi bi-shield-check me-1"></i>Checkout aman via QRIS manual</span>
@@ -87,13 +87,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       <section class="checkout-grid">
         <aside class="checkout-summary card-nb">
           <div class="checkout-store">
-            <img src="${NB.escapeHtml(profile.avatar_url || 'assets/img/logo.jpg')}" alt="${NB.escapeHtml(profile.display_name || 'Toko')}">
+            <img src="${NB.safeImageUrl(profile.avatar_url || 'assets/img/logo.jpg', 'assets/img/logo.jpg')}" alt="${NB.escapeHtml(profile.display_name || 'Toko')}">
             <div>
               <small>Toko</small>
               <strong>${NB.escapeHtml(profile.display_name || profile.username || 'NiagaBio Store')}</strong>
             </div>
           </div>
-          <img src="${NB.escapeHtml(product.image_url || 'assets/img/placeholder-product.svg')}" class="checkout-product-img" alt="${NB.escapeHtml(product.name)}">
+          <img src="${NB.safeImageUrl(product.image_url || 'assets/img/placeholder-product.svg')}" class="checkout-product-img" alt="${NB.escapeHtml(product.name)}">
           <h1>${NB.escapeHtml(product.name)}</h1>
           ${product.description ? `<p>${NB.escapeHtml(product.description)}</p>` : ''}
           <div class="checkout-price-line">
@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             <span>Total</span>
             <strong id="totalPreview">${NB.money(product.price)}</strong>
           </div>
-          <a class="btn btn-light w-100 mt-3" href="${storeUrl(profile)}">
+          <a class="btn btn-light w-100 mt-3" href="${NB.safeHref(storeUrl(profile))}">
             <i class="bi bi-shop me-1"></i>Lihat produk lain
           </a>
         </aside>
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               <h2>Scan, bayar, lalu kirim bukti</h2>
               <p>Pesanan akan masuk ke dashboard toko dan menunggu pengecekan pembayaran.</p>
             </div>
-            <img class="checkout-qris" src="${NB.escapeHtml(checkout.qris_image_url)}" alt="QRIS ${NB.escapeHtml(checkout.qris_name || profile.display_name || '')}">
+            <img class="checkout-qris" src="${NB.safeImageUrl(checkout.qris_image_url, 'assets/img/logo.jpg')}" alt="QRIS ${NB.escapeHtml(checkout.qris_name || profile.display_name || '')}">
           </div>
 
           <div class="checkout-note">
@@ -143,14 +143,14 @@ document.addEventListener('DOMContentLoaded', async () => {
               </div>
               <div class="col-md-6">
                 <label class="form-label">Bukti pembayaran</label>
-                <input id="proof" type="file" accept="image/*" class="form-control">
+                <input id="proof" type="file" accept="image/jpeg,image/png,image/webp" class="form-control">
               </div>
             </div>
             <div class="checkout-actions">
               <button class="btn btn-nb" type="submit">
                 <i class="bi bi-send me-1"></i>Kirim Pesanan
               </button>
-              <a class="btn btn-outline-nb" href="${NB.escapeHtml(NB.whatsappUrl(sellerPhone, orderMessage({ profile, product, quantity: 1 })))}" target="_blank" rel="noopener">
+              <a class="btn btn-outline-nb" href="${NB.safeHref(NB.whatsappUrl(sellerPhone, orderMessage({ profile, product, quantity: 1 })))}" target="_blank" rel="noopener">
                 <i class="bi bi-whatsapp me-1"></i>Tanya Penjual
               </a>
             </div>

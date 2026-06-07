@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function proofHtml(order) {
     return order.proof_image_url
-      ? `<a href="${NB.escapeHtml(order.proof_image_url)}" target="_blank" rel="noopener"><img src="${NB.escapeHtml(order.proof_image_url)}" class="proof-img" alt="Bukti bayar"></a>`
+      ? `<a href="${NB.safeHref(order.proof_image_url)}" target="_blank" rel="noopener"><img src="${NB.safeImageUrl(order.proof_image_url)}" class="proof-img" alt="Bukti bayar"></a>`
       : '<span class="text-muted">-</span>';
   }
 
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         <td>${badge(order.payment_status)}</td>
         <td class="text-end">
           <div class="btn-group btn-group-sm">
-            <a class="btn btn-outline-success ${order.buyer_phone ? '' : 'disabled'}" href="${NB.escapeHtml(buyerWaUrl(order))}" target="_blank" rel="noopener" title="WhatsApp pembeli"><i class="bi bi-whatsapp"></i></a>
+            <a class="btn btn-outline-success ${order.buyer_phone ? '' : 'disabled'}" href="${NB.safeHref(buyerWaUrl(order))}" target="_blank" rel="noopener" title="WhatsApp pembeli"><i class="bi bi-whatsapp"></i></a>
             <button class="btn btn-success" data-paid="${NB.escapeHtml(order.id)}" ${order.payment_status === 'paid' ? 'disabled' : ''}>Selesai</button>
             <button class="btn btn-outline-danger" data-cancel="${NB.escapeHtml(order.id)}" ${order.payment_status === 'cancelled' ? 'disabled' : ''}>Batal</button>
           </div>
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         </div>
         <div class="order-card-proof">${proofHtml(order)}</div>
         <div class="order-card-actions">
-          <a class="btn btn-outline-success ${order.buyer_phone ? '' : 'disabled'}" href="${NB.escapeHtml(buyerWaUrl(order))}" target="_blank" rel="noopener"><i class="bi bi-whatsapp me-1"></i>WA</a>
+          <a class="btn btn-outline-success ${order.buyer_phone ? '' : 'disabled'}" href="${NB.safeHref(buyerWaUrl(order))}" target="_blank" rel="noopener"><i class="bi bi-whatsapp me-1"></i>WA</a>
           <button class="btn btn-success" data-paid="${NB.escapeHtml(order.id)}" ${order.payment_status === 'paid' ? 'disabled' : ''}>Selesai</button>
           <button class="btn btn-outline-danger" data-cancel="${NB.escapeHtml(order.id)}" ${order.payment_status === 'cancelled' ? 'disabled' : ''}>Batal</button>
         </div>

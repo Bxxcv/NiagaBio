@@ -135,6 +135,90 @@
     }[char]));
   }
 
+  function stripUnsafeControls(value) {
+    return String(value ?? '').trim().replace(/[\u0000-\u001F\u007F\s]+/g, match => match.includes(' ') ? ' ' : '');
+  }
+
+  function isSafeRelativeHref(value) {
+    const input = String(value || '').trim();
+    if (!input || input.startsWith('//')) return false;
+    if (/^[a-z][a-z0-9+.-]*:/i.test(input)) return false;
+    return /^[a-z0-9._~!$&'()*+,;=@/%?#-]+$/i.test(input);
+  }
+
+  function normalizeExternalUrl(value, fallback = '#') {
+    let input = stripUnsafeControls(value);
+    if (!input) return fallback;
+
+    const lower = input.toLowerCase().replace(/\s+/g, '');
+    if (/^(javascript|data|vbscript|file|blob):/i.test(lower)) return fallback;
+
+    if (/^[a-z][a-z0-9+.-]*:/i.test(input)) {
+      try {
+        const parsed = new URL(input);
+        const protocol = parsed.protocol.toLowerCase();
+        return ['https:', 'http:', 'mailto:', 'tel:'].includes(protocol) ? parsed.href : fallback;
+      } catch (error) {
+        return fallback;
+      }
+    }
+
+    input = input.replace(/^\/\//, '');
+    try {
+      const parsed = new URL(`https://${input}`);
+      return ['https:', 'http:'].includes(parsed.protocol.toLowerCase()) ? parsed.href : fallback;
+    } catch (error) {
+      return fallback;
+    }
+  }
+
+  function safeHref(value, fallback = '#') {
+    const input = stripUnsafeControls(value);
+    if (!input) return escapeHtml(fallback);
+    if (isSafeRelativeHref(input)) return escapeHtml(input);
+    return escapeHtml(normalizeExternalUrl(input, fallback));
+  }
+
+  function normalizeImageUrl(value, fallback = 'assets/img/placeholder-product.svg') {
+    const input = stripUnsafeControls(value);
+    if (!input) return fallback;
+
+    const lower = input.toLowerCase().replace(/\s+/g, '');
+    if (/^(javascript|vbscript|file|blob):/i.test(lower)) return fallback;
+
+    if (/^data:image\/(jpeg|jpg|png|webp);base64,/i.test(input)) {
+      return cfg.DEMO_MODE === true || !sb ? input : fallback;
+    }
+
+    if (/^(assets\/img\/|\/assets\/img\/)/i.test(input)) {
+      return input;
+    }
+
+    if (/^(?!.*:)[a-z0-9._~!$&'()*+,;=@/%?#-]+\.(jpe?g|png|webp|svg)(\?.*)?$/i.test(input)) {
+      return input;
+    }
+
+    try {
+      const parsed = new URL(input);
+      if (parsed.protocol !== 'https:') return fallback;
+
+      const isSupabaseObject = /\.supabase\.co$/i.test(parsed.hostname) && parsed.pathname.includes('/storage/v1/object/public/');
+      const hasSafeImageExtension = /\.(jpe?g|png|webp)(\?.*)?$/i.test(parsed.pathname + parsed.search);
+      return (isSupabaseObject || hasSafeImageExtension) ? parsed.href : fallback;
+    } catch (error) {
+      return fallback;
+    }
+  }
+
+  function safeImageUrl(value, fallback = 'assets/img/placeholder-product.svg') {
+    return escapeHtml(normalizeImageUrl(value, fallback));
+  }
+
+  function safeIconClass(value, fallback = 'bi-link-45deg') {
+    const icon = String(value || '').trim();
+    return /^bi-[a-z0-9-]+$/i.test(icon) ? icon : fallback;
+  }
+
   function normalizePhone(phone) {
     let value = String(phone || '').replace(/[^0-9]/g, '');
     if (value.startsWith('0')) value = `62${value.slice(1)}`;
@@ -331,18 +415,54 @@
 
   seedDemo();
 
-  async function uploadFile(file, folder = 'uploads') {
+  async function uploadFile(file, folder = 'products') {
     if (!file) return '';
 
-    if (sb) {
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
-      const maxSize = 3 * 1024 * 1024;
-      if (!allowedTypes.includes(file.type)) throw new Error('Format file tidak didukung. Pakai JPG, PNG, WEBP, GIF, atau SVG.');
-      if (file.size > maxSize) throw new Error('Ukuran file maksimal 3MB.');
+    const allowedTypes = {
+      'image/jpeg': 'jpg',
+      'image/png': 'png',
+      'image/webp': 'webp'
+    };
+    const maxSize = 3 * 1024 * 1024;
+    const mime = String(file.type || '').toLowerCase();
 
-      const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
-      const path = `${folder}/${uid('file')}.${ext}`;
-      const { error } = await sb.storage.from('niagabio').upload(path, file, { upsert: false });
+    if (!allowedTypes[mime]) {
+      throw new Error('Format file tidak didukung. Pakai JPG, PNG, atau WEBP.');
+    }
+
+    if (file.size > maxSize) {
+      throw new Error('Ukuran file maksimal 3MB.');
+    }
+
+    const ext = allowedTypes[mime];
+    const cleanFolder = String(folder || 'products').trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
+    const allowedFolders = ['avatars', 'products', 'gallery', 'qris', 'premium-proofs', 'premium-qris', 'proofs'];
+    if (!allowedFolders.includes(cleanFolder)) throw new Error('Folder upload tidak valid.');
+
+    if (sb) {
+      const randomId = window.crypto?.randomUUID ? window.crypto.randomUUID() : uid('file');
+      const randomName = `${Date.now().toString(36)}-${randomId}.${ext}`;
+      let path = `proofs/${randomName}`;
+
+      if (cleanFolder !== 'proofs') {
+        const user = await currentUser();
+        if (!user) throw new Error('Login diperlukan untuk upload file.');
+
+        if (cleanFolder === 'premium-qris') {
+          const profile = await getProfile(user.id);
+          if (String(profile?.role || '').toLowerCase() !== 'admin') {
+            throw new Error('Hanya admin yang boleh upload QRIS premium.');
+          }
+        }
+
+        path = `${cleanFolder}/${user.id}/${randomName}`;
+      }
+
+      const { error } = await sb.storage.from('niagabio').upload(path, file, {
+        cacheControl: '3600',
+        contentType: mime,
+        upsert: false
+      });
       if (error) throw error;
       const { data } = sb.storage.from('niagabio').getPublicUrl(path);
       return data.publicUrl;
@@ -555,8 +675,27 @@
 
   async function save(table, row) {
     if (sb) {
-      const payload = { ...row };
+      let payload = { ...row };
       if (payload.id && !isUuid(payload.id)) delete payload.id;
+
+      if (table === 'orders') {
+        if (payload.id) {
+          payload = {
+            id: payload.id,
+            payment_status: payload.payment_status
+          };
+        } else {
+          payload = {
+            seller_id: payload.seller_id,
+            buyer_name: String(payload.buyer_name || '').trim(),
+            buyer_phone: normalizePhone(payload.buyer_phone),
+            product_id: payload.product_id,
+            quantity: Math.max(1, Number(payload.quantity || 1)),
+            payment_method: payload.payment_method || 'whatsapp',
+            proof_image_url: normalizeImageUrl(payload.proof_image_url || '', '')
+          };
+        }
+      }
 
       if (payload.id) {
         const { data, error } = await sb.from(table).update(payload).eq('id', payload.id).select().single();
@@ -633,7 +772,7 @@
       allow_register: Boolean(settings.allow_register),
       premium_price: Number(settings.premium_price || defaultSettings.premium_price),
       admin_whatsapp: normalizePhone(settings.admin_whatsapp || defaultSettings.admin_whatsapp),
-      premium_qris_url: String(settings.premium_qris_url || ''),
+      premium_qris_url: normalizeImageUrl(settings.premium_qris_url || '', ''),
       premium_note: String(settings.premium_note || defaultSettings.premium_note)
     };
 
@@ -680,7 +819,7 @@
       email: user.email,
       shop_name: String(payload.shop_name || '').trim(),
       owner_name: String(payload.owner_name || '').trim(),
-      proof_url: String(payload.proof_url || ''),
+      proof_url: normalizeImageUrl(payload.proof_url || '', ''),
       note: String(payload.note || ''),
       status: 'pending',
       created_at: now()
@@ -788,6 +927,11 @@
     now,
     money,
     escapeHtml,
+    normalizeExternalUrl,
+    normalizeImageUrl,
+    safeHref,
+    safeImageUrl,
+    safeIconClass,
     normalizePhone,
     socialIcon,
     detectLinkIcon,

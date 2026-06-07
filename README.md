@@ -49,3 +49,8 @@ Untuk mulai promosi kecil-kecilan, baca:
 - `SOFT_LAUNCH_CHECKLIST.md`
 
 Gunakan v23 ini untuk soft launch ke 5–10 seller terlebih dahulu sebelum promosi besar.
+
+
+## Security Hardening v24
+
+Setelah schema utama berjalan, jalankan juga `supabase/06_security_hardening.sql` di Supabase SQL Editor untuk memperketat storage policy, upload file, premium request, dan admin self-protection. Untuk fresh install, hardening ini sudah disertakan di akhir `supabase/01_schema_clean_run_this.sql`, tetapi file 06 tetap aman dijalankan ulang.

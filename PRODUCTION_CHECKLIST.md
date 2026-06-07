@@ -40,3 +40,8 @@ Gunakan checklist ini sebelum promosi ke user baru.
 - [ ] `/privacy`, `/terms`, `/refund`, `/robots.txt`, `/sitemap.xml`, dan `/site.webmanifest` bisa dibuka.
 - [ ] Legal page tidak menampilkan error console walau tidak memuat Supabase client.
 - [ ] Test dari incognito setelah clear cache.
+
+
+## Security Hardening v24
+
+Setelah schema utama berjalan, jalankan juga `supabase/06_security_hardening.sql` di Supabase SQL Editor untuk memperketat storage policy, upload file, premium request, dan admin self-protection. Untuk fresh install, hardening ini sudah disertakan di akhir `supabase/01_schema_clean_run_this.sql`, tetapi file 06 tetap aman dijalankan ulang.

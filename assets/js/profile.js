@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   profileUsername.value = profile.username || '';
   profileBio.value = profile.bio || '';
   profileWhatsApp.value = profile.whatsapp_number || '';
-  avatarPreview.src = profile.avatar_url || 'assets/img/logo.jpg';
+  avatarPreview.src = NB.normalizeImageUrl(profile.avatar_url || 'assets/img/logo.jpg', 'assets/img/logo.jpg');
 
   profileAvatar.addEventListener('change', () => {
     if (profileAvatar.files[0]) avatarPreview.src = URL.createObjectURL(profileAvatar.files[0]);
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         display_name: profileName.value.trim() || 'User NiagaBio',
         bio: profileBio.value.trim(),
         whatsapp_number: profileWhatsApp.value.trim(),
-        avatar_url: avatar,
+        avatar_url: NB.normalizeImageUrl(avatar, 'assets/img/logo.jpg'),
         theme_name: profile.theme_name || 'service'
       });
 

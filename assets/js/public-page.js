@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function productImage(url) {
-    return NB.escapeHtml(url || 'assets/img/placeholder-product.svg');
+    return NB.safeImageUrl(url || 'assets/img/placeholder-product.svg');
   }
 
   function themeLabel(themeName) {
@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function socialButton(social) {
     return `
-      <a class="public-social" href="${NB.escapeHtml(social.url)}" target="_blank" rel="noopener" aria-label="${NB.escapeHtml(social.platform)}">
+      <a class="public-social" href="${NB.safeHref(social.url)}" target="_blank" rel="noopener" aria-label="${NB.escapeHtml(social.platform)}">
         <i class="bi ${NB.socialIcon(social.platform)}"></i>
       </a>
     `;
@@ -221,8 +221,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       : NB.detectLinkIcon(link.url, link.title);
 
     return `
-      <a class="public-link" href="${NB.escapeHtml(link.url)}" target="_blank" rel="noopener">
-        <span><i class="bi ${NB.escapeHtml(icon)}"></i></span>
+      <a class="public-link" href="${NB.safeHref(link.url)}" target="_blank" rel="noopener">
+        <span><i class="bi ${NB.escapeHtml(NB.safeIconClass(icon))}"></i></span>
         <strong>${NB.escapeHtml(link.title)}</strong>
         <i class="bi bi-arrow-up-right public-link-arrow"></i>
       </a>
@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   function updateStoreMeta(profile) {
     const title = `${profile.display_name || profile.username || 'Toko'} - NiagaBio`;
     const desc = profile.bio || 'Lihat produk, link penting, dan checkout toko ini di NiagaBio.';
-    const image = profile.avatar_url || `${location.origin}/assets/img/logo-panjang.jpg`;
+    const image = NB.normalizeImageUrl(profile.avatar_url || `${location.origin}/assets/img/og-niagabio.jpg`, `${location.origin}/assets/img/og-niagabio.jpg`);
 
     document.title = title;
     [
@@ -309,7 +309,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         <div class="public-card public-card-${themeName}">
           <header class="public-hero">
-            <img class="public-avatar" src="${NB.escapeHtml(profile.avatar_url || 'assets/img/logo.jpg')}" alt="${NB.escapeHtml(displayName)}">
+            <img class="public-avatar" src="${NB.safeImageUrl(profile.avatar_url || 'assets/img/logo.jpg', 'assets/img/logo.jpg')}" alt="${NB.escapeHtml(displayName)}">
 
             <div class="public-identity">
               <p class="public-kicker">@${NB.escapeHtml(profile.username || 'toko')} · ${NB.escapeHtml(template.kicker)}</p>
@@ -376,7 +376,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         </div>
 
         ${(profile.whatsapp_number || '').trim() ? `
-          <a class="public-floating-wa" href="${NB.escapeHtml(NB.whatsappUrl(profile.whatsapp_number, `Halo kak, saya mau tanya tentang ${displayName}`))}" target="_blank" rel="noopener" aria-label="Chat WhatsApp">
+          <a class="public-floating-wa" href="${NB.safeHref(NB.whatsappUrl(profile.whatsapp_number, `Halo kak, saya mau tanya tentang ${displayName}`))}" target="_blank" rel="noopener" aria-label="Chat WhatsApp">
             <i class="bi bi-whatsapp"></i>
           </a>
         ` : ''}

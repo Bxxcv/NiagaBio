@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     productRows.innerHTML = rows.map(product => `
       <tr>
         <td>
-          <img class="preview-img me-2" src="${NB.escapeHtml(product.image_url || 'assets/img/placeholder-product.svg')}" alt="">
+          <img class="preview-img me-2" src="${NB.safeImageUrl(product.image_url || 'assets/img/placeholder-product.svg')}" alt="">
           <span class="fw-bold">${NB.escapeHtml(product.name)}</span>
         </td>
         <td>${NB.escapeHtml(product.category || '-')}</td>

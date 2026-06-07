@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (intro && !document.getElementById('openThemePreview')) {
     intro.insertAdjacentHTML('beforeend', `
       <div class="theme-intro-actions">
-        <a id="openThemePreview" class="btn btn-nb btn-sm" href="${NB.escapeHtml(publicUrl())}" target="_blank" rel="noopener">
+        <a id="openThemePreview" class="btn btn-nb btn-sm" href="${NB.safeHref(publicUrl())}" target="_blank" rel="noopener">
           <i class="bi bi-eye"></i> Lihat toko saya
         </a>
         <span>Preview di bawah dibuat lebih mendekati tampilan asli halaman toko.</span>

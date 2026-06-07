@@ -62,11 +62,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
+      const normalizedUrl = NB.normalizeExternalUrl(socialUrl.value.trim(), '');
+      if (!normalizedUrl) throw new Error('URL social media tidak valid.');
+
       await NB.save('social_links', {
         id: editing?.id || NB.uid('soc'),
         user_id: user.id,
         platform: socialPlatform.value,
-        url: socialUrl.value.trim(),
+        url: normalizedUrl,
         sort_order: editing?.sort_order || Date.now(),
         created_at: editing?.created_at || NB.now()
       });

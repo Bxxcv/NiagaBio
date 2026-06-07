@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     galleryGrid.innerHTML = rows.map(item => `
       <div class="col-6 col-md-4 col-xl-3">
         <div class="product-card gallery-manage-card">
-          <img src="${NB.escapeHtml(item.image_url)}" alt="">
+          <img src="${NB.safeImageUrl(item.image_url)}" alt="">
           <div class="pbody">
             <p class="fw-bold mb-2">${NB.escapeHtml(item.caption || 'Gallery')}</p>
             <button class="btn btn-sm btn-outline-danger" data-del="${item.id}">Hapus</button>

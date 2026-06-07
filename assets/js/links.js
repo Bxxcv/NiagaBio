@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function iconPreview(iconClass) {
-    return `<i class="bi ${NB.escapeHtml(iconClass || 'bi-link-45deg')} me-2 text-green"></i>`;
+    return `<i class="bi ${NB.escapeHtml(NB.safeIconClass(iconClass || 'bi-link-45deg'))} me-2 text-green"></i>`;
   }
 
   async function render() {
@@ -113,13 +113,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
-      const icon = refs.icon.value.trim() || detectedIcon();
+      const normalizedUrl = NB.normalizeExternalUrl(refs.url.value.trim(), '');
+      if (!normalizedUrl) throw new Error('URL link tidak valid. Gunakan http/https/mailto/tel.');
+      const icon = NB.safeIconClass(refs.icon.value.trim() || detectedIcon());
 
       await NB.save('custom_links', {
         id: editing?.id || NB.uid('lnk'),
         user_id: user.id,
         title: refs.title.value.trim(),
-        url: refs.url.value.trim(),
+        url: normalizedUrl,
         icon,
         is_active: refs.active.checked,
         sort_order: editing?.sort_order || Date.now(),

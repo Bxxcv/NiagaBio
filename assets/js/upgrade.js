@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (settings.premium_qris_url) {
     if (qrisImage) {
-      qrisImage.src = settings.premium_qris_url;
+      qrisImage.src = NB.normalizeImageUrl(settings.premium_qris_url, 'assets/img/logo.jpg');
       qrisImage.classList.remove('d-none');
     }
     qrisEmpty?.classList.add('d-none');
