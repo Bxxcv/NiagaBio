@@ -126,3 +126,14 @@ Admin panel:
 
 - Ubah admin_whatsapp dari admin.html setelah login admin.
 - Ubah premium_price dari admin.html setelah login admin.
+
+
+## Patch v13 tambahan
+
+Kalau database sudah pernah dibuat sebelum v13, jalankan juga file:
+
+```txt
+supabase/04_upgrade_requests_admin_tools.sql
+```
+
+Kalau kamu setup dari nol memakai `supabase/01_schema_clean_run_this.sql` versi v13, patch v13 sudah ikut di bagian akhir schema.

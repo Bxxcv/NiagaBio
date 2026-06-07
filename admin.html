@@ -35,6 +35,10 @@
           <i class="bi bi-receipt-cutoff"></i>
           Order Platform
         </a>
+        <a class="side-link" href="#adminPremiumRequestsSection" data-admin-scroll>
+          <i class="bi bi-qr-code-scan"></i>
+          Request Premium
+        </a>
         <a class="side-link" href="#adminSettingsSection" data-admin-scroll>
           <i class="bi bi-sliders"></i>
           Setting Platform
@@ -175,6 +179,7 @@
               <option value="all">Semua status</option>
               <option value="active">Active</option>
               <option value="blocked">Blocked</option>
+              <option value="deleted">Deleted</option>
             </select>
           </div>
 
@@ -247,6 +252,54 @@
           </div>
         </section>
 
+        <section class="card-nb admin-section mb-4" id="adminPremiumRequestsSection">
+          <div class="admin-section-head">
+            <div>
+              <h2 class="h5 fw-bold mb-1">
+                <i class="bi bi-qr-code-scan text-green me-2"></i>
+                Request Premium
+              </h2>
+              <p class="text-muted mb-0 small">
+                Pengajuan upgrade dari user Free: cek bukti transfer, approve, atau reject.
+              </p>
+            </div>
+            <span class="admin-count-pill" id="adminRequestCountInfo">0 request</span>
+          </div>
+
+          <div class="admin-filter-grid admin-filter-grid-orders mb-3">
+            <div class="admin-input-icon">
+              <i class="bi bi-search"></i>
+              <input class="form-control" id="adminRequestSearch" placeholder="Cari toko, pemilik, email...">
+            </div>
+            <select class="form-select" id="adminRequestFilter" aria-label="Filter request premium">
+              <option value="all">Semua status</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+
+          <div class="table-responsive admin-table-wrap">
+            <table class="table align-middle admin-table">
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Toko / Pemilik</th>
+                  <th>Status</th>
+                  <th>Bukti</th>
+                  <th>Tanggal</th>
+                  <th class="text-end">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="requestRows">
+                <tr>
+                  <td colspan="6" class="text-center text-muted py-4">Memuat request...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
         <section class="card-nb admin-section" id="adminSettingsSection">
           <div class="admin-section-head">
             <div>
@@ -255,7 +308,7 @@
                 Setting Platform
               </h2>
               <p class="text-muted small mb-0">
-                Maintenance mode, buka/tutup register, harga premium, dan WhatsApp admin.
+                Maintenance mode, buka/tutup register, harga premium, QRIS upgrade, dan WhatsApp admin.
               </p>
             </div>
           </div>
@@ -288,6 +341,19 @@
                 <label class="form-label fw-semibold" for="adminWhatsApp">WhatsApp Admin</label>
                 <input class="form-control" id="adminWhatsApp" placeholder="628xxxx">
               </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold" for="adminPremiumQrisUrl">QRIS Premium URL</label>
+                <input class="form-control" id="adminPremiumQrisUrl" placeholder="https://.../qris.png">
+                <small class="text-muted">Boleh isi URL manual atau upload file di bawah.</small>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold" for="adminPremiumQrisFile">Upload QRIS Premium</label>
+                <input class="form-control" id="adminPremiumQrisFile" type="file" accept="image/*">
+              </div>
+              <div class="col-md-12">
+                <label class="form-label fw-semibold" for="adminPremiumNote">Catatan Upgrade Premium</label>
+                <textarea class="form-control" id="adminPremiumNote" rows="3" placeholder="Transfer sesuai nominal lalu upload bukti pembayaran."></textarea>
+              </div>
             </div>
             <div class="d-flex flex-wrap gap-2 mt-4">
               <button class="btn btn-nb" type="submit" id="adminSaveSettingsBtn">
@@ -319,10 +385,11 @@
           <div class="text-muted">Memuat detail...</div>
         </div>
         <div class="modal-footer flex-wrap justify-content-between">
-          <div class="small text-muted">Aksi ini hanya mengubah status sistem user, tidak menghapus data toko.</div>
+          <div class="small text-muted">Hapus user memakai soft delete: toko disembunyikan dan data toko dibersihkan, akun Auth tetap ada di Supabase.</div>
           <div class="d-flex flex-wrap gap-2">
             <button type="button" class="btn btn-outline-nb" id="modalPlanBtn">Ubah Plan</button>
             <button type="button" class="btn btn-outline-danger" id="modalBlockBtn">Blokir</button>
+            <button type="button" class="btn btn-danger" id="modalDeleteBtn">Hapus User</button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
           </div>
         </div>

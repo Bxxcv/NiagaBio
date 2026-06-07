@@ -17,8 +17,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   async function render() {
     const rows = await NB.list('gallery', user.id);
     galleryGrid.innerHTML = rows.map(item => `
-      <div class="col-sm-6 col-lg-4">
-        <div class="product-card">
+      <div class="col-6 col-md-4 col-xl-3">
+        <div class="product-card gallery-manage-card">
           <img src="${NB.escapeHtml(item.image_url)}" alt="">
           <div class="pbody">
             <p class="fw-bold mb-2">${NB.escapeHtml(item.caption || 'Gallery')}</p>

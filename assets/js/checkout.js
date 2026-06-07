@@ -26,7 +26,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
+    const storeUrl = `u?username=${encodeURIComponent(profile.username || username)}`;
+
     checkoutRoot.innerHTML = `
+      <div class="mb-3">
+        <a class="btn btn-outline-nb" href="${storeUrl}"><i class="bi bi-arrow-left me-1"></i>Kembali ke Toko</a>
+      </div>
       <div class="row g-4 align-items-start">
         <div class="col-lg-5">
           <div class="card-nb p-4">
@@ -51,6 +56,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               </div>
               <button class="btn btn-nb w-100 mt-4" type="submit">Kirim Pesanan</button>
               <a class="btn btn-outline-nb w-100 mt-2" href="${NB.whatsappUrl(profile.whatsapp_number || checkout.whatsapp_number, `Halo kak, saya mau pesan ${product.name}`)}">Order via WhatsApp</a>
+              <a class="btn btn-light w-100 mt-2" href="${storeUrl}"><i class="bi bi-arrow-left me-1"></i>Kembali ke Toko</a>
             </form>
           </div>
         </div>

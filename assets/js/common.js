@@ -111,10 +111,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  const premiumProfile = NB.isPremium(profile);
   document.querySelectorAll('[data-plan]').forEach(element => {
-    element.textContent = isAdminProfile ? 'Admin' : (NB.isPremium(profile) ? 'Premium' : 'Free');
+    element.textContent = isAdminProfile ? 'Admin' : (premiumProfile ? 'Premium' : 'Free');
     element.className = isAdminProfile ? 'badge-soft badge-admin' : 'badge-soft';
   });
+
+  if (premiumProfile || isAdminProfile) {
+    document.querySelectorAll('[data-nav="upgrade"], [data-hide-when-premium]').forEach(element => {
+      element.classList.add('d-none');
+    });
+  }
 });
 
 function nbToast(message, type = 'success') {

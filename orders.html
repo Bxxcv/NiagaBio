@@ -112,36 +112,69 @@
      </span>
     </header>
     <div class="content-wrap">
+     <div class="row g-3 g-xl-4 mb-4">
+      <div class="col-6 col-xl-3">
+       <div class="card-nb metric">
+        <div class="value fs-4" id="orderOmset">Rp0</div>
+        <p class="text-muted mb-0">Omset Paid</p>
+       </div>
+      </div>
+      <div class="col-6 col-xl-3">
+       <div class="card-nb metric">
+        <div class="value" id="orderTotal">0</div>
+        <p class="text-muted mb-0">Total Order</p>
+       </div>
+      </div>
+      <div class="col-6 col-xl-3">
+       <div class="card-nb metric">
+        <div class="value" id="orderPending">0</div>
+        <p class="text-muted mb-0">Pending</p>
+       </div>
+      </div>
+      <div class="col-6 col-xl-3">
+       <div class="card-nb metric">
+        <div class="value" id="orderPaid">0</div>
+        <p class="text-muted mb-0">Paid</p>
+       </div>
+      </div>
+     </div>
+
      <div class="row g-4 mb-4">
-      <div class="col-md-4">
-       <div class="card-nb metric">
-        <div class="value fs-3" id="orderOmset">
-         Rp0
-        </div>
-        <p class="text-muted mb-0">
-         Omset Paid
-        </p>
+      <div class="col-lg-4">
+       <div class="card-nb p-4 h-100">
+        <p class="text-muted mb-1">Nominal Pending</p>
+        <h2 class="h4 fw-black text-green mb-0" id="orderPendingNominal">Rp0</h2>
        </div>
       </div>
-      <div class="col-md-4">
-       <div class="card-nb metric">
-        <div class="value" id="orderPending">
-         0
-        </div>
-        <p class="text-muted mb-0">
-         Pending
-        </p>
+      <div class="col-lg-4">
+       <div class="card-nb p-4 h-100">
+        <p class="text-muted mb-1">Rata-rata Order Paid</p>
+        <h2 class="h4 fw-black mb-0" id="orderAverage">Rp0</h2>
        </div>
       </div>
-      <div class="col-md-4">
-       <div class="card-nb metric">
-        <div class="value" id="orderPaid">
-         0
-        </div>
-        <p class="text-muted mb-0">
-         Paid
-        </p>
+      <div class="col-lg-4">
+       <div class="card-nb p-4 h-100">
+        <p class="text-muted mb-1">Produk Terlaris</p>
+        <h2 class="h5 fw-black mb-0" id="orderBestProduct">-</h2>
+        <small class="text-muted">Berdasarkan omzet paid</small>
        </div>
+      </div>
+     </div>
+
+     <div class="card-nb p-4 mb-4">
+      <h2 class="h5 fw-bold mb-3">Rekap Produk Terjual</h2>
+      <div class="table-responsive">
+       <table class="table">
+        <thead>
+         <tr>
+          <th>Produk</th>
+          <th>Order Paid</th>
+          <th>Qty</th>
+          <th>Omset</th>
+         </tr>
+        </thead>
+        <tbody id="recapRows"></tbody>
+       </table>
       </div>
      </div>
      <div class="card-nb p-4">

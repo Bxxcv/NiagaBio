@@ -234,9 +234,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                   <h2>Gallery</h2>
                   <span>${gallery.length} foto</span>
                 </div>
-                <div class="public-gallery-grid">
-                  ${gallery.map(galleryCard).join('')}
+                <div class="public-gallery-strip">
+                  ${gallery.slice(0, 6).map(galleryCard).join('')}
                 </div>
+                ${gallery.length > 6 ? `<p class="small text-muted mt-2 mb-0">+${gallery.length - 6} foto lainnya disimpan di gallery toko.</p>` : ''}
               </section>
             ` : ''}
 

@@ -112,106 +112,101 @@
      </span>
     </header>
     <div class="content-wrap">
-     <div class="row g-4 align-items-stretch">
-      <div class="col-lg-6">
-       <div class="price-card h-100">
-        <h2 class="fw-black">
-         Free
-        </h2>
-        <div class="display-5 fw-black">
-         Rp0
+      <div class="card-nb p-4 p-md-5 mb-4 d-none" id="premiumUserNotice">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+          <div>
+            <span class="pill mb-3"><i class="bi bi-stars"></i> Premium aktif</span>
+            <h2 class="fw-black mb-2">Akun kamu sudah Premium.</h2>
+            <p class="text-muted mb-0">Menu upgrade disembunyikan karena paket kamu sudah aktif. Lanjut kelola toko dan fitur premium kamu.</p>
+          </div>
+          <div class="d-flex flex-wrap gap-2">
+            <a class="btn btn-nb" href="dashboard">Ke Dashboard</a>
+            <a class="btn btn-outline-nb" href="themes">Pilih Tema</a>
+          </div>
         </div>
-        <ul class="check-list mt-3">
-         <li>
-          <i class="bi bi-check-lg">
-          </i>
-          2 tema gratis
-         </li>
-         <li>
-          <i class="bi bi-check-lg">
-          </i>
-          Maksimal 5 produk
-         </li>
-         <li>
-          <i class="bi bi-check-lg">
-          </i>
-          3 social media
-         </li>
-         <li>
-          <i class="bi bi-check-lg">
-          </i>
-          Checkout WhatsApp
-         </li>
-         <li>
-          <i class="bi bi-check-lg">
-          </i>
-          Branding NiagaBio aktif
-         </li>
-        </ul>
-       </div>
       </div>
-      <div class="col-lg-6">
-       <div class="price-card popular h-100">
-        <h2 class="fw-black text-green">
-         Premium
-        </h2>
-        <div class="display-6 fw-black">
-         <span data-premium-price="">
-          Rp80.000
-         </span>
-         <small class="text-muted fs-6">
-          / 30 hari
-         </small>
+
+      <div id="upgradeFreeContent">
+        <div class="row g-4 align-items-stretch mb-4">
+          <div class="col-lg-5">
+            <div class="price-card h-100">
+              <h2 class="fw-black">Free</h2>
+              <div class="display-5 fw-black">Rp0</div>
+              <ul class="check-list mt-3">
+                <li><i class="bi bi-check-lg"></i> 2 tema gratis</li>
+                <li><i class="bi bi-check-lg"></i> Maksimal 5 produk</li>
+                <li><i class="bi bi-check-lg"></i> 3 social media</li>
+                <li><i class="bi bi-check-lg"></i> Checkout WhatsApp</li>
+                <li><i class="bi bi-check-lg"></i> Branding NiagaBio aktif</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-lg-7">
+            <div class="price-card popular h-100">
+              <h2 class="fw-black text-green">Upgrade Premium</h2>
+              <div class="display-6 fw-black">
+                <span data-premium-price>Rp80.000</span>
+                <small class="text-muted fs-6">/ 30 hari</small>
+              </div>
+              <p class="text-muted mt-2 mb-3" id="premiumNote">Transfer melalui QRIS lalu upload bukti pembayaran.</p>
+              <ul class="check-list mt-3">
+                <li><i class="bi bi-check-lg"></i> 10+ tema niche</li>
+                <li><i class="bi bi-check-lg"></i> Katalog sampai 500 produk</li>
+                <li><i class="bi bi-check-lg"></i> Search dan kategori produk</li>
+                <li><i class="bi bi-check-lg"></i> Gallery</li>
+                <li><i class="bi bi-check-lg"></i> QRIS manual checkout</li>
+                <li><i class="bi bi-check-lg"></i> Dashboard omset</li>
+              </ul>
+            </div>
+          </div>
         </div>
-        <ul class="check-list mt-3">
-         <li>
-          <i class="bi bi-check-lg">
-          </i>
-          10+ tema niche
-         </li>
-         <li>
-          <i class="bi bi-check-lg">
-          </i>
-          Katalog sampai 500 produk
-         </li>
-         <li>
-          <i class="bi bi-check-lg">
-          </i>
-          Search dan kategori produk
-         </li>
-         <li>
-          <i class="bi bi-check-lg">
-          </i>
-          Gallery
-         </li>
-         <li>
-          <i class="bi bi-check-lg">
-          </i>
-          QRIS manual checkout
-         </li>
-         <li>
-          <i class="bi bi-check-lg">
-          </i>
-          Dashboard omset
-         </li>
-         <li>
-          <i class="bi bi-check-lg">
-          </i>
-          Hilangkan branding
-         </li>
-        </ul>
-        <a class="btn btn-nb w-100 mt-3" data-upgrade-wa="" href="https://wa.me/6281234567890?text=Halo%20admin%2C%20saya%20mau%20upgrade%20Premium%20NiagaBio">
-         Hubungi Admin untuk Upgrade
-        </a>
-       </div>
+
+        <div class="row g-4">
+          <div class="col-lg-5">
+            <div class="card-nb p-4 h-100">
+              <h2 class="h5 fw-bold mb-2">QRIS Pembayaran</h2>
+              <p class="text-muted small">Scan QRIS admin. Jika QRIS belum muncul, admin belum mengisi QRIS di Admin Master.</p>
+              <img id="premiumQrisImage" class="qris-preview w-100 d-none" alt="QRIS Premium">
+              <div class="empty-state d-none" id="premiumQrisEmpty">
+                <i class="bi bi-qr-code fs-1 text-green"></i>
+                <p class="mb-0 mt-2">QRIS premium belum diatur admin.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-7">
+            <div class="card-nb p-4">
+              <h2 class="h5 fw-bold mb-1">Kirim Pengajuan Upgrade</h2>
+              <p class="text-muted small mb-4">Data ini langsung masuk ke Admin Master untuk dicek dan dikonfirmasi.</p>
+              <form id="upgradeRequestForm">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label">Nama toko</label>
+                    <input class="form-control" id="upgradeShopName" required placeholder="Contoh: Bagu Store">
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Nama pemilik</label>
+                    <input class="form-control" id="upgradeOwnerName" required placeholder="Nama kamu">
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label">Bukti transfer</label>
+                    <input class="form-control" id="upgradeProof" type="file" accept="image/*" required>
+                    <small class="text-muted">Format JPG/PNG/WEBP, maksimal 3MB.</small>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label">Catatan opsional</label>
+                    <textarea class="form-control" id="upgradeNote" rows="3" placeholder="Contoh: Saya sudah transfer atas nama ..."></textarea>
+                  </div>
+                </div>
+                <button class="btn btn-nb w-100 mt-4" id="upgradeSubmitBtn" type="submit">
+                  <i class="bi bi-send me-1"></i>Kirim Pengajuan Upgrade
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
-     </div>
-     <div class="alert alert-info mt-4">
-      <b>
-       MVP:
-      </b>
-      upgrade premium masih manual. Admin mengaktifkan premium dari menu Admin.
-     </div>
     </div>
    </main>
   </div>

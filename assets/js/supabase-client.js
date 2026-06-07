@@ -25,7 +25,8 @@
     galleries: 'nb_galleries',
     checkout: 'nb_checkout_settings',
     orders: 'nb_orders',
-    settings: 'nb_app_settings'
+    settings: 'nb_app_settings',
+    premiumRequests: 'nb_premium_requests'
   };
 
   const tableKeys = {
@@ -36,7 +37,8 @@
     gallery: LS.galleries,
     checkout_settings: LS.checkout,
     orders: LS.orders,
-    app_settings: LS.settings
+    app_settings: LS.settings,
+    premium_requests: LS.premiumRequests
   };
 
   const limits = {
@@ -75,7 +77,9 @@
     maintenance_message: 'Website sedang maintenance. Silakan coba lagi nanti.',
     allow_register: true,
     premium_price: Number(cfg.PREMIUM_PRICE || 80000),
-    admin_whatsapp: '6281234567890'
+    admin_whatsapp: '6281234567890',
+    premium_qris_url: '',
+    premium_note: 'Transfer sesuai nominal, lalu upload bukti pembayaran. Admin akan memproses upgrade setelah pembayaran valid.'
   };
 
   function read(key, fallback) {
@@ -313,6 +317,8 @@
     write(LS.checkout, [
       { id: 'chk_1', user_id: sellerId, checkout_mode: 'whatsapp', whatsapp_number: '6281234567890', qris_enabled: false, qris_image_url: '', qris_name: 'NIAGA STORE', payment_note: 'Transfer sesuai nominal lalu upload bukti pembayaran.', created_at: now() }
     ]);
+
+    write(LS.premiumRequests, []);
 
     write(LS.orders, [
       { id: 'ord_1', seller_id: sellerId, buyer_name: 'Rizky', buyer_phone: '628111111111', product_id: 'prd_1', product_name: 'Hoodie Basic', quantity: 1, total_price: 120000, payment_method: 'whatsapp', payment_status: 'paid', proof_image_url: '', created_at: now(), paid_at: now() },
@@ -626,7 +632,9 @@
       maintenance_message: String(settings.maintenance_message || defaultSettings.maintenance_message),
       allow_register: Boolean(settings.allow_register),
       premium_price: Number(settings.premium_price || defaultSettings.premium_price),
-      admin_whatsapp: normalizePhone(settings.admin_whatsapp || defaultSettings.admin_whatsapp)
+      admin_whatsapp: normalizePhone(settings.admin_whatsapp || defaultSettings.admin_whatsapp),
+      premium_qris_url: String(settings.premium_qris_url || ''),
+      premium_note: String(settings.premium_note || defaultSettings.premium_note)
     };
 
     if (sb) {
@@ -663,6 +671,96 @@
     return rows[index];
   }
 
+  async function createPremiumRequest(payload) {
+    const user = await currentUser();
+    if (!user) throw new Error('Kamu harus login dulu.');
+
+    const row = {
+      user_id: user.id,
+      email: user.email,
+      shop_name: String(payload.shop_name || '').trim(),
+      owner_name: String(payload.owner_name || '').trim(),
+      proof_url: String(payload.proof_url || ''),
+      note: String(payload.note || ''),
+      status: 'pending',
+      created_at: now()
+    };
+
+    if (!row.shop_name || !row.owner_name || !row.proof_url) {
+      throw new Error('Nama toko, nama pemilik, dan bukti transfer wajib diisi.');
+    }
+
+    if (sb) {
+      const { data, error } = await sb.from('premium_requests').insert(row).select().single();
+      if (error) throw error;
+      return data;
+    }
+
+    const rows = read(LS.premiumRequests, []);
+    rows.push({ ...row, id: uid('req'), updated_at: now() });
+    write(LS.premiumRequests, rows);
+    return rows[rows.length - 1];
+  }
+
+  async function adminReviewPremiumRequest(requestId, action = 'approved', days = 30) {
+    if (sb) {
+      const { data, error } = await sb.rpc('admin_review_premium_request', {
+        request_id: requestId,
+        action_status: action,
+        premium_days: Number(days || 30)
+      });
+      if (error) throw error;
+      return data;
+    }
+
+    const requests = read(LS.premiumRequests, []);
+    const requestIndex = requests.findIndex(item => item.id === requestId);
+    if (requestIndex < 0) throw new Error('Request tidak ditemukan.');
+
+    requests[requestIndex] = {
+      ...requests[requestIndex],
+      status: action === 'approved' ? 'approved' : 'rejected',
+      reviewed_at: now(),
+      updated_at: now()
+    };
+    write(LS.premiumRequests, requests);
+
+    if (action === 'approved') {
+      const endDate = new Date(Date.now() + Number(days || 30) * 24 * 60 * 60 * 1000).toISOString();
+      await adminUpdateProfile(requests[requestIndex].user_id, {
+        plan: 'premium',
+        status: 'active',
+        plan_end_date: endDate
+      });
+    }
+
+    return requests[requestIndex];
+  }
+
+  async function adminSoftDeleteUser(userId) {
+    if (sb) {
+      const { data, error } = await sb.rpc('admin_soft_delete_user', { target_user_id: userId });
+      if (error) throw error;
+      return data;
+    }
+
+    const user = await currentUser();
+    if (user?.id === userId) throw new Error('Admin tidak boleh menghapus akun sendiri.');
+
+    const profiles = read(LS.profiles, []);
+    const index = profiles.findIndex(profile => profile.user_id === userId);
+    if (index < 0) throw new Error('Profile tidak ditemukan.');
+    profiles[index] = { ...profiles[index], status: 'deleted', plan: 'free', plan_end_date: null, updated_at: now() };
+    write(LS.profiles, profiles);
+
+    ['products', 'custom_links', 'social_links', 'gallery', 'checkout_settings'].forEach(table => {
+      const key = tableKeys[table];
+      write(key, read(key, []).filter(item => item.user_id !== userId));
+    });
+
+    return profiles[index];
+  }
+
   window.NB = {
     sb,
     cfg,
@@ -697,6 +795,9 @@
     all,
     getSettings,
     saveSettings,
-    adminUpdateProfile
+    adminUpdateProfile,
+    createPremiumRequest,
+    adminReviewPremiumRequest,
+    adminSoftDeleteUser
   };
 })();
