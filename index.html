@@ -1,568 +1,241 @@
 <!DOCTYPE html>
 <html lang="id">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1" name="viewport"/>
-  <title>
-   Link Bio + Katalog Produk - NiagaBio
-  </title>
-  <meta content="NiagaBio adalah link bio + katalog produk untuk seller dan UMKM." name="description"/>
-  <link href="assets/img/logo.jpg" rel="icon"/>
-  <link href="https://cdn.jsdelivr.net" rel="preconnect"/>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
-  <link href="assets/css/main.css" rel="stylesheet"/>
-  <link href="assets/css/landing.css" rel="stylesheet"/>
- </head>
- <body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NiagaBio - Link Bio + Katalog Produk</title>
+  <meta name="description" content="NiagaBio membantu seller membuat link bio, katalog produk, checkout manual QRIS, dan rekap penjualan dalam satu halaman.">
+  <link rel="icon" href="assets/img/logo.jpg">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/landing.css">
+</head>
+<body>
   <nav class="navbar navbar-expand-lg fixed-top">
-   <div class="container">
-    <a class="navbar-brand d-flex align-items-center gap-2 fw-black" href="/">
-     <img alt="NiagaBio" class="nb-logo-sm" src="assets/img/logo.jpg"/>
-     <span class="fs-4 fw-black text-green">
-      NiagaBio
-     </span>
-    </a>
-    <button class="navbar-toggler" data-bs-target="#nav" data-bs-toggle="collapse">
-     <span class="navbar-toggler-icon">
-     </span>
-    </button>
-    <div class="collapse navbar-collapse" id="nav">
-     <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
-      <li class="nav-item">
-       <a class="nav-link active" href="#home">
-        Beranda
-       </a>
-      </li>
-      <li class="nav-item">
-       <a class="nav-link" href="#fitur">
-        Fitur
-       </a>
-      </li>
-      <li class="nav-item">
-       <a class="nav-link" href="#harga">
-        Harga
-       </a>
-      </li>
-      <li class="nav-item">
-       <a class="nav-link" href="u?username=demo">
-        Contoh Toko
-       </a>
-      </li>
-      <li class="nav-item">
-       <a class="nav-link" href="#faq">
-        FAQ
-       </a>
-      </li>
-      <li class="nav-item ms-lg-3" data-auth-hide="">
-       <a class="btn btn-outline-nb" href="login">
-        Masuk
-       </a>
-      </li>
-      <li class="nav-item" data-auth-hide="">
-       <a class="btn btn-nb" href="register">
-        Daftar Gratis
-       </a>
-      </li>
-      <li class="nav-item d-none" data-auth-show="">
-       <a class="btn btn-nb" href="dashboard">
-        Dashboard
-       </a>
-      </li>
-     </ul>
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2 fw-black" href="/">
+        <img class="nb-logo-sm" src="assets/img/logo.jpg" alt="NiagaBio">
+        <span class="fs-4 fw-black text-green">NiagaBio</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-label="Buka menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+          <li class="nav-item"><a class="nav-link active" href="#home">Beranda</a></li>
+          <li class="nav-item"><a class="nav-link" href="#fitur">Fitur</a></li>
+          <li class="nav-item"><a class="nav-link" href="#template">Template</a></li>
+          <li class="nav-item"><a class="nav-link" href="#harga">Harga</a></li>
+          <li class="nav-item"><a class="nav-link" href="u?username=demo">Contoh</a></li>
+          <li class="nav-item ms-lg-2" data-auth-hide><a class="btn btn-outline-nb" href="login">Masuk</a></li>
+          <li class="nav-item" data-auth-hide><a class="btn btn-nb" href="register">Daftar Gratis</a></li>
+          <li class="nav-item d-none" data-auth-show><a class="btn btn-nb" href="dashboard">Dashboard</a></li>
+        </ul>
+      </div>
     </div>
-   </div>
   </nav>
+
   <section class="hero" id="home">
-   <div class="container">
-    <div class="row align-items-center g-5">
-     <div class="col-lg-5">
-      <div class="pill mb-4">
-       <i class="bi bi-link-45deg">
-       </i>
-       Link Bio + Katalog Produk + Checkout Mudah
-      </div>
-      <h1 class="hero-title mb-4">
-       Satu Tautan,
-       <br/>
-       Semua
-       <span class="text-green">
-        Bisnismu.
-       </span>
-      </h1>
-      <p class="hero-lead mb-4">
-       Buat halaman link bio profesional, tampilkan produk, terima order via WhatsApp atau QRIS manual, dan kelola bisnismu dengan mudah.
-      </p>
-      <div class="d-flex flex-wrap gap-3 mb-5">
-       <a class="btn btn-nb btn-lg" href="register">
-        Mulai Gratis
-        <i class="bi bi-arrow-right ms-2">
-        </i>
-       </a>
-       <a class="btn btn-outline-nb btn-lg" href="u?username=demo">
-        Lihat Contoh Toko
-       </a>
-      </div>
-      <div class="d-flex flex-wrap trust-row gap-3">
-       <div class="trust-pill">
-        <span class="icon-bubble">
-         <i class="bi bi-link-45deg">
-         </i>
-        </span>
-        Mudah Digunakan
-       </div>
-       <div class="trust-pill">
-        <span class="icon-bubble">
-         <i class="bi bi-shield-check">
-         </i>
-        </span>
-        Aman &amp; Terpercaya
-       </div>
-       <div class="trust-pill">
-        <span class="icon-bubble">
-         <i class="bi bi-lightning-charge-fill">
-         </i>
-        </span>
-        Cocok untuk UMKM
-       </div>
-      </div>
-     </div>
-     <div class="col-lg-7">
-      <div class="row g-4 align-items-center">
-       <div class="col-md-5">
-        <div class="phone-mock">
-         <div class="phone-screen">
-          <div class="phone-notch">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-6" data-reveal>
+          <div class="pill mb-4">
+            <i class="bi bi-stars"></i>
+            Link bio, katalog, checkout, dan rekap jualan
           </div>
-          <div class="mini-avatar mb-2">
-           NB
-          </div>
-          <h5 class="text-center fw-bold mb-0">
-           Niaga Store
-          </h5>
-          <p class="text-center small opacity-75 mb-3">
-           Pakaian &amp; Aksesoris
+          <h1 class="hero-title mb-4">
+            Bikin toko online ringan yang langsung bisa dipakai jualan.
+          </h1>
+          <p class="hero-lead mb-4">
+            NiagaBio membantu seller menampilkan link penting, produk, gallery, QRIS manual, dan order WhatsApp dari satu halaman yang rapi.
           </p>
-          <div class="d-flex justify-content-center gap-2 mb-3">
-           <i class="bi bi-instagram bg-white text-danger rounded-circle p-2">
-           </i>
-           <i class="bi bi-whatsapp bg-white text-success rounded-circle p-2">
-           </i>
-           <i class="bi bi-tiktok bg-dark text-white rounded-circle p-2">
-           </i>
+          <div class="d-flex flex-wrap gap-3 mb-4">
+            <a class="btn btn-nb btn-lg" href="register">Mulai Gratis <i class="bi bi-arrow-right ms-2"></i></a>
+            <a class="btn btn-outline-nb btn-lg" href="u?username=demo">Lihat Contoh</a>
           </div>
-          <a class="phone-btn">
-           Lihat Katalog
-          </a>
-          <a class="phone-btn">
-           Order via WhatsApp
-          </a>
-          <a class="phone-btn">
-           Lokasi Toko
-          </a>
-          <div class="bg-white text-dark rounded-3 p-2 mt-3">
-           <h6 class="fw-bold">
-            Produk Unggulan
-           </h6>
-           <div class="row g-2">
-            <div class="col-6">
-             <div class="mini-card">
-              <img src="assets/img/placeholder-product.svg"/>
-              <b class="small d-block mt-1">
-               Hoodie Basic
-              </b>
-              <small class="text-green fw-bold">
-               Rp120.000
-              </small>
-             </div>
-            </div>
-            <div class="col-6">
-             <div class="mini-card">
-              <img src="assets/img/placeholder-product.svg"/>
-              <b class="small d-block mt-1">
-               Kaos Oversize
-              </b>
-              <small class="text-green fw-bold">
-               Rp85.000
-              </small>
-             </div>
-            </div>
-           </div>
+          <div class="d-flex flex-wrap trust-row gap-3">
+            <div class="trust-pill"><span class="icon-bubble"><i class="bi bi-phone"></i></span>Mobile friendly</div>
+            <div class="trust-pill"><span class="icon-bubble"><i class="bi bi-bag-check"></i></span>Cocok UMKM</div>
+            <div class="trust-pill"><span class="icon-bubble"><i class="bi bi-graph-up-arrow"></i></span>Rekap penjualan</div>
           </div>
-         </div>
         </div>
-       </div>
-       <div class="col-md-7">
-        <div class="dashboard-preview">
-         <div class="row g-0">
-          <div class="col-4">
-           <div class="side">
-            <b>
-             Dashboard
-            </b>
-            <a class="dash-tab active mt-3">
-             Beranda
-            </a>
-            <a class="dash-tab">
-             Produk
-            </a>
-            <a class="dash-tab">
-             Pesanan
-            </a>
-            <a class="dash-tab">
-             Gallery
-            </a>
-            <a class="dash-tab">
-             Statistik
-            </a>
-            <a class="dash-tab">
-             Upgrade
-            </a>
-           </div>
-          </div>
-          <div class="col-8">
-           <div class="p-4">
-            <div class="row g-3 mb-3">
-             <div class="col-6">
-              <small>
-               Total Omset
-              </small>
-              <h4 class="fw-black mb-0">
-               Rp1.250.000
-              </h4>
-              <small class="text-green fw-bold">
-               +12% dari bulan lalu
-              </small>
-             </div>
-             <div class="col-6">
-              <small>
-               Total Pesanan
-              </small>
-              <h4 class="fw-black mb-0">
-               38
-              </h4>
-              <small class="text-green fw-bold">
-               +8 order
-              </small>
-             </div>
+
+        <div class="col-lg-6" data-reveal>
+          <div class="landing-showcase">
+            <div class="landing-card-preview">
+              <div class="preview-top">
+                <div class="preview-avatar"><i class="bi bi-shop"></i></div>
+                <div class="preview-title">Demo Store <i class="bi bi-patch-check-fill"></i></div>
+                <p class="mb-0 opacity-75">Template toko dengan link penting, katalog, dan checkout cepat.</p>
+                <div class="preview-socials">
+                  <span><i class="bi bi-instagram"></i></span>
+                  <span><i class="bi bi-whatsapp"></i></span>
+                  <span><i class="bi bi-tiktok"></i></span>
+                </div>
+              </div>
+              <div class="preview-body">
+                <div class="preview-link"><i class="bi bi-whatsapp"></i><span>Order via WhatsApp</span><i class="bi bi-arrow-right"></i></div>
+                <div class="preview-link"><i class="bi bi-qr-code"></i><span>Bayar QRIS Manual</span><i class="bi bi-arrow-right"></i></div>
+                <div class="preview-products">
+                  <div class="preview-product">
+                    <div class="img"><i class="bi bi-bag-heart"></i></div>
+                    <div class="body"><b>Produk Unggulan</b><small>Rp99.000</small></div>
+                  </div>
+                  <div class="preview-product">
+                    <div class="img"><i class="bi bi-images"></i></div>
+                    <div class="body"><b>Gallery Brand</b><small>Premium</small></div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="stat-card">
-             <h6 class="fw-bold">
-              Grafik Omset
-             </h6>
-             <div class="chart-line">
-              <svg viewbox="0 0 400 150">
-               <path d="M0 112 C40 90,50 120,85 84 S135 100,160 60 S225 120,250 76 S320 88,350 52 S390 42,400 34" fill="none" stroke="#0f9f68" stroke-linecap="round" stroke-width="5">
-               </path>
-              </svg>
-             </div>
-            </div>
-           </div>
+            <div class="landing-floating-note"><i class="bi bi-lightning-charge-fill text-green me-1"></i>Setup cepat dari HP</div>
           </div>
-         </div>
         </div>
-       </div>
       </div>
-     </div>
     </div>
-   </div>
   </section>
+
   <section class="section bg-white" id="fitur">
-   <div class="container">
-    <div class="text-center mb-5">
-     <h2 class="section-title">
-      Fitur Lengkap untuk Bisnismu
-     </h2>
-     <p class="text-muted">
-      Semua yang dibutuhkan seller untuk mulai jualan dari satu tautan.
-     </p>
-    </div>
-    <div class="row g-4">
-     <div class="col-md-6 col-lg-4">
-      <div class="feature-card">
-       <div class="icon-bubble mb-3">
-        <i class="bi bi-bag">
-        </i>
-       </div>
-       <h5 class="fw-bold">
-        Katalog Produk
-       </h5>
-       <p class="text-muted mb-0">
-        Tampilkan produk sampai 500 item untuk premium.
-       </p>
+    <div class="container">
+      <div class="text-center mb-5" data-reveal>
+        <span class="pill mb-3">Fitur inti</span>
+        <h2 class="section-title display-6">Yang dibutuhkan seller ada di satu dashboard.</h2>
       </div>
-     </div>
-     <div class="col-md-6 col-lg-4">
-      <div class="feature-card">
-       <div class="icon-bubble mb-3">
-        <i class="bi bi-palette">
-        </i>
-       </div>
-       <h5 class="fw-bold">
-        Tema Menarik
-       </h5>
-       <p class="text-muted mb-0">
-        10+ tema profesional untuk berbagai kebutuhan.
-       </p>
-      </div>
-     </div>
-     <div class="col-md-6 col-lg-4">
-      <div class="feature-card">
-       <div class="icon-bubble mb-3">
-        <i class="bi bi-qr-code">
-        </i>
-       </div>
-       <h5 class="fw-bold">
-        Checkout Mudah
-       </h5>
-       <p class="text-muted mb-0">
-        WhatsApp atau QRIS manual sesuai kebutuhan.
-       </p>
-      </div>
-     </div>
-     <div class="col-md-6 col-lg-4">
-      <div class="feature-card">
-       <div class="icon-bubble mb-3">
-        <i class="bi bi-images">
-        </i>
-       </div>
-       <h5 class="fw-bold">
-        Gallery
-       </h5>
-       <p class="text-muted mb-0">
-        Tampilkan foto produk atau portofoliomu.
-       </p>
-      </div>
-     </div>
-     <div class="col-md-6 col-lg-4">
-      <div class="feature-card">
-       <div class="icon-bubble mb-3">
-        <i class="bi bi-bar-chart">
-        </i>
-       </div>
-       <h5 class="fw-bold">
-        Statistik &amp; Omset
-       </h5>
-       <p class="text-muted mb-0">
-        Pantau performa toko dan total omsetmu.
-       </p>
-      </div>
-     </div>
-     <div class="col-md-6 col-lg-4">
-      <div class="feature-card">
-       <div class="icon-bubble mb-3">
-        <i class="bi bi-receipt">
-        </i>
-       </div>
-       <h5 class="fw-bold">
-        Kelola Pesanan
-       </h5>
-       <p class="text-muted mb-0">
-        Kelola semua pesanan dalam satu dashboard.
-       </p>
-      </div>
-     </div>
-    </div>
-   </div>
-  </section>
-  <section class="section" id="harga">
-   <div class="container">
-    <div class="row align-items-center g-5">
-     <div class="col-lg-5">
-      <h2 class="section-title">
-       Harga Simple, Fitur Maksimal
-      </h2>
-      <p class="text-muted fs-5">
-       Mulai gratis dulu. Upgrade saat kamu butuh katalog lebih banyak, gallery, QRIS manual, dan dashboard omset.
-      </p>
-     </div>
-     <div class="col-lg-7">
       <div class="row g-4">
-       <div class="col-md-6">
-        <div class="price-card h-100">
-         <h5 class="fw-bold">
-          Gratis
-         </h5>
-         <div class="display-5 fw-black mb-3">
-          Rp0
-          <small class="fs-6 text-muted">
-           / selamanya
-          </small>
-         </div>
-         <ul class="check-list">
-          <li>
-           <i class="bi bi-check-lg">
-           </i>
-           2 Tema
-          </li>
-          <li>
-           <i class="bi bi-check-lg">
-           </i>
-           Maksimal 5 Produk
-          </li>
-          <li>
-           <i class="bi bi-check-lg">
-           </i>
-           3 Icon Sosial Media
-          </li>
-          <li>
-           <i class="bi bi-check-lg">
-           </i>
-           Checkout via WhatsApp
-          </li>
-          <li>
-           <i class="bi bi-check-lg">
-           </i>
-           Branding NiagaBio
-          </li>
-         </ul>
-         <a class="btn btn-outline-nb w-100 mt-4" href="register">
-          Mulai Gratis
-         </a>
+        <div class="col-md-6 col-lg-3" data-reveal>
+          <div class="feature-card"><div class="icon-bubble mb-3"><i class="bi bi-link-45deg"></i></div><h5 class="fw-bold">Link penting</h5><p class="text-muted mb-0">WhatsApp, marketplace, sosial media, katalog, dan halaman promo.</p></div>
         </div>
-       </div>
-       <div class="col-md-6">
-        <div class="price-card popular h-100 position-relative">
-         <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-3">
-          Terpopuler
-         </span>
-         <h5 class="fw-bold text-green">
-          Premium
-         </h5>
-         <div class="display-6 fw-black mb-3">
-          Rp80.000
-          <small class="fs-6 text-muted">
-           / 30 hari
-          </small>
-         </div>
-         <ul class="check-list">
-          <li>
-           <i class="bi bi-check-lg">
-           </i>
-           10+ Tema Premium
-          </li>
-          <li>
-           <i class="bi bi-check-lg">
-           </i>
-           Hingga 500 Produk
-          </li>
-          <li>
-           <i class="bi bi-check-lg">
-           </i>
-           Search Produk
-          </li>
-          <li>
-           <i class="bi bi-check-lg">
-           </i>
-           Gallery &amp; Kategori
-          </li>
-          <li>
-           <i class="bi bi-check-lg">
-           </i>
-           Semua Icon Sosial Media
-          </li>
-          <li>
-           <i class="bi bi-check-lg">
-           </i>
-           QRIS Manual Checkout
-          </li>
-          <li>
-           <i class="bi bi-check-lg">
-           </i>
-           Dashboard Omset
-          </li>
-          <li>
-           <i class="bi bi-check-lg">
-           </i>
-           Hilangkan Branding
-          </li>
-         </ul>
-         <a class="btn btn-nb w-100 mt-4" href="register">
-          Upgrade Sekarang
-         </a>
+        <div class="col-md-6 col-lg-3" data-reveal>
+          <div class="feature-card"><div class="icon-bubble mb-3"><i class="bi bi-bag"></i></div><h5 class="fw-bold">Katalog produk</h5><p class="text-muted mb-0">Produk, kategori, gambar, harga, dan tombol beli cepat.</p></div>
         </div>
-       </div>
+        <div class="col-md-6 col-lg-3" data-reveal>
+          <div class="feature-card"><div class="icon-bubble mb-3"><i class="bi bi-qr-code"></i></div><h5 class="fw-bold">QRIS manual</h5><p class="text-muted mb-0">Pembeli upload bukti bayar, seller konfirmasi status paid.</p></div>
+        </div>
+        <div class="col-md-6 col-lg-3" data-reveal>
+          <div class="feature-card"><div class="icon-bubble mb-3"><i class="bi bi-receipt"></i></div><h5 class="fw-bold">Rekap jualan</h5><p class="text-muted mb-0">Pantau pending, paid, cancelled, dan omset dari dashboard.</p></div>
+        </div>
       </div>
-     </div>
     </div>
-   </div>
   </section>
-  <section class="section bg-white" id="faq">
-   <div class="container">
-    <div class="row g-4">
-     <div class="col-lg-5">
-      <h2 class="section-title">
-       FAQ
-      </h2>
-      <p class="text-muted">
-       Jawaban singkat untuk pertanyaan umum.
-      </p>
-     </div>
-     <div class="col-lg-7">
-      <div class="accordion" id="faqAcc">
-       <div class="accordion-item">
-        <h2 class="accordion-header">
-         <button class="accordion-button" data-bs-target="#f1" data-bs-toggle="collapse">
-          Apakah harus paham coding?
-         </button>
-        </h2>
-        <div class="accordion-collapse collapse show" data-bs-parent="#faqAcc" id="f1">
-         <div class="accordion-body">
-          Tidak. User cukup isi profil, produk, link, dan pilih tema dari dashboard.
-         </div>
+
+  <section class="section" id="template">
+    <div class="container">
+      <div class="row align-items-end g-4 mb-4">
+        <div class="col-lg-7" data-reveal>
+          <span class="pill mb-3">Template toko</span>
+          <h2 class="section-title display-6">Pilih tampilan sesuai jenis brand.</h2>
+          <p class="text-muted mb-0">Mulai dari seller sederhana, fashion, kuliner, gadget, luxury, sampai creator brutalist.</p>
         </div>
-       </div>
-       <div class="accordion-item">
-        <h2 class="accordion-header">
-         <button class="accordion-button collapsed" data-bs-target="#f2" data-bs-toggle="collapse">
-          QRIS-nya otomatis?
-         </button>
-        </h2>
-        <div class="accordion-collapse collapse" data-bs-parent="#faqAcc" id="f2">
-         <div class="accordion-body">
-          Untuk MVP ini QRIS manual: seller upload QRIS, pembeli upload bukti bayar, seller konfirmasi paid.
-         </div>
+        <div class="col-lg-5 text-lg-end" data-reveal>
+          <a class="btn btn-outline-nb" href="u?username=demo">Preview toko demo</a>
         </div>
-       </div>
-       <div class="accordion-item">
-        <h2 class="accordion-header">
-         <button class="accordion-button collapsed" data-bs-target="#f3" data-bs-toggle="collapse">
-          Free bisa dipakai jualan?
-         </button>
-        </h2>
-        <div class="accordion-collapse collapse" data-bs-parent="#faqAcc" id="f3">
-         <div class="accordion-body">
-          Bisa. Free dapat 5 produk, 2 tema, 3 sosial media, dan checkout WhatsApp.
-         </div>
-        </div>
-       </div>
       </div>
-     </div>
+      <div class="landing-template-strip" data-reveal>
+        <div class="landing-template-chip"><i class="bi bi-shop"></i>Seller UMKM</div>
+        <div class="landing-template-chip"><i class="bi bi-stars"></i>Fashion & Beauty</div>
+        <div class="landing-template-chip"><i class="bi bi-cpu"></i>Digital & Gadget</div>
+        <div class="landing-template-chip"><i class="bi bi-vector-pen"></i>Creator Portfolio</div>
+      </div>
     </div>
-   </div>
   </section>
+
+  <section class="section bg-white" id="harga">
+    <div class="container">
+      <div class="text-center mb-5" data-reveal>
+        <span class="pill mb-3">Harga</span>
+        <h2 class="section-title display-6">Mulai gratis, upgrade saat toko mulai serius.</h2>
+      </div>
+      <div class="row g-4 justify-content-center">
+        <div class="col-md-6 col-lg-5" data-reveal>
+          <div class="price-card h-100">
+            <h5 class="fw-bold">Free</h5>
+            <div class="display-6 fw-black mb-3">Rp0</div>
+            <ul class="check-list">
+              <li><i class="bi bi-check-lg"></i>5 produk</li>
+              <li><i class="bi bi-check-lg"></i>2 tema dasar</li>
+              <li><i class="bi bi-check-lg"></i>3 sosial media</li>
+              <li><i class="bi bi-check-lg"></i>Checkout WhatsApp</li>
+            </ul>
+            <a class="btn btn-outline-nb w-100 mt-4" href="register">Mulai Gratis</a>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-5" data-reveal>
+          <div class="price-card popular h-100 position-relative">
+            <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-3">Terpopuler</span>
+            <h5 class="fw-bold text-green">Premium</h5>
+            <div class="display-6 fw-black mb-3">Rp80.000 <small class="fs-6 text-muted">/ 30 hari</small></div>
+            <ul class="check-list">
+              <li><i class="bi bi-check-lg"></i>10 template premium</li>
+              <li><i class="bi bi-check-lg"></i>Hingga 500 produk</li>
+              <li><i class="bi bi-check-lg"></i>Gallery dan search produk</li>
+              <li><i class="bi bi-check-lg"></i>QRIS manual checkout</li>
+              <li><i class="bi bi-check-lg"></i>Rekap omset penjualan</li>
+            </ul>
+            <a class="btn btn-nb w-100 mt-4" href="register">Daftar & Upgrade</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="faq">
+    <div class="container">
+      <div class="row g-4 align-items-start">
+        <div class="col-lg-5" data-reveal>
+          <h2 class="section-title">Pertanyaan umum</h2>
+          <p class="text-muted">Jawaban singkat sebelum mulai pakai NiagaBio.</p>
+        </div>
+        <div class="col-lg-7" data-reveal>
+          <div class="accordion" id="faqAcc">
+            <div class="accordion-item">
+              <h2 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#f1">Apakah harus paham coding?</button></h2>
+              <div id="f1" class="accordion-collapse collapse show" data-bs-parent="#faqAcc"><div class="accordion-body">Tidak. User cukup isi profil, produk, link, dan pilih template dari dashboard.</div></div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#f2">Pembayaran QRIS otomatis?</button></h2>
+              <div id="f2" class="accordion-collapse collapse" data-bs-parent="#faqAcc"><div class="accordion-body">Untuk MVP ini QRIS manual: pembeli upload bukti bayar, lalu seller/admin konfirmasi paid.</div></div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#f3">Free bisa dipakai jualan?</button></h2>
+              <div id="f3" class="accordion-collapse collapse" data-bs-parent="#faqAcc"><div class="accordion-body">Bisa. Free cocok untuk mulai jualan kecil, lalu Premium untuk katalog dan checkout lebih serius.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <footer class="footer">
-   <div class="container d-flex flex-wrap justify-content-between gap-3">
-    <span>
-     &copy;
-     <span data-year="">
-     </span>
-     NiagaBio. All rights reserved.
-    </span>
-    <span>
-     Link bio + katalog produk untuk UMKM.
-    </span>
-   </div>
+    <div class="container d-flex flex-wrap justify-content-between gap-3">
+      <span>&copy; <span data-year></span> NiagaBio</span>
+      <span>Link bio + katalog produk untuk seller.</span>
+    </div>
   </footer>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+
+  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="assets/js/config.js"></script>
+  <script defer src="assets/js/supabase-client.js"></script>
+  <script defer src="assets/js/common.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const items = document.querySelectorAll('[data-reveal]');
+      if (!('IntersectionObserver' in window)) {
+        items.forEach(item => item.classList.add('is-visible'));
+        return;
+      }
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+      items.forEach(item => observer.observe(item));
+    });
   </script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-  </script>
-  <script defer="" src="assets/js/config.js">
-  </script>
-  <script defer="" src="assets/js/supabase-client.js">
-  </script>
-  <script defer="" src="assets/js/common.js">
-  </script>
- </body>
+</body>
 </html>

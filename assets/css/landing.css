@@ -1,1 +1,187 @@
-/* Landing page memakai assets/css/main.css. File ini disiapkan untuk custom tambahan. */
+/* v17 landing polish - ringan, tanpa library animasi berat */
+html { scroll-behavior: smooth; }
+body { background: #f6faf8; }
+.navbar {
+  background: rgba(255,255,255,.78) !important;
+  backdrop-filter: blur(18px);
+}
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  background:
+    radial-gradient(circle at 12% 12%, rgba(15,159,104,.15), transparent 30%),
+    radial-gradient(circle at 82% 18%, rgba(124,58,237,.12), transparent 32%),
+    linear-gradient(145deg, #ffffff, #f0fbf6 60%, #ffffff) !important;
+  padding: 128px 0 84px !important;
+}
+.hero::after { display: none; }
+.hero-title {
+  max-width: 760px;
+  letter-spacing: -.07em;
+}
+.hero-lead { color: #475467; }
+.hero .pill {
+  border: 1px solid rgba(15,159,104,.14);
+  box-shadow: 0 12px 32px rgba(15,159,104,.08);
+}
+.landing-showcase {
+  position: relative;
+  max-width: 520px;
+  margin-inline: auto;
+}
+.landing-card-preview {
+  position: relative;
+  border: 3px solid #0b1320;
+  border-radius: 28px;
+  background: #fff;
+  box-shadow: 14px 14px 0 #c7ff2e, 0 24px 70px rgba(15,35,28,.12);
+  overflow: hidden;
+}
+.landing-card-preview .preview-top {
+  padding: 24px;
+  background: linear-gradient(135deg, #0b1320, #161f32);
+  color: #fff;
+}
+.preview-avatar {
+  width: 76px;
+  height: 76px;
+  border: 3px solid #fff;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  background: #c7ff2e;
+  color: #0b1320;
+  font-size: 2rem;
+  margin-bottom: 14px;
+}
+.preview-title {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-weight: 950;
+  font-size: clamp(1.55rem, 5vw, 2.3rem);
+  letter-spacing: -.055em;
+}
+.preview-title i { color: #c7ff2e; }
+.preview-socials {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+.preview-socials span {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: rgba(255,255,255,.12);
+}
+.preview-body { padding: 22px; }
+.preview-link {
+  display: grid;
+  grid-template-columns: 34px 1fr 24px;
+  align-items: center;
+  gap: 10px;
+  border: 2px solid #0b1320;
+  border-radius: 0;
+  padding: 14px;
+  margin-bottom: 12px;
+  background: #c7ff2e;
+  font-weight: 900;
+  box-shadow: 5px 5px 0 #0b1320;
+}
+.preview-products {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 18px;
+}
+.preview-product {
+  border: 2px solid #0b1320;
+  background: #fff;
+  box-shadow: 5px 5px 0 #0b1320;
+}
+.preview-product .img {
+  aspect-ratio: 1/.75;
+  display: grid;
+  place-items: center;
+  background: #f4f7fb;
+  font-size: 2.2rem;
+  color: #0f9f68;
+}
+.preview-product .body { padding: 12px; }
+.preview-product b { display: block; font-size: .9rem; }
+.preview-product small { color: #0f9f68; font-weight: 900; }
+.landing-floating-note {
+  position: absolute;
+  right: -12px;
+  bottom: 24px;
+  border-radius: 18px;
+  padding: 14px 16px;
+  background: #fff;
+  border: 1px solid #e6edf2;
+  box-shadow: 0 18px 44px rgba(15,35,28,.14);
+  font-weight: 900;
+}
+.feature-card,
+.price-card,
+.dashboard-preview,
+.phone-mock,
+.stat-card {
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+.feature-card:hover,
+.price-card:hover,
+.dashboard-preview:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 22px 58px rgba(15,35,28,.12);
+}
+.landing-template-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 24px;
+}
+.landing-template-chip {
+  border-radius: 18px;
+  padding: 16px;
+  background: #fff;
+  border: 1px solid #e7eef3;
+  font-weight: 900;
+  min-height: 86px;
+}
+.landing-template-chip i {
+  display: block;
+  color: var(--nb-green);
+  font-size: 1.35rem;
+  margin-bottom: 8px;
+}
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .55s ease, transform .55s ease;
+  will-change: opacity, transform;
+}
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (max-width: 991px) {
+  .hero { min-height: auto; padding-top: 110px !important; }
+  .landing-floating-note { position: static; margin-top: 16px; }
+  .landing-template-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 575px) {
+  .hero { padding: 96px 0 54px !important; }
+  .hero-title { font-size: clamp(2.25rem, 12vw, 3.45rem); }
+  .hero-lead { font-size: 1.02rem; }
+  .landing-card-preview { border-width: 2px; box-shadow: 7px 7px 0 #c7ff2e; border-radius: 22px; }
+  .preview-products { grid-template-columns: 1fr; }
+  .landing-template-strip { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  [data-reveal], [data-reveal].is-visible { opacity: 1; transform: none; transition: none; }
+  .feature-card,.price-card,.dashboard-preview,.phone-mock,.stat-card { transition: none; }
+}

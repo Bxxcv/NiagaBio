@@ -282,17 +282,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const template = templateMeta(themeName);
 
     root.innerHTML = `
-      <section class="public-shell public-theme-${themeName}" data-theme="${themeName}" data-template-label="${NB.escapeHtml(template.label)}">
+      <section class="public-shell public-theme-${themeName}" data-theme="${themeName}">
         <div class="public-bg-orb public-bg-orb-one"></div>
         <div class="public-bg-orb public-bg-orb-two"></div>
 
         <div class="public-card public-card-${themeName}">
           <header class="public-hero">
-            <div class="public-theme-chip">
-              <i class="bi bi-lightning-charge-fill"></i>
-              ${NB.escapeHtml(template.label)}
-            </div>
-
             <img class="public-avatar" src="${NB.escapeHtml(profile.avatar_url || 'assets/img/logo.jpg')}" alt="${NB.escapeHtml(displayName)}">
 
             <div class="public-identity">
