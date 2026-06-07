@@ -59,16 +59,16 @@
   };
 
   const themes = [
-    { id: 'service', name: 'Niaga Pro', premium: false, desc: 'Template bisnis hijau, rapi untuk toko umum' },
-    { id: 'minimal', name: 'Minimal Studio', premium: false, desc: 'Template putih clean untuk katalog sederhana' },
-    { id: 'fashion', name: 'Fashion Editorial', premium: true, desc: 'Layout editorial, font serif, cocok fashion' },
-    { id: 'gadget', name: 'Tech Grid', premium: true, desc: 'Tema gelap biru, kartu produk tech' },
-    { id: 'food', name: 'Food Menu', premium: true, desc: 'Nuansa menu resto, hangat dan rounded' },
-    { id: 'beauty', name: 'Beauty Soft', premium: true, desc: 'Pastel elegan untuk skincare dan beauty' },
-    { id: 'dark', name: 'Dark Premium', premium: true, desc: 'Dark store kontras tinggi dan modern' },
-    { id: 'luxury', name: 'Luxury Gold', premium: true, desc: 'Elegant gold, serif, premium look' },
-    { id: 'neon', name: 'Neon Pulse', premium: true, desc: 'Neon cyber untuk kreator muda' },
-    { id: 'portfolio', name: 'Portfolio Split', premium: true, desc: 'Layout split untuk jasa, karya, dan personal brand' }
+    { id: 'service', name: 'Seller Green', premium: false, desc: 'Toko hijau modern untuk seller umum dan UMKM.' },
+    { id: 'minimal', name: 'Clean Minimal', premium: false, desc: 'Template putih sederhana, rapi, dan cepat dibaca.' },
+    { id: 'fashion', name: 'Editorial Fashion', premium: true, desc: 'Layout majalah dengan hero besar untuk brand fashion.' },
+    { id: 'gadget', name: 'Tech Dashboard', premium: true, desc: 'Tampilan gelap grid untuk gadget dan produk digital.' },
+    { id: 'food', name: 'Warm Menu', premium: true, desc: 'Layout menu hangat untuk kuliner, snack, dan resto.' },
+    { id: 'beauty', name: 'Soft Beauty', premium: true, desc: 'Pastel premium untuk skincare, salon, dan beauty.' },
+    { id: 'dark', name: 'Black Drop', premium: true, desc: 'Tampilan hitam kontras untuk drop, streetwear, dan premium store.' },
+    { id: 'luxury', name: 'Gold Signature', premium: true, desc: 'Gold serif elegan untuk produk mahal dan eksklusif.' },
+    { id: 'neon', name: 'Neon Creator', premium: true, desc: 'Cyber neon untuk kreator, game, dan brand anak muda.' },
+    { id: 'portfolio', name: 'Creator Brutalist', premium: true, desc: 'Template kotak tebal ala portfolio/link store seperti contoh.' }
   ];
 
   const defaultSettings = {

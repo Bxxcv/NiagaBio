@@ -2755,3 +2755,512 @@ img, svg, video, canvas {
     padding: .66rem .75rem;
   }
 }
+
+/* =========================================================
+   v16 - Real template layouts inspired by creator storefronts
+   ========================================================= */
+.public-shell {
+  --template-gap: 18px;
+}
+.public-theme-chip {
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.public-featured-badge {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  z-index: 2;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--public-a);
+  box-shadow: 0 10px 24px rgba(0,0,0,.14);
+}
+.public-buy-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+}
+.public-floating-wa {
+  position: fixed;
+  right: max(18px, env(safe-area-inset-right));
+  bottom: max(18px, env(safe-area-inset-bottom));
+  z-index: 30;
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #111827;
+  color: #fff;
+  border: 4px solid #fff;
+  box-shadow: 0 18px 44px rgba(15,23,42,.24);
+  font-size: 1.35rem;
+}
+.public-floating-wa:hover {
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* 1. Service: modern green seller */
+.public-theme-service .public-card {
+  border-radius: 30px;
+}
+.public-theme-service .public-body {
+  background: linear-gradient(180deg,#fff,#f6fbf8);
+}
+.public-theme-service .public-link {
+  background: #ffffff;
+  border: 1px solid rgba(6,150,105,.16);
+  box-shadow: 0 14px 32px rgba(6,150,105,.08);
+}
+.public-theme-service .public-products-grid {
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+
+/* 2. Minimal: monochrome calm catalog */
+.public-theme-minimal .public-shell,
+.public-theme-minimal.public-shell {
+  background: #f8f8f5;
+}
+.public-theme-minimal .public-card {
+  border: 1px solid #dedbd2;
+  border-radius: 0;
+  background: #fffef9;
+}
+.public-theme-minimal .public-hero::after,
+.public-theme-minimal .public-bg-orb {
+  display: none;
+}
+.public-theme-minimal .public-theme-chip,
+.public-theme-minimal .public-social,
+.public-theme-minimal .public-link,
+.public-theme-minimal .public-product-card,
+.public-theme-minimal .public-gallery-card,
+.public-theme-minimal .public-search-wrap {
+  border-radius: 0;
+  box-shadow: none;
+}
+.public-theme-minimal .public-link {
+  background: transparent;
+  border: 1px solid #1f2937;
+}
+.public-theme-minimal .public-buy-btn {
+  border-radius: 0;
+  background: #111827;
+}
+
+/* 3. Fashion: editorial magazine */
+.public-theme-fashion .public-card {
+  width: min(100%, 900px);
+  display: grid;
+  grid-template-columns: minmax(280px, .75fr) minmax(0, 1.25fr);
+  border-radius: 44px 8px 44px 8px;
+}
+.public-theme-fashion .public-hero {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+  padding: 42px 34px;
+}
+.public-theme-fashion .public-theme-chip,
+.public-theme-fashion .public-identity,
+.public-theme-fashion .public-socials,
+.public-theme-fashion .public-trust-badge {
+  margin-left: 0;
+  justify-content: flex-start;
+}
+.public-theme-fashion .public-products-grid {
+  grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+}
+.public-theme-fashion .public-product-card {
+  border: 0;
+  background: #fff;
+}
+.public-theme-fashion .public-buy-btn {
+  border-radius: 999px;
+}
+
+/* 4. Gadget: dashboard grid */
+.public-theme-gadget .public-card {
+  border-radius: 22px;
+}
+.public-theme-gadget .public-section {
+  border: 1px solid rgba(96,165,250,.18);
+  border-radius: 22px;
+  padding: 16px;
+  background: rgba(15,23,42,.45);
+}
+.public-theme-gadget .public-link,
+.public-theme-gadget .public-product-card {
+  border-radius: 16px;
+}
+.public-theme-gadget .public-buy-btn {
+  background: linear-gradient(135deg,#2563eb,#60a5fa);
+}
+
+/* 5. Food: menu board */
+.public-theme-food .public-card {
+  width: min(100%, 760px);
+}
+.public-theme-food .public-link {
+  border-radius: 24px;
+  background: #fff7ed;
+}
+.public-theme-food .public-product-card {
+  border: 1px dashed rgba(234,88,12,.26);
+  box-shadow: none;
+}
+.public-theme-food .public-product-category {
+  background: #431407;
+  color: #fed7aa;
+}
+
+/* 6. Beauty: soft catalogue */
+.public-theme-beauty .public-card {
+  background: rgba(255,255,255,.78);
+  border-radius: 46px;
+}
+.public-theme-beauty .public-body {
+  background: linear-gradient(180deg,#fff,#fff7ff);
+}
+.public-theme-beauty .public-link,
+.public-theme-beauty .public-product-card,
+.public-theme-beauty .public-gallery-card {
+  border: 1px solid rgba(192,38,211,.12);
+  box-shadow: 0 22px 46px rgba(192,38,211,.08);
+}
+.public-theme-beauty .public-buy-btn {
+  border-radius: 999px;
+  background: linear-gradient(135deg,#c026d3,#f0abfc);
+}
+
+/* 7. Dark: premium black storefront */
+.public-theme-dark .public-card {
+  border-radius: 0;
+  border: 1px solid rgba(255,255,255,.14);
+}
+.public-theme-dark .public-body {
+  background: #020617;
+}
+.public-theme-dark .public-link,
+.public-theme-dark .public-product-card,
+.public-theme-dark .public-gallery-card,
+.public-theme-dark .public-search-wrap {
+  border-radius: 0;
+  border-color: rgba(255,255,255,.18);
+}
+.public-theme-dark .public-buy-btn {
+  border: 1px solid rgba(255,255,255,.22);
+  background: #f8fafc;
+  color: #020617;
+}
+
+/* 8. Luxury: editorial gold */
+.public-theme-luxury .public-card {
+  width: min(100%, 820px);
+  border-radius: 0;
+}
+.public-theme-luxury .public-hero {
+  text-align: center;
+}
+.public-theme-luxury .public-avatar {
+  border-radius: 0;
+}
+.public-theme-luxury .public-link,
+.public-theme-luxury .public-product-card,
+.public-theme-luxury .public-gallery-card {
+  border-radius: 0;
+  box-shadow: none;
+}
+.public-theme-luxury .public-buy-btn {
+  border-radius: 0;
+  background: #d6ad60;
+  color: #11100c;
+}
+
+/* 9. Neon: creator cyber */
+.public-theme-neon .public-card {
+  border-radius: 28px;
+  box-shadow: 0 0 0 1px rgba(34,211,238,.18), 0 0 90px rgba(34,211,238,.20);
+}
+.public-theme-neon .public-theme-chip,
+.public-theme-neon .public-social,
+.public-theme-neon .public-link span {
+  box-shadow: 0 0 22px rgba(34,211,238,.22);
+}
+.public-theme-neon .public-buy-btn {
+  background: linear-gradient(135deg,#06b6d4,#8b5cf6);
+}
+
+/* 10. Portfolio: neobrutalist creator, inspired by user sample */
+.public-theme-portfolio {
+  --public-font-body: Sora, Inter, system-ui, sans-serif;
+  --public-font-heading: Sora, Inter, system-ui, sans-serif;
+  --public-a: #c7ff2e;
+  --public-b: #ffffff;
+  --public-page-bg: #ffffff;
+  --public-card-bg: #ffffff;
+  --public-card-border: transparent;
+  --public-ink: #050505;
+  --public-muted: #323232;
+  --public-soft: #f7f7f7;
+  --public-radius: 0;
+  --public-shadow: none;
+}
+.public-theme-portfolio .public-shell,
+.public-shell.public-theme-portfolio {
+  background: #fff;
+}
+.public-theme-portfolio .public-bg-orb,
+.public-theme-portfolio .public-hero::after {
+  display: none;
+}
+.public-theme-portfolio .public-card {
+  width: min(100%, 720px);
+  display: block;
+  border: 0;
+  border-radius: 0;
+  background: #fff;
+  box-shadow: none;
+  overflow: visible;
+}
+.public-theme-portfolio .public-hero {
+  min-height: auto;
+  padding: 42px 34px 22px;
+  color: #050505;
+  text-align: left;
+  background: #fff;
+}
+.public-theme-portfolio .public-theme-chip {
+  width: max-content;
+  margin: 12px 0 12px;
+  border: 2px solid #050505;
+  border-radius: 0;
+  padding: .25rem .55rem;
+  background: #050505;
+  color: var(--public-a);
+  font-size: .72rem;
+  box-shadow: 4px 4px 0 #d9ff49;
+}
+.public-theme-portfolio .public-avatar {
+  width: 118px;
+  height: 118px;
+  border-radius: 0;
+  border: 3px solid #050505;
+  box-shadow: 6px 6px 0 #050505;
+  transform: rotate(-2deg);
+}
+.public-theme-portfolio .public-identity {
+  margin: 0;
+  max-width: 560px;
+}
+.public-theme-portfolio .public-kicker {
+  margin-top: 18px;
+  color: #333;
+}
+.public-theme-portfolio .public-identity h1 {
+  justify-content: flex-start;
+  font-size: clamp(2rem, 8vw, 3.4rem);
+  color: #050505;
+  letter-spacing: -.07em;
+}
+.public-theme-portfolio .public-identity p:not(.public-kicker) {
+  margin-left: 0;
+  color: #2b2b2b;
+  max-width: 520px;
+  font-weight: 600;
+}
+.public-theme-portfolio .public-verified {
+  width: 30px;
+  height: 30px;
+  background: #050505;
+  color: #fff;
+  box-shadow: none;
+}
+.public-theme-portfolio .public-trust-badge {
+  display: none;
+}
+.public-theme-portfolio .public-socials {
+  justify-content: flex-start;
+  margin-top: 28px;
+  gap: 18px;
+}
+.public-theme-portfolio .public-social {
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  border: 0;
+  border-bottom: 3px solid #050505;
+  background: transparent;
+  color: #050505;
+  box-shadow: none;
+  font-size: 1.35rem;
+}
+.public-theme-portfolio .public-body {
+  padding: 0 34px 44px;
+  color: #050505;
+}
+.public-theme-portfolio .public-section {
+  margin-top: 22px;
+  border-left: 0;
+  padding-left: 0;
+}
+.public-theme-portfolio .public-section-head {
+  align-items: end;
+  margin-bottom: 12px;
+}
+.public-theme-portfolio .public-section-head h2 {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: #050505;
+}
+.public-theme-portfolio .public-section-head span {
+  border-radius: 0;
+  border: 2px solid #050505;
+  background: var(--public-a);
+  color: #050505;
+  box-shadow: 4px 4px 0 #050505;
+}
+.public-theme-portfolio .public-links {
+  gap: 14px;
+}
+.public-theme-portfolio .public-link {
+  grid-template-columns: 42px 1fr 26px;
+  border: 3px solid #050505;
+  border-radius: 0;
+  background: var(--public-a);
+  color: #050505;
+  box-shadow: 6px 6px 0 #050505;
+  transform: none;
+}
+.public-theme-portfolio .public-link:nth-child(n+3) {
+  background: #fff;
+}
+.public-theme-portfolio .public-link span {
+  border-radius: 0;
+  background: transparent;
+  color: #050505;
+}
+.public-theme-portfolio .public-link:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 3px 3px 0 #050505;
+}
+.public-theme-portfolio .public-search-wrap {
+  border: 2px solid #050505;
+  border-radius: 0;
+  box-shadow: 4px 4px 0 #050505;
+}
+.public-theme-portfolio .public-products-grid {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 330px));
+  justify-content: start;
+}
+.public-theme-portfolio .public-product-card,
+.public-theme-portfolio .public-gallery-card {
+  border: 3px solid #050505;
+  border-radius: 0;
+  background: #fff;
+  box-shadow: 6px 6px 0 #050505;
+}
+.public-theme-portfolio .public-product-media {
+  aspect-ratio: 4 / 3;
+  border-bottom: 3px solid #050505;
+  background: #f4f4f4;
+}
+.public-theme-portfolio .public-product-category,
+.public-theme-portfolio .public-featured-badge {
+  border: 2px solid #050505;
+  border-radius: 0;
+  background: var(--public-a);
+  color: #050505;
+  box-shadow: none;
+}
+.public-theme-portfolio .public-product-body {
+  padding: 16px;
+}
+.public-theme-portfolio .public-product-body h3 {
+  font-weight: 900;
+}
+.public-theme-portfolio .public-product-foot strong {
+  color: #050505;
+  font-size: 1.15rem;
+}
+.public-theme-portfolio .public-buy-btn {
+  border: 3px solid #050505;
+  border-radius: 0;
+  background: #050505;
+  color: #fff;
+  box-shadow: none;
+}
+.public-theme-portfolio .public-gallery-strip {
+  grid-auto-columns: minmax(180px, 220px);
+}
+.public-theme-portfolio .public-gallery-card img {
+  border-bottom: 3px solid #050505;
+}
+.public-theme-portfolio .public-footer {
+  margin-top: 34px;
+  border-top: 4px solid #050505;
+  color: #050505;
+  text-align: center;
+}
+.public-theme-portfolio .public-powered {
+  display: inline-flex;
+  border: 2px solid #050505;
+  padding: .25rem .45rem;
+  background: var(--public-a);
+  color: #050505;
+}
+.public-theme-portfolio .public-powered::before {
+  display: none;
+}
+.public-theme-portfolio .public-floating-wa {
+  border-radius: 0;
+  border: 3px solid #050505;
+  background: #050505;
+  color: #fff;
+  box-shadow: -6px 6px 0 var(--public-a);
+}
+
+@media (max-width: 860px) {
+  .public-theme-fashion .public-card {
+    display: block;
+  }
+  .public-theme-fashion .public-hero {
+    min-height: 290px;
+  }
+}
+@media (max-width: 575px) {
+  .public-floating-wa {
+    width: 52px;
+    height: 52px;
+    right: 14px;
+    bottom: 14px;
+  }
+  .public-theme-portfolio .public-hero {
+    padding: 30px 20px 18px;
+  }
+  .public-theme-portfolio .public-body {
+    padding: 0 20px 34px;
+  }
+  .public-theme-portfolio .public-avatar {
+    width: 96px;
+    height: 96px;
+  }
+  .public-theme-portfolio .public-link,
+  .public-theme-portfolio .public-product-card,
+  .public-theme-portfolio .public-gallery-card {
+    box-shadow: 4px 4px 0 #050505;
+  }
+  .public-theme-portfolio .public-products-grid {
+    grid-template-columns: 1fr;
+  }
+}

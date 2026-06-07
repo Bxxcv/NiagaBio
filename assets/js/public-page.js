@@ -85,6 +85,114 @@ document.addEventListener('DOMContentLoaded', async () => {
     { image_url: 'assets/img/placeholder-product.svg', caption: 'Contoh gallery produk' }
   ];
 
+
+  const TEMPLATE_META = {
+    service: {
+      label: 'SELLER KIT',
+      kicker: 'Toko online aktif',
+      linkTitle: 'Link Cepat',
+      linkHint: 'Tap untuk buka',
+      productTitle: 'Produk Pilihan',
+      productHint: 'Siap order',
+      galleryTitle: 'Etalase Visual',
+      footer: 'Dibuat dengan NiagaBio'
+    },
+    minimal: {
+      label: 'MINIMAL',
+      kicker: 'Clean catalog',
+      linkTitle: 'Link Utama',
+      linkHint: 'Open link',
+      productTitle: 'Katalog',
+      productHint: 'Basic shop',
+      galleryTitle: 'Gallery',
+      footer: 'Powered by NiagaBio'
+    },
+    fashion: {
+      label: 'EDITORIAL',
+      kicker: 'Fashion storefront',
+      linkTitle: 'Brand Links',
+      linkHint: 'Shop the look',
+      productTitle: 'New Collection',
+      productHint: 'Featured drops',
+      galleryTitle: 'Lookbook',
+      footer: 'Styled with NiagaBio'
+    },
+    gadget: {
+      label: 'TECH STORE',
+      kicker: 'Smart catalog',
+      linkTitle: 'Quick Access',
+      linkHint: 'Open module',
+      productTitle: 'Device Lineup',
+      productHint: 'Search enabled',
+      galleryTitle: 'Product Shots',
+      footer: 'Powered system by NiagaBio'
+    },
+    food: {
+      label: 'MENU',
+      kicker: 'Fresh daily order',
+      linkTitle: 'Order Channel',
+      linkHint: 'Pesan cepat',
+      productTitle: 'Menu Favorit',
+      productHint: 'Ready to serve',
+      galleryTitle: 'Dapur Kami',
+      footer: 'Served with NiagaBio'
+    },
+    beauty: {
+      label: 'BEAUTY',
+      kicker: 'Soft premium care',
+      linkTitle: 'Beauty Links',
+      linkHint: 'Explore',
+      productTitle: 'Best Treatment',
+      productHint: 'Glow picks',
+      galleryTitle: 'Before After',
+      footer: 'Glow with NiagaBio'
+    },
+    dark: {
+      label: 'DARK DROP',
+      kicker: 'Limited store',
+      linkTitle: 'Access Point',
+      linkHint: 'Enter',
+      productTitle: 'Drop List',
+      productHint: 'Limited items',
+      galleryTitle: 'Archive',
+      footer: 'Built in NiagaBio'
+    },
+    luxury: {
+      label: 'SIGNATURE',
+      kicker: 'Premium collection',
+      linkTitle: 'Concierge Links',
+      linkHint: 'Private access',
+      productTitle: 'Signature Collection',
+      productHint: 'Curated goods',
+      galleryTitle: 'Catalogue Privé',
+      footer: 'Crafted with NiagaBio'
+    },
+    neon: {
+      label: 'NEON LAB',
+      kicker: 'Creator dropzone',
+      linkTitle: 'Portal Links',
+      linkHint: 'Launch',
+      productTitle: 'Digital Drops',
+      productHint: 'Hot items',
+      galleryTitle: 'Visual Feed',
+      footer: 'Connected by NiagaBio'
+    },
+    portfolio: {
+      label: 'CREATOR',
+      kicker: 'Portfolio commerce',
+      linkTitle: 'Featured Links',
+      linkHint: 'Tap to open',
+      productTitle: 'Best Seller',
+      productHint: 'Digital assets',
+      galleryTitle: 'Project Stacks',
+      footer: 'Built with NiagaBio'
+    }
+  };
+
+  function templateMeta(themeName) {
+    return TEMPLATE_META[themeName] || TEMPLATE_META.service;
+  }
+
   function safeTheme(themeName) {
     const allowed = (NB.themes || []).map(theme => theme.id);
     return allowed.includes(themeName) ? themeName : 'service';
@@ -126,6 +234,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       <article class="public-product-card ${product.is_featured ? 'is-featured' : ''}">
         <div class="public-product-media">
           <img src="${productImage(product.image_url)}" alt="${NB.escapeHtml(product.name)}">
+          ${product.is_featured ? '<span class="public-featured-badge"><i class="bi bi-star-fill"></i></span>' : ''}
           ${product.category ? `<span class="public-product-category">${NB.escapeHtml(product.category)}</span>` : ''}
         </div>
         <div class="public-product-body">
@@ -133,7 +242,10 @@ document.addEventListener('DOMContentLoaded', async () => {
           ${product.description ? `<p>${NB.escapeHtml(product.description)}</p>` : ''}
           <div class="public-product-foot">
             <strong>${NB.money(product.price)}</strong>
-            <button class="public-buy-btn" type="button" data-buy="${NB.escapeHtml(product.id)}">Beli</button>
+            <button class="public-buy-btn" type="button" data-buy="${NB.escapeHtml(product.id)}">
+              <span>Beli</span>
+              <i class="bi bi-arrow-right"></i>
+            </button>
           </div>
         </div>
       </article>
@@ -167,23 +279,24 @@ document.addEventListener('DOMContentLoaded', async () => {
   function renderShell({ profile, themeName, premium, products, links, socials, gallery }) {
     const year = new Date().getFullYear();
     const displayName = profile.display_name || 'NiagaBio Store';
+    const template = templateMeta(themeName);
 
     root.innerHTML = `
-      <section class="public-shell public-theme-${themeName}" data-theme="${themeName}">
+      <section class="public-shell public-theme-${themeName}" data-theme="${themeName}" data-template-label="${NB.escapeHtml(template.label)}">
         <div class="public-bg-orb public-bg-orb-one"></div>
         <div class="public-bg-orb public-bg-orb-two"></div>
 
         <div class="public-card public-card-${themeName}">
           <header class="public-hero">
             <div class="public-theme-chip">
-              <i class="bi bi-palette2"></i>
-              ${NB.escapeHtml(themeLabel(themeName))}
+              <i class="bi bi-lightning-charge-fill"></i>
+              ${NB.escapeHtml(template.label)}
             </div>
 
             <img class="public-avatar" src="${NB.escapeHtml(profile.avatar_url || 'assets/img/logo.jpg')}" alt="${NB.escapeHtml(displayName)}">
 
             <div class="public-identity">
-              <p class="public-kicker">@${NB.escapeHtml(profile.username || 'toko')}</p>
+              <p class="public-kicker">@${NB.escapeHtml(profile.username || 'toko')} · ${NB.escapeHtml(template.kicker)}</p>
               <h1>
                 <span>${NB.escapeHtml(displayName)}</span>
                 ${renderVerifiedBadge(premium)}
@@ -201,8 +314,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             ${links.length ? `
               <section class="public-section public-link-section">
                 <div class="public-section-head">
-                  <h2>Link Penting</h2>
-                  <span>Tap untuk buka</span>
+                  <h2>${NB.escapeHtml(template.linkTitle)}</h2>
+                  <span>${NB.escapeHtml(template.linkHint)}</span>
                 </div>
                 <div class="public-links">
                   ${links.map(linkButton).join('')}
@@ -212,8 +325,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             <section class="public-section public-products-section">
               <div class="public-section-head">
-                <h2>Katalog Produk</h2>
-                <span>${premium ? 'Search aktif' : 'Basic catalog'}</span>
+                <h2>${NB.escapeHtml(template.productTitle)}</h2>
+                <span>${premium ? NB.escapeHtml(template.productHint) : 'Basic catalog'}</span>
               </div>
 
               ${premium ? `
@@ -229,7 +342,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             ${premium && gallery.length ? `
               <section class="public-section public-gallery-section">
                 <div class="public-section-head">
-                  <h2>Gallery</h2>
+                  <h2>${NB.escapeHtml(template.galleryTitle)}</h2>
                   <span>${gallery.length} foto</span>
                 </div>
                 <div class="public-gallery-strip">
@@ -241,10 +354,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             <footer class="public-footer">
               <span>© ${year} ${NB.escapeHtml(displayName)}</span>
-              <span class="public-powered">Powered by NiagaBio</span>
+              <span class="public-powered">${NB.escapeHtml(template.footer)}</span>
             </footer>
           </div>
         </div>
+
+        ${(profile.whatsapp_number || '').trim() ? `
+          <a class="public-floating-wa" href="${NB.escapeHtml(NB.whatsappUrl(profile.whatsapp_number, `Halo kak, saya mau tanya tentang ${displayName}`))}" target="_blank" rel="noopener" aria-label="Chat WhatsApp">
+            <i class="bi bi-whatsapp"></i>
+          </a>
+        ` : ''}
       </section>
     `;
   }
