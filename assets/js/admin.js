@@ -681,6 +681,39 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (showModal && userModal) userModal.show();
   }
 
+
+  function setAdminView(view = 'overview') {
+    const allowed = ['overview', 'users', 'orders', 'requests', 'settings'];
+    const activeView = allowed.includes(view) ? view : 'overview';
+
+    document.querySelectorAll('[data-admin-panel]').forEach(panel => {
+      const isActive = panel.dataset.adminPanel === activeView;
+      panel.hidden = !isActive;
+      panel.classList.toggle('active', isActive);
+    });
+
+    document.querySelectorAll('[data-admin-view], [data-admin-view-target]').forEach(item => {
+      const itemView = item.dataset.adminView || item.dataset.adminViewTarget;
+      item.classList.toggle('active', itemView === activeView);
+    });
+
+    if (location.hash !== `#${activeView}`) {
+      history.replaceState(null, '', `#${activeView}`);
+    }
+
+    const sidebar = document.querySelector('.sidebar');
+    sidebar?.classList.remove('show');
+    sidebar?.classList.remove('open');
+    document.body.classList.remove('sidebar-open');
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function initialAdminView() {
+    const hash = String(location.hash || '').replace('#', '');
+    return ['overview', 'users', 'orders', 'requests', 'settings'].includes(hash) ? hash : 'overview';
+  }
+
   function bindEvents() {
     refs.refreshBtn?.addEventListener('click', refresh);
     refs.userSearch?.addEventListener('input', renderUsers);
@@ -705,9 +738,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (state.selectedUserId) deleteUser(state.selectedUserId);
     });
 
-    document.querySelectorAll('[data-admin-scroll]').forEach(link => {
-      link.addEventListener('click', () => document.querySelector('.sidebar')?.classList.remove('show'));
+    document.querySelectorAll('[data-admin-view]').forEach(link => {
+      link.addEventListener('click', event => {
+        event.preventDefault();
+        setAdminView(link.dataset.adminView || 'overview');
+      });
     });
+
+    document.querySelectorAll('[data-admin-view-target]').forEach(button => {
+      button.addEventListener('click', () => setAdminView(button.dataset.adminViewTarget || 'overview'));
+    });
+
+    window.addEventListener('hashchange', () => setAdminView(initialAdminView()));
   }
 
   state.currentUser = await NB.requireAuth();
@@ -726,5 +768,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   bindEvents();
+  setAdminView(initialAdminView());
   await refresh();
 });

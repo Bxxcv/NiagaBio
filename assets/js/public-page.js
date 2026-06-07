@@ -158,6 +158,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const activeProducts = products.length;
     const activeLinks = links.length + socials.length;
     const publicUrl = makePublicUrl(profile);
+    const year = new Date().getFullYear();
 
     root.innerHTML = `
       <section class="public-shell public-theme-${themeName}" data-theme="${themeName}">
@@ -242,7 +243,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             ` : ''}
 
             <footer class="public-footer">
-              <span>Made with NiagaBio</span>
+              <span>© ${year} ${NB.escapeHtml(profile.display_name || 'Toko NiagaBio')}</span>
+              <span class="public-powered">Powered by NiagaBio</span>
               <button id="copyPublicLink" type="button">
                 <i class="bi bi-copy"></i> Salin Link
               </button>

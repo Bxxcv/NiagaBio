@@ -23,23 +23,23 @@
       </div>
 
       <nav class="admin-nav">
-        <a class="side-link active" href="#adminOverview" data-admin-scroll>
+        <a class="side-link active" href="#overview" data-admin-view="overview">
           <i class="bi bi-speedometer2"></i>
           Overview
         </a>
-        <a class="side-link" href="#adminUsersSection" data-admin-scroll>
+        <a class="side-link" href="#users" data-admin-view="users">
           <i class="bi bi-people"></i>
           Kelola User
         </a>
-        <a class="side-link" href="#adminOrdersSection" data-admin-scroll>
+        <a class="side-link" href="#orders" data-admin-view="orders">
           <i class="bi bi-receipt-cutoff"></i>
           Order Platform
         </a>
-        <a class="side-link" href="#adminPremiumRequestsSection" data-admin-scroll>
+        <a class="side-link" href="#requests" data-admin-view="requests">
           <i class="bi bi-qr-code-scan"></i>
           Request Premium
         </a>
-        <a class="side-link" href="#adminSettingsSection" data-admin-scroll>
+        <a class="side-link" href="#settings" data-admin-view="settings">
           <i class="bi bi-sliders"></i>
           Setting Platform
         </a>
@@ -82,7 +82,31 @@
         </div>
       </header>
 
+      <nav class="admin-view-tabs" aria-label="Navigasi Admin Master">
+        <button class="admin-view-tab active" type="button" data-admin-view-target="overview">
+          <i class="bi bi-speedometer2"></i>
+          Ringkasan
+        </button>
+        <button class="admin-view-tab" type="button" data-admin-view-target="users">
+          <i class="bi bi-people"></i>
+          User
+        </button>
+        <button class="admin-view-tab" type="button" data-admin-view-target="orders">
+          <i class="bi bi-receipt-cutoff"></i>
+          Order
+        </button>
+        <button class="admin-view-tab" type="button" data-admin-view-target="requests">
+          <i class="bi bi-qr-code-scan"></i>
+          Request
+        </button>
+        <button class="admin-view-tab" type="button" data-admin-view-target="settings">
+          <i class="bi bi-sliders"></i>
+          Setting
+        </button>
+      </nav>
+
       <div class="content-wrap admin-content" id="adminOverview">
+        <div class="admin-panel active" id="adminOverviewPanel" data-admin-panel="overview">
         <section class="admin-hero card-nb p-4 p-md-5 mb-4">
           <div class="row align-items-center g-4">
             <div class="col-lg-8">
@@ -90,9 +114,9 @@
                 <i class="bi bi-shield-check"></i>
                 Owner Area
               </span>
-              <h2 class="fw-black mb-2">Kontrol user, order, dan setting platform dari satu tempat.</h2>
+              <h2 class="fw-black mb-2">Admin dipisah per menu supaya tidak penuh dan mudah dipakai dari HP.</h2>
               <p class="text-muted mb-0">
-                Admin Master ini dipisahkan dari dashboard user supaya aman, jelas, dan enak dipakai dari HP.
+                Pilih menu Ringkasan, User, Order, Request, atau Setting. Hanya satu bagian tampil supaya layar tidak bikin pusing.
               </p>
             </div>
             <div class="col-lg-4">
@@ -151,7 +175,9 @@
           </div>
         </section>
 
-        <section class="card-nb admin-section mb-4" id="adminUsersSection">
+        </div>
+
+        <section class="card-nb admin-section mb-4 admin-panel" id="adminUsersSection" data-admin-panel="users" hidden>
           <div class="admin-section-head">
             <div>
               <h2 class="h5 fw-bold mb-1">
@@ -204,7 +230,7 @@
           </div>
         </section>
 
-        <section class="card-nb admin-section mb-4" id="adminOrdersSection">
+        <section class="card-nb admin-section mb-4 admin-panel" id="adminOrdersSection" data-admin-panel="orders" hidden>
           <div class="admin-section-head">
             <div>
               <h2 class="h5 fw-bold mb-1">
@@ -252,7 +278,7 @@
           </div>
         </section>
 
-        <section class="card-nb admin-section mb-4" id="adminPremiumRequestsSection">
+        <section class="card-nb admin-section mb-4 admin-panel" id="adminPremiumRequestsSection" data-admin-panel="requests" hidden>
           <div class="admin-section-head">
             <div>
               <h2 class="h5 fw-bold mb-1">
@@ -300,7 +326,7 @@
           </div>
         </section>
 
-        <section class="card-nb admin-section" id="adminSettingsSection">
+        <section class="card-nb admin-section admin-panel" id="adminSettingsSection" data-admin-panel="settings" hidden>
           <div class="admin-section-head">
             <div>
               <h2 class="h5 fw-bold mb-1">

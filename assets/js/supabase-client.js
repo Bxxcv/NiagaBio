@@ -59,16 +59,16 @@
   };
 
   const themes = [
-    { id: 'service', name: 'Niaga Clean', premium: false, desc: 'Hijau clean untuk toko umum' },
-    { id: 'minimal', name: 'Minimal White', premium: false, desc: 'Putih simpel dan profesional' },
-    { id: 'fashion', name: 'Fashion Pink', premium: true, desc: 'Cocok untuk fashion dan apparel' },
-    { id: 'gadget', name: 'Gadget Blue', premium: true, desc: 'Cocok untuk elektronik dan aksesoris' },
-    { id: 'food', name: 'Food Orange', premium: true, desc: 'Cocok untuk makanan dan minuman' },
-    { id: 'beauty', name: 'Beauty Pop', premium: true, desc: 'Cocok untuk skincare dan beauty' },
-    { id: 'dark', name: 'Dark Store', premium: true, desc: 'Tema gelap modern' },
-    { id: 'luxury', name: 'Luxury Gold', premium: true, desc: 'Premium dan elegan' },
-    { id: 'neon', name: 'Neon Fresh', premium: true, desc: 'Modern untuk kreator muda' },
-    { id: 'portfolio', name: 'Portfolio Violet', premium: true, desc: 'Cocok untuk jasa dan karya' }
+    { id: 'service', name: 'Niaga Pro', premium: false, desc: 'Template bisnis hijau, rapi untuk toko umum' },
+    { id: 'minimal', name: 'Minimal Studio', premium: false, desc: 'Template putih clean untuk katalog sederhana' },
+    { id: 'fashion', name: 'Fashion Editorial', premium: true, desc: 'Layout editorial, font serif, cocok fashion' },
+    { id: 'gadget', name: 'Tech Grid', premium: true, desc: 'Tema gelap biru, kartu produk tech' },
+    { id: 'food', name: 'Food Menu', premium: true, desc: 'Nuansa menu resto, hangat dan rounded' },
+    { id: 'beauty', name: 'Beauty Soft', premium: true, desc: 'Pastel elegan untuk skincare dan beauty' },
+    { id: 'dark', name: 'Dark Premium', premium: true, desc: 'Dark store kontras tinggi dan modern' },
+    { id: 'luxury', name: 'Luxury Gold', premium: true, desc: 'Elegant gold, serif, premium look' },
+    { id: 'neon', name: 'Neon Pulse', premium: true, desc: 'Neon cyber untuk kreator muda' },
+    { id: 'portfolio', name: 'Portfolio Split', premium: true, desc: 'Layout split untuk jasa, karya, dan personal brand' }
   ];
 
   const defaultSettings = {

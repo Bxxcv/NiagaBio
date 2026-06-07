@@ -36,8 +36,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     grid.innerHTML = NB.themes.map(theme => `
       <div class="col-md-6 col-xl-4">
-        <button class="theme-card ${currentTheme === theme.id ? 'active' : ''} ${theme.premium && !premium ? 'locked' : ''}" data-theme="${theme.id}" type="button">
-          <div class="theme-swatch theme-${theme.id}" style="background:linear-gradient(135deg,var(--theme-a,#0f9f68),var(--theme-b,#dff7eb))"></div>
+        <button class="theme-card theme-preview-card theme-${theme.id} ${currentTheme === theme.id ? 'active' : ''} ${theme.premium && !premium ? 'locked' : ''}" data-theme="${theme.id}" type="button">
+          <div class="theme-preview-window">
+            <div class="theme-preview-hero">
+              <span></span>
+              <b>${NB.escapeHtml(theme.name.split(' ')[0])}</b>
+            </div>
+            <div class="theme-preview-body">
+              <i></i>
+              <i></i>
+              <i></i>
+            </div>
+          </div>
           <div class="d-flex align-items-start justify-content-between gap-2">
             <div class="text-start">
               <h5 class="fw-bold mb-1">${NB.escapeHtml(theme.name)}</h5>
