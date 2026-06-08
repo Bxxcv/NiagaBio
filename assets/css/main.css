@@ -4128,3 +4128,101 @@ html { scroll-behavior: smooth; }
     padding-inline: 14px;
   }
 }
+
+
+/* v25 onboarding and UX flow final */
+.onboarding-next-card {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+  padding: 18px;
+  border: 1px solid rgba(15,159,104,.18);
+  border-radius: 22px;
+  background: linear-gradient(135deg, #ffffff 0%, #f3fff8 100%);
+  box-shadow: 0 16px 42px rgba(15,35,28,.07);
+}
+.next-step-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 10px;
+  color: var(--nb-green-dark);
+  font-size: .78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.dashboard-url-line {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  border: 1px solid var(--nb-line);
+  border-radius: 16px;
+  background: rgba(255,255,255,.72);
+  color: #475467;
+  font-size: .92rem;
+  font-weight: 700;
+  overflow: hidden;
+}
+.dashboard-url-line span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.table-empty-action,
+.empty-action {
+  min-height: 156px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  padding: 28px 18px;
+  color: var(--nb-muted);
+}
+.table-empty-action i,
+.empty-action i {
+  width: 48px;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: var(--nb-green-soft);
+  color: var(--nb-green-dark);
+  font-size: 1.35rem;
+}
+.table-empty-action b,
+.empty-action b {
+  color: #101828;
+  font-size: 1rem;
+}
+.table-empty-action span,
+.empty-action span {
+  max-width: 460px;
+  display: block;
+  line-height: 1.55;
+}
+.setup-item.done .bi-check-lg {
+  font-size: 1.1rem;
+}
+@media (max-width: 575px) {
+  .onboarding-next-card {
+    padding: 16px;
+    border-radius: 18px;
+  }
+  .dashboard-url-line {
+    font-size: .84rem;
+  }
+  .table-empty-action,
+  .empty-action {
+    min-height: 132px;
+    padding: 22px 14px;
+  }
+}

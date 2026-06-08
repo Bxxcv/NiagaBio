@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (profile?.username) {
     const publicHref = `u?username=${encodeURIComponent(profile.username)}`;
-    document.querySelectorAll('a[href^="u?username=demo"], a[href="u"], #sidebarPublicPreview, #openPublicPage').forEach(link => {
+    document.querySelectorAll('a[href^="u?username=demo"], a[href="u"], #sidebarPublicPreview, #openPublicPage, #openPublicPageHero').forEach(link => {
       link.href = publicHref;
     });
     document.querySelectorAll('input[value="u?username=demo"], #publicUrlInput').forEach(input => {

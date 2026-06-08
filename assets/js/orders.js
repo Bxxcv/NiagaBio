@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           <td>${item.qty}</td>
           <td class="fw-bold text-green">${NB.money(item.revenue)}</td>
         </tr>
-      `).join('') || '<tr><td colspan="4" class="text-center text-muted">Belum ada pesanan selesai.</td></tr>';
+      `).join('') || '<tr><td colspan="4" class="text-center text-muted py-4">Belum ada pesanan selesai. Pesanan yang sudah ditandai selesai akan masuk rekap di sini.</td></tr>';
     }
   }
 
@@ -178,10 +178,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderSummary(orders);
     if ($('filteredCount')) $('filteredCount').textContent = `${orders.length} order`;
 
-    const empty = '<tr><td colspan="6" class="text-center text-muted py-4">Belum ada pesanan sesuai filter.</td></tr>';
+    const empty = `<tr><td colspan="6"><div class="table-empty-action"><i class="bi bi-receipt"></i><b>Belum ada pesanan</b><span>Pesanan dari halaman toko akan muncul di sini setelah pembeli checkout.</span></div></td></tr>`;
     $('orderRows').innerHTML = orders.map(rowHtml).join('') || empty;
     if ($('orderCards')) {
-      $('orderCards').innerHTML = orders.map(cardHtml).join('') || '<div class="empty-state py-4">Belum ada pesanan sesuai filter.</div>';
+      $('orderCards').innerHTML = orders.map(cardHtml).join('') || '<div class="empty-state empty-action py-4"><i class="bi bi-receipt"></i><b>Belum ada pesanan</b><span>Pesanan dari halaman toko akan muncul di sini.</span></div>';
     }
     attachActions(orders);
   }

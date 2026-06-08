@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           </div>
         </div>
       </div>
-    `).join('') || '<div class="col-12"><div class="empty-state">Belum ada gallery.</div></div>';
+    `).join('') || `<div class="col-12"><div class="empty-state empty-action"><i class="bi bi-images"></i><b>Belum ada gallery</b><span>Upload foto produk, testimoni, atau portfolio supaya toko terlihat lebih meyakinkan.</span></div></div>`;
 
     document.querySelectorAll('[data-del]').forEach(button => {
       button.addEventListener('click', async () => {

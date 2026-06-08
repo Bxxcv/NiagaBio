@@ -104,14 +104,26 @@
                 Halo, <span data-user-name>User</span>
               </h2>
               <p class="text-muted mb-4">
-                Pantau produk, pesanan, link bio, dan status toko kamu dari satu tempat.
+                Mulai dari langkah paling penting, lalu cek toko publik kamu sebelum dibagikan ke pembeli.
               </p>
-              <div class="dashboard-url-box">
+              <div class="onboarding-next-card" id="nextStepCard">
+                <span class="next-step-eyebrow"><i class="bi bi-compass"></i> Langkah berikutnya</span>
+                <h3 class="h5 fw-black mb-2" id="nextStepTitle">Lengkapi profil toko</h3>
+                <p class="text-muted mb-3" id="nextStepDesc">Isi nama toko, username, WhatsApp, dan bio supaya halaman toko siap dipakai.</p>
+                <div class="d-flex flex-wrap gap-2">
+                  <a class="btn btn-nb btn-sm" id="nextStepAction" href="profile">
+                    <i class="bi bi-arrow-right-circle me-1"></i>
+                    Mulai sekarang
+                  </a>
+                  <a class="btn btn-outline-nb btn-sm" id="openPublicPageHero" href="u?username=demo" target="_blank" rel="noopener">
+                    <i class="bi bi-eye me-1"></i>
+                    Cek toko
+                  </a>
+                </div>
+              </div>
+              <div class="dashboard-url-line mt-3">
                 <i class="bi bi-link-45deg"></i>
-                <input id="publicUrlInput" class="form-control" value="u?username=demo" readonly>
-                <button id="copyPublicUrl" class="btn btn-outline-nb" type="button">
-                  <i class="bi bi-copy"></i>
-                </button>
+                <span id="publicUrlText">Link toko akan muncul setelah username dibuat.</span>
               </div>
             </div>
             <div class="col-lg-5">
@@ -132,7 +144,7 @@
                     <i class="bi bi-eye me-1"></i>
                     Preview toko
                   </a>
-                  <a class="btn btn-outline-nb btn-sm" href="upgrade">
+                  <a class="btn btn-outline-nb btn-sm" id="dashboardUpgradeBtn" href="upgrade">
                     <i class="bi bi-lightning-charge me-1"></i>
                     Upgrade
                   </a>

@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           </td>
         </tr>
       `;
-    }).join('') || '<tr><td colspan="4" class="text-center text-muted">Belum ada link.</td></tr>';
+    }).join('') || `<tr><td colspan="4"><div class="table-empty-action"><i class="bi bi-link-45deg"></i><b>Belum ada link custom</b><span>Tambahkan WhatsApp, Shopee, katalog, atau link penting lainnya.</span></div></td></tr>`;
 
     document.querySelectorAll('[data-edit]').forEach(button => {
       button.addEventListener('click', () => fill(rows.find(item => item.id === button.dataset.edit)));

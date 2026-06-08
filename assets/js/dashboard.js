@@ -84,25 +84,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     setText('metricGallery', galleryRows.length);
 
     const publicUrlInput = $('publicUrlInput');
+    const publicUrlText = $('publicUrlText');
     const openPublicPage = $('openPublicPage');
+    const openPublicPageHero = $('openPublicPageHero');
     const sidebarPublicPreview = $('sidebarPublicPreview');
     if (publicUrlInput) publicUrlInput.value = publicUrl;
+    if (publicUrlText) publicUrlText.textContent = publicUrl;
     if (openPublicPage) openPublicPage.href = publicUrl;
+    if (openPublicPageHero) openPublicPageHero.href = publicUrl;
     if (sidebarPublicPreview) sidebarPublicPreview.href = publicUrl;
-
-    const copyButton = $('copyPublicUrl');
-    if (copyButton) {
-      copyButton.addEventListener('click', async () => {
-        try {
-          await navigator.clipboard.writeText(publicUrl);
-          nbToast('Link public toko disalin.');
-        } catch (error) {
-          publicUrlInput?.select();
-          document.execCommand('copy');
-          nbToast('Link public toko disalin.');
-        }
-      });
-    }
 
     setText('planName', premium ? 'Premium' : 'Free');
     setText('planDesc', premium ? 'Semua fitur seller aktif.' : 'Fitur dasar untuk mulai jualan.');
@@ -112,6 +102,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         ? `Aktif sampai ${formatDate(profile?.plan_end_date)}`
         : 'Upgrade untuk membuka gallery, QRIS, tema premium, dan limit lebih besar.'
     );
+    const upgradeButton = $('dashboardUpgradeBtn');
+    if (upgradeButton) upgradeButton.classList.toggle('d-none', premium);
 
     fillLimit('limitProducts', products.length, limits.products);
     fillLimit('limitLinks', links.length, limits.links);
@@ -130,6 +122,57 @@ document.addEventListener('DOMContentLoaded', async () => {
     const checkoutReady = Boolean(checkout.whatsapp_number || checkout.qris_enabled || profile?.whatsapp_number);
     const setupItems = [profileReady, productsReady, linksReady, checkoutReady];
     const setupScore = Math.round((setupItems.filter(Boolean).length / setupItems.length) * 100);
+
+    const nextSteps = [
+      {
+        done: profileReady,
+        title: 'Lengkapi profil toko',
+        desc: 'Isi nama toko, username, WhatsApp, dan bio supaya pembeli tahu toko kamu.',
+        href: 'profile',
+        label: 'Lengkapi profil'
+      },
+      {
+        done: productsReady,
+        title: 'Tambah produk pertama',
+        desc: 'Produk pertama bikin halaman toko kamu langsung bisa dipakai untuk menerima order.',
+        href: 'products',
+        label: 'Tambah produk'
+      },
+      {
+        done: linksReady,
+        title: 'Tambahkan link atau sosial',
+        desc: 'Masukkan WhatsApp, Shopee, Instagram, katalog, atau link penting lainnya.',
+        href: 'links',
+        label: 'Tambah link'
+      },
+      {
+        done: checkoutReady,
+        title: 'Atur checkout toko',
+        desc: 'Pastikan nomor WhatsApp order aktif. Premium bisa menambahkan QRIS manual.',
+        href: 'checkout-settings',
+        label: 'Atur checkout'
+      }
+    ];
+    const nextStep = nextSteps.find(step => !step.done) || {
+      title: 'Toko kamu siap dibagikan',
+      desc: 'Semua langkah dasar sudah lengkap. Cek halaman toko, lalu bagikan ke calon pembeli.',
+      href: publicUrl,
+      label: 'Cek toko'
+    };
+    setText('nextStepTitle', nextStep.title);
+    setText('nextStepDesc', nextStep.desc);
+    const nextAction = $('nextStepAction');
+    if (nextAction) {
+      nextAction.href = nextStep.href;
+      nextAction.innerHTML = `<i class="bi bi-arrow-right-circle me-1"></i>${NB.escapeHtml(nextStep.label)}`;
+      if (nextStep.href === publicUrl) {
+        nextAction.target = '_blank';
+        nextAction.rel = 'noopener';
+      } else {
+        nextAction.removeAttribute('target');
+        nextAction.removeAttribute('rel');
+      }
+    }
 
     setSetupItem('setupProfile', profileReady);
     setSetupItem('setupProducts', productsReady);

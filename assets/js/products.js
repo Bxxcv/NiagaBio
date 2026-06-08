@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           <button class="btn btn-sm btn-outline-danger" data-del="${product.id}">Hapus</button>
         </td>
       </tr>
-    `).join('') || '<tr><td colspan="5" class="text-center text-muted">Belum ada produk.</td></tr>';
+    `).join('') || `<tr><td colspan="5"><div class="table-empty-action"><i class="bi bi-bag-plus"></i><b>Belum ada produk</b><span>Tambahkan produk pertama supaya toko kamu bisa menerima order.</span><a href="products" class="btn btn-nb btn-sm">Tambah Produk</a></div></td></tr>`;
 
     document.querySelectorAll('[data-edit]').forEach(button => {
       button.addEventListener('click', () => fill(rows.find(item => item.id === button.dataset.edit)));

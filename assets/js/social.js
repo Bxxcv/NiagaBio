@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           <button class="btn btn-sm btn-outline-danger" data-del="${social.id}">Hapus</button>
         </td>
       </tr>
-    `).join('') || '<tr><td colspan="3" class="text-center text-muted">Belum ada social media.</td></tr>';
+    `).join('') || `<tr><td colspan="3"><div class="table-empty-action"><i class="bi bi-share"></i><b>Belum ada sosial media</b><span>Hubungkan Instagram, TikTok, YouTube, atau platform lainnya.</span></div></td></tr>`;
 
     document.querySelectorAll('[data-edit]').forEach(button => {
       button.addEventListener('click', () => fill(rows.find(item => item.id === button.dataset.edit)));
