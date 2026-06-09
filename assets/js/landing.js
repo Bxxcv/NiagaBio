@@ -1,20 +1,32 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const items = document.querySelectorAll('[data-reveal]');
+  const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const intro = document.getElementById('brandIntro');
 
-  if (!('IntersectionObserver' in window)) {
-    items.forEach(item => item.classList.add('is-visible'));
-  } else {
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-          observer.unobserve(entry.target);
+  // Keep the brand intro light. It must never block the landing page for long.
+  if (intro) {
+    let hasSeenIntro = false;
+    try {
+      hasSeenIntro = sessionStorage.getItem('niagabio_intro_seen') === '1';
+    } catch (error) {
+      hasSeenIntro = false;
+    }
+
+    if (prefersReducedMotion || hasSeenIntro) {
+      intro.classList.add('intro-done');
+    } else {
+      window.setTimeout(() => {
+        intro.classList.add('intro-done');
+        try {
+          sessionStorage.setItem('niagabio_intro_seen', '1');
+        } catch (error) {
+          // Ignore storage errors.
         }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -44px 0px' });
-
-    items.forEach(item => observer.observe(item));
+      }, 1150);
+    }
   }
+
+  // No lazy reveal on landing. Content should feel instant on every device.
+  document.querySelectorAll('[data-reveal]').forEach(item => item.classList.add('is-visible'));
 
   const nav = document.getElementById('nav');
   if (nav && window.bootstrap) {
@@ -23,6 +35,40 @@ document.addEventListener('DOMContentLoaded', () => {
       link.addEventListener('click', () => {
         if (window.innerWidth < 992 && nav.classList.contains('show')) collapse.hide();
       });
+    });
+  }
+
+  const help = document.getElementById('landingHelp');
+  const helpToggle = help?.querySelector('.help-toggle');
+  const helpPanel = document.getElementById('helpPanel');
+
+  function setHelpOpen(isOpen) {
+    if (!help || !helpToggle || !helpPanel) return;
+    help.classList.toggle('is-open', isOpen);
+    helpToggle.setAttribute('aria-expanded', String(isOpen));
+    helpPanel.setAttribute('aria-hidden', String(!isOpen));
+  }
+
+  if (help && helpToggle) {
+    helpToggle.addEventListener('click', event => {
+      event.stopPropagation();
+      setHelpOpen(!help.classList.contains('is-open'));
+    });
+
+    helpPanel?.addEventListener('click', event => event.stopPropagation());
+
+    help.querySelectorAll('[data-help-link]').forEach(link => {
+      link.addEventListener('click', () => setHelpOpen(false));
+    });
+
+    document.addEventListener('click', event => {
+      if (!help.classList.contains('is-open')) return;
+      if (help.contains(event.target)) return;
+      setHelpOpen(false);
+    });
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') setHelpOpen(false);
     });
   }
 });
