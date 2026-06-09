@@ -216,6 +216,15 @@
     return escapeHtml(normalizeImageUrl(value, fallback));
   }
 
+  function assertSafeImageUrl(value, fallback = '') {
+    const raw = String(value || '').trim();
+    const normalized = normalizeImageUrl(raw, fallback);
+    if (raw && !normalized) {
+      throw new Error('URL gambar tidak valid atau tidak aman.');
+    }
+    return normalized;
+  }
+
   function safeIconClass(value, fallback = 'bi-link-45deg') {
     const icon = String(value || '').trim();
     return /^bi-[a-z0-9-]+$/i.test(icon) ? icon : fallback;
@@ -331,6 +340,7 @@
   }
 
   function seedDemo() {
+    if (cfg.DEMO_MODE !== true) return;
     if (localStorage.getItem('nb_seeded_v2')) return;
 
     const adminId = 'user_admin';
@@ -676,9 +686,53 @@
     return rows;
   }
 
+  function normalizePayloadForTable(table, row) {
+    const payload = { ...row };
+
+    if (table === 'products') {
+      payload.name = String(payload.name || '').trim().slice(0, 120);
+      if (payload.name.length < 2) throw new Error('Nama produk wajib diisi.');
+      payload.description = String(payload.description || '').slice(0, 1000);
+      payload.category = String(payload.category || '').trim().slice(0, 80);
+      payload.price = Math.max(0, Number(payload.price || 0));
+      payload.image_url = assertSafeImageUrl(payload.image_url || 'assets/img/placeholder-product.svg', 'assets/img/placeholder-product.svg');
+    }
+
+    if (table === 'custom_links') {
+      payload.title = String(payload.title || '').trim().slice(0, 80);
+      if (!payload.title) throw new Error('Judul link wajib diisi.');
+      payload.url = normalizeExternalUrl(payload.url || '', '');
+      if (!payload.url) throw new Error('URL link tidak valid.');
+      payload.icon = safeIconClass(payload.icon || detectLinkIcon(payload.url, payload.title));
+    }
+
+    if (table === 'social_links') {
+      payload.platform = String(payload.platform || 'website').toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 30) || 'website';
+      payload.url = normalizeExternalUrl(payload.url || '', '');
+      if (!payload.url) throw new Error('URL social media tidak valid.');
+    }
+
+    if (table === 'gallery') {
+      payload.image_url = assertSafeImageUrl(payload.image_url || '', '');
+      if (!payload.image_url) throw new Error('Gambar gallery wajib diisi.');
+      payload.caption = String(payload.caption || '').slice(0, 160);
+    }
+
+    if (table === 'checkout_settings') {
+      payload.whatsapp_number = normalizePhone(payload.whatsapp_number || '');
+      payload.qris_image_url = assertSafeImageUrl(payload.qris_image_url || '', '');
+      payload.qris_name = String(payload.qris_name || '').trim().slice(0, 80);
+      payload.payment_note = String(payload.payment_note || '').slice(0, 500);
+    }
+
+    return payload;
+  }
+
   async function save(table, row) {
+    const preparedRow = normalizePayloadForTable(table, row);
+
     if (sb) {
-      let payload = { ...row };
+      let payload = preparedRow;
       if (payload.id && !isUuid(payload.id)) delete payload.id;
 
       if (table === 'orders') {
@@ -713,20 +767,20 @@
 
     const key = tableKeys[table];
     const rows = read(key, []);
-    let index = rows.findIndex(item => item.id === row.id);
+    let index = rows.findIndex(item => item.id === preparedRow.id);
 
     if (table === 'orders' && index < 0) {
-      const product = read(LS.products, []).find(item => item.id === row.product_id);
+      const product = read(LS.products, []).find(item => item.id === preparedRow.product_id);
       if (product) {
-        row.product_name = product.name;
-        row.total_price = Number(product.price || 0) * Number(row.quantity || 1);
-        row.payment_status = 'pending';
-        row.paid_at = null;
+        preparedRow.product_name = product.name;
+        preparedRow.total_price = Number(product.price || 0) * Number(preparedRow.quantity || 1);
+        preparedRow.payment_status = 'pending';
+        preparedRow.paid_at = null;
       }
     }
 
-    if (index >= 0) rows[index] = { ...rows[index], ...row, updated_at: now() };
-    else rows.push({ ...row, id: row.id || uid(table.slice(0, 3)), created_at: now(), updated_at: now() });
+    if (index >= 0) rows[index] = { ...rows[index], ...preparedRow, updated_at: now() };
+    else rows.push({ ...preparedRow, id: preparedRow.id || uid(table.slice(0, 3)), created_at: now(), updated_at: now() });
 
     write(key, rows);
     const saved = rows[index >= 0 ? index : rows.length - 1];
@@ -1062,6 +1116,7 @@
     normalizeImageUrl,
     safeHref,
     safeImageUrl,
+    assertSafeImageUrl,
     safeIconClass,
     normalizePhone,
     socialIcon,
