@@ -128,6 +128,56 @@ document.addEventListener('DOMContentLoaded', async () => {
       element.classList.add('d-none');
     });
   }
+
+
+  function ensureNotificationEntry() {
+    const navs = document.querySelectorAll('.sidebar nav, .admin-nav');
+    navs.forEach(nav => {
+      if (nav.querySelector('[data-nav="notifications"]')) return;
+      const link = document.createElement('a');
+      link.className = 'side-link notification-side-link';
+      link.dataset.nav = 'notifications';
+      link.href = 'notifications';
+      link.innerHTML = '<i class="bi bi-bell"></i><span>Notifikasi</span><span class="notification-badge d-none" data-notif-badge>0</span>';
+
+      const before = nav.querySelector('[data-nav="upgrade"]') || nav.querySelector('[data-admin-only]') || nav.querySelector('hr') || nav.querySelector('.admin-sidebar-divider');
+      if (before) nav.insertBefore(link, before);
+      else nav.appendChild(link);
+    });
+  }
+
+  async function refreshNotificationBadge(showToast = false) {
+    if (!window.NB?.unreadNotificationsCount) return;
+    try {
+      const count = await NB.unreadNotificationsCount();
+      document.querySelectorAll('[data-notif-badge]').forEach(badge => {
+        badge.textContent = count > 99 ? '99+' : String(count);
+        badge.classList.toggle('d-none', count <= 0);
+      });
+
+      if (showToast && count > 0 && window.NB?.listNotifications) {
+        const items = await NB.listNotifications(5);
+        const latestUnread = items.find(item => !item.is_read);
+        const latestTime = latestUnread ? new Date(latestUnread.created_at).getTime() : 0;
+        const previousTime = Number(sessionStorage.getItem('nb_last_notif_toast') || Date.now());
+        if (latestUnread && latestTime > previousTime) {
+          nbToast(latestUnread.title || 'Ada notifikasi baru', 'warning');
+          sessionStorage.setItem('nb_last_notif_toast', String(latestTime));
+        }
+      }
+    } catch (error) {
+      console.warn('[NiagaBio] Notifikasi belum siap:', error.message);
+    }
+  }
+
+  ensureNotificationEntry();
+  if ((location.pathname.split('/').filter(Boolean).pop() || '').replace(/\.html$/i, '') === 'notifications') {
+    setActiveSide('notifications');
+  }
+  await refreshNotificationBadge(false);
+  sessionStorage.setItem('nb_last_notif_toast', String(Date.now()));
+  window.NB_REFRESH_NOTIFICATIONS = () => refreshNotificationBadge(false);
+  setInterval(() => refreshNotificationBadge(true), 45000);
 });
 
 

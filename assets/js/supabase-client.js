@@ -26,7 +26,8 @@
     checkout: 'nb_checkout_settings',
     orders: 'nb_orders',
     settings: 'nb_app_settings',
-    premiumRequests: 'nb_premium_requests'
+    premiumRequests: 'nb_premium_requests',
+    notifications: 'nb_notifications'
   };
 
   const tableKeys = {
@@ -38,7 +39,8 @@
     checkout_settings: LS.checkout,
     orders: LS.orders,
     app_settings: LS.settings,
-    premium_requests: LS.premiumRequests
+    premium_requests: LS.premiumRequests,
+    notifications: LS.notifications
   };
 
   const limits = {
@@ -403,6 +405,7 @@
     ]);
 
     write(LS.premiumRequests, []);
+    write(LS.notifications, []);
 
     write(LS.orders, [
       { id: 'ord_1', seller_id: sellerId, buyer_name: 'Rizky', buyer_phone: '628111111111', product_id: 'prd_1', product_name: 'Hoodie Basic', quantity: 1, total_price: 120000, payment_method: 'whatsapp', payment_status: 'paid', proof_image_url: '', created_at: now(), paid_at: now() },
@@ -726,7 +729,20 @@
     else rows.push({ ...row, id: row.id || uid(table.slice(0, 3)), created_at: now(), updated_at: now() });
 
     write(key, rows);
-    return rows[index >= 0 ? index : rows.length - 1];
+    const saved = rows[index >= 0 ? index : rows.length - 1];
+
+    if (table === 'orders' && index < 0 && saved.seller_id) {
+      localCreateNotification({
+        user_id: saved.seller_id,
+        type: 'order_new',
+        title: 'Pesanan baru',
+        message: `${saved.buyer_name || 'Pembeli'} memesan ${saved.product_name || 'produk'} (${money(saved.total_price)}).`,
+        link_url: 'orders',
+        metadata: { order_id: saved.id }
+      });
+    }
+
+    return saved;
   }
 
   async function remove(table, id) {
@@ -838,7 +854,111 @@
     const rows = read(LS.premiumRequests, []);
     rows.push({ ...row, id: uid('req'), updated_at: now() });
     write(LS.premiumRequests, rows);
+
+    read(LS.profiles, [])
+      .filter(profile => profile.role === 'admin' && profile.status !== 'blocked' && profile.status !== 'deleted')
+      .forEach(admin => localCreateNotification({
+        user_id: admin.user_id,
+        actor_user_id: user.id,
+        type: 'premium_request_new',
+        title: 'Request Premium baru',
+        message: `${row.shop_name} mengirim pengajuan upgrade Premium.`,
+        link_url: 'admin#requests',
+        metadata: { request_id: rows[rows.length - 1].id }
+      }));
+
     return rows[rows.length - 1];
+  }
+
+
+  function localCreateNotification(row) {
+    const rows = read(LS.notifications, []);
+    const notification = {
+      id: row.id || uid('notif'),
+      user_id: row.user_id,
+      actor_user_id: row.actor_user_id || null,
+      type: String(row.type || 'info'),
+      title: String(row.title || 'Notifikasi'),
+      message: String(row.message || ''),
+      link_url: isSafeRelativeHref(row.link_url || '') ? String(row.link_url).trim() : normalizeExternalUrl(row.link_url || 'notifications', 'notifications'),
+      metadata: row.metadata || {},
+      is_read: Boolean(row.is_read),
+      read_at: row.read_at || null,
+      created_at: row.created_at || now()
+    };
+    rows.unshift(notification);
+    write(LS.notifications, rows.slice(0, 200));
+    return notification;
+  }
+
+  async function listNotifications(limit = 50) {
+    if (sb) {
+      const { data, error } = await sb
+        .from('notifications')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(Number(limit || 50));
+      if (error) throw error;
+      return data || [];
+    }
+
+    const user = await currentUser();
+    if (!user) return [];
+    return read(LS.notifications, [])
+      .filter(item => item.user_id === user.id)
+      .sort((a, b) => String(b.created_at || '').localeCompare(a.created_at || ''))
+      .slice(0, Number(limit || 50));
+  }
+
+  async function unreadNotificationsCount() {
+    if (sb) {
+      const { count, error } = await sb
+        .from('notifications')
+        .select('id', { count: 'exact', head: true })
+        .eq('is_read', false);
+      if (error) throw error;
+      return count || 0;
+    }
+
+    const user = await currentUser();
+    if (!user) return 0;
+    return read(LS.notifications, []).filter(item => item.user_id === user.id && !item.is_read).length;
+  }
+
+  async function markNotificationRead(id) {
+    if (!id) return false;
+
+    if (sb) {
+      const { error } = await sb
+        .from('notifications')
+        .update({ is_read: true, read_at: now() })
+        .eq('id', id);
+      if (error) throw error;
+      return true;
+    }
+
+    const rows = read(LS.notifications, []);
+    const index = rows.findIndex(item => String(item.id) === String(id));
+    if (index >= 0) rows[index] = { ...rows[index], is_read: true, read_at: now() };
+    write(LS.notifications, rows);
+    return true;
+  }
+
+  async function markAllNotificationsRead() {
+    if (sb) {
+      const { error } = await sb
+        .from('notifications')
+        .update({ is_read: true, read_at: now() })
+        .eq('is_read', false);
+      if (error) throw error;
+      return true;
+    }
+
+    const user = await currentUser();
+    if (!user) return false;
+    const rows = read(LS.notifications, []).map(item => item.user_id === user.id ? { ...item, is_read: true, read_at: now() } : item);
+    write(LS.notifications, rows);
+    return true;
   }
 
 
@@ -887,6 +1007,17 @@
         plan_end_date: endDate
       });
     }
+
+    localCreateNotification({
+      user_id: requests[requestIndex].user_id,
+      type: action === 'approved' ? 'premium_approved' : 'premium_rejected',
+      title: action === 'approved' ? 'Upgrade Premium disetujui' : 'Upgrade Premium ditolak',
+      message: action === 'approved'
+        ? 'Akun kamu sudah Premium. Fitur tema, gallery, dan QRIS sudah aktif.'
+        : 'Pengajuan Premium kamu ditolak. Cek kembali bukti pembayaran atau hubungi admin.',
+      link_url: action === 'approved' ? 'dashboard' : 'upgrade',
+      metadata: { request_id: requests[requestIndex].id }
+    });
 
     return requests[requestIndex];
   }
@@ -958,6 +1089,10 @@
     createPremiumRequest,
     resetSalesRecap,
     adminReviewPremiumRequest,
-    adminSoftDeleteUser
+    adminSoftDeleteUser,
+    listNotifications,
+    unreadNotificationsCount,
+    markNotificationRead,
+    markAllNotificationsRead
   };
 })();
