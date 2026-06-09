@@ -762,7 +762,6 @@ body.landing-body {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  text-decoration: none;
 }
 .social-pill {
   width: 44px;
@@ -913,4 +912,21 @@ body.landing-body {
   .landing-hero h1 {
     font-size: clamp(2.15rem, 12vw, 2.8rem);
   }
+}
+
+/* v32 production cleanup: keep landing full-width on mobile and social footer links neat */
+.landing-body,
+.landing-body main,
+.landing-body footer {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+.footer-social a {
+  display: inline-flex;
+  color: inherit;
+}
+.footer-social a:hover .social-pill,
+.footer-social a:focus-visible .social-pill {
+  transform: translateY(-2px);
+  border-color: rgba(15, 159, 104, .55);
 }
