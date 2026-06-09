@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         note
       });
 
-      nbToast('Pengajuan upgrade terkirim. Tunggu admin memproses di Admin Master.');
+      nbToast('Pengajuan upgrade terkirim. Tunggu admin memproses upgrade kamu dalam waktu sekitar 2-3 jam.');
       form.reset();
     } catch (error) {
       nbToast(error.message || 'Gagal mengirim pengajuan upgrade.', 'danger');
