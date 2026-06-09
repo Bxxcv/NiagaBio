@@ -14,6 +14,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     userRows: $('userRows'),
     orderRows: $('orderRows'),
     requestRows: $('requestRows'),
+    platformRevenueValue: $('platformRevenueValue'),
+    platformApprovedRequests: $('platformApprovedRequests'),
+    platformPendingRequests: $('platformPendingRequests'),
+    platformExpiringSoon: $('platformExpiringSoon'),
+    platformLatestPremium: $('platformLatestPremium'),
+    platformLatestRequests: $('platformLatestRequests'),
     userSearch: $('adminUserSearch'),
     planFilter: $('adminPlanFilter'),
     statusFilter: $('adminStatusFilter'),
@@ -35,6 +41,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     premiumNote: $('adminPremiumNote'),
     saveSettingsBtn: $('adminSaveSettingsBtn'),
     resetSettingsBtn: $('adminResetSettingsBtn'),
+    clearProcessedRequestsBtn: $('adminClearProcessedRequestsBtn'),
+    exportUsersBtn: $('adminExportUsersBtn'),
+    exportRequestsBtn: $('adminExportRequestsBtn'),
+    printReportBtn: $('adminPrintReportBtn'),
     userModal: $('adminUserModal'),
     userModalTitle: $('adminUserModalTitle'),
     userModalSubtitle: $('adminUserModalSubtitle'),
@@ -61,6 +71,40 @@ document.addEventListener('DOMContentLoaded', async () => {
     : null;
 
   const safe = value => NB.escapeHtml(value ?? '');
+
+  function setText(el, value) {
+    if (el) el.textContent = String(value ?? '');
+  }
+
+  function premiumPrice() {
+    return Number(state.settings.premium_price || (window.NIAGABIO_CONFIG && window.NIAGABIO_CONFIG.PREMIUM_PRICE) || 80000);
+  }
+
+  function isApprovedRequest(request) {
+    return String(request.status || '').toLowerCase() === 'approved';
+  }
+
+  function isPendingRequest(request) {
+    return String(request.status || 'pending').toLowerCase() === 'pending';
+  }
+
+  function platformPremiumRevenue() {
+    return state.premiumRequests.filter(isApprovedRequest).length * premiumPrice();
+  }
+
+  function downloadCsv(filename, rows) {
+    const clean = value => `"${String(value ?? '').replace(/"/g, '""')}"`;
+    const csv = rows.map(row => row.map(clean).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
 
   function formatDate(value) {
     if (!value) return '-';
@@ -186,19 +230,19 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function renderMetrics() {
-    const activeProfiles = state.profiles.filter(profile => profile.status !== 'deleted');
+    const activeProfiles = state.profiles.filter(profile => !['deleted', 'blocked'].includes(profile.status));
     const premium = activeProfiles.filter(profile => profile.plan === 'premium');
     const free = activeProfiles.filter(profile => profile.plan !== 'premium');
-    const blocked = state.profiles.filter(profile => profile.status === 'blocked' || profile.status === 'deleted');
-    const paidOrders = state.orders.filter(order => order.payment_status === 'paid');
-    const omset = paidOrders.reduce((sum, order) => sum + Number(order.total_price || 0), 0);
+    const inactive = state.profiles.filter(profile => profile.status === 'blocked' || profile.status === 'deleted');
+    const pendingRequests = state.premiumRequests.filter(isPendingRequest);
+    const revenue = platformPremiumRevenue();
 
-    if (refs.usersMetric) refs.usersMetric.textContent = activeProfiles.length;
-    if (refs.premiumMetric) refs.premiumMetric.textContent = premium.length;
-    if (refs.freeMetric) refs.freeMetric.textContent = free.length;
-    if (refs.blockedMetric) refs.blockedMetric.textContent = blocked.length;
-    if (refs.ordersMetric) refs.ordersMetric.textContent = state.orders.length;
-    if (refs.omsetMetric) refs.omsetMetric.textContent = NB.money(omset);
+    setText(refs.usersMetric, activeProfiles.length);
+    setText(refs.premiumMetric, premium.length);
+    setText(refs.freeMetric, free.length);
+    setText(refs.blockedMetric, inactive.length);
+    setText(refs.ordersMetric, pendingRequests.length);
+    setText(refs.omsetMetric, NB.money(revenue));
   }
 
   function filteredProfiles() {
@@ -365,34 +409,40 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!refs.requestRows) return;
 
     const rows = filteredRequests();
-    if (refs.requestCountInfo) refs.requestCountInfo.textContent = `${rows.length} request tampil`;
+    const pendingTotal = state.premiumRequests.filter(isPendingRequest).length;
+    if (refs.requestCountInfo) refs.requestCountInfo.textContent = `${rows.length} tampil • ${pendingTotal} pending`;
 
     refs.requestRows.innerHTML = rows.map(request => {
       const profile = state.profiles.find(item => item.user_id === request.user_id);
-      const pending = (request.status || 'pending') === 'pending';
+      const pending = isPendingRequest(request);
       return `
-        <tr>
-          <td>
-            <div class="fw-semibold">${safe(request.email || profile?.email || '-')}</div>
-            <small class="text-muted">@${safe(profile?.username || '-')}</small>
-          </td>
-          <td>
-            <div class="fw-bold">${safe(request.shop_name || '-')}</div>
-            <small class="text-muted">Pemilik: ${safe(request.owner_name || '-')}</small>
-            ${request.note ? `<div class="small text-muted mt-1">${safe(request.note)}</div>` : ''}
-          </td>
-          <td>${requestBadge(request.status || 'pending')}</td>
-          <td>${request.proof_url ? `<a class="btn btn-sm btn-outline-nb" href="${NB.safeHref(request.proof_url)}" target="_blank" rel="noopener">Buka Bukti</a>` : '-'}</td>
-          <td><small>${formatDateTime(request.created_at)}</small></td>
-          <td class="text-end">
-            <div class="admin-action-row justify-content-end">
-              <button class="btn btn-sm btn-success" type="button" data-request-approve="${safe(request.id)}" ${pending ? '' : 'disabled'}>Approve</button>
-              <button class="btn btn-sm btn-outline-danger" type="button" data-request-reject="${safe(request.id)}" ${pending ? '' : 'disabled'}>Reject</button>
+        <article class="admin-request-card ${pending ? 'is-pending' : ''}">
+          <div class="admin-request-main">
+            <div class="admin-request-user">
+              <div class="admin-request-avatar">${safe((request.shop_name || request.email || 'N').slice(0, 1)).toUpperCase()}</div>
+              <div>
+                <h3>${safe(request.shop_name || 'Request Premium')}</h3>
+                <p>${safe(request.email || profile?.email || '-')} ${profile?.username ? `• @${safe(profile.username)}` : ''}</p>
+              </div>
             </div>
-          </td>
-        </tr>
+            <div class="admin-request-meta">
+              ${requestBadge(request.status || 'pending')}
+              <span>${formatDateTime(request.created_at)}</span>
+            </div>
+          </div>
+          <div class="admin-request-info">
+            <div><span>Pemilik</span><b>${safe(request.owner_name || '-')}</b></div>
+            <div><span>Catatan</span><b>${safe(request.note || 'Tidak ada catatan')}</b></div>
+            <div><span>Bukti</span>${request.proof_url ? `<a class="btn btn-sm btn-outline-nb" href="${NB.safeHref(request.proof_url)}" target="_blank" rel="noopener">Buka Bukti</a>` : '<b>-</b>'}</div>
+          </div>
+          <div class="admin-request-actions">
+            <button class="btn btn-sm btn-success" type="button" data-request-approve="${safe(request.id)}" ${pending ? '' : 'disabled'}>Approve</button>
+            <button class="btn btn-sm btn-outline-danger" type="button" data-request-reject="${safe(request.id)}" ${pending ? '' : 'disabled'}>Reject</button>
+            <button class="btn btn-sm btn-outline-secondary" type="button" data-request-delete="${safe(request.id)}">Hapus</button>
+          </div>
+        </article>
       `;
-    }).join('') || '<tr><td colspan="6" class="text-center text-muted py-4">Belum ada request premium.</td></tr>';
+    }).join('') || '<div class="empty-card text-center py-4"><b>Tidak ada request sesuai filter.</b><p class="text-muted mb-0 small">Pending request baru akan muncul di sini.</p></div>';
 
     refs.requestRows.querySelectorAll('[data-request-approve]').forEach(button => {
       button.addEventListener('click', () => reviewPremiumRequest(button.dataset.requestApprove, 'approved'));
@@ -401,6 +451,50 @@ document.addEventListener('DOMContentLoaded', async () => {
     refs.requestRows.querySelectorAll('[data-request-reject]').forEach(button => {
       button.addEventListener('click', () => reviewPremiumRequest(button.dataset.requestReject, 'rejected'));
     });
+
+    refs.requestRows.querySelectorAll('[data-request-delete]').forEach(button => {
+      button.addEventListener('click', () => deletePremiumRequest(button.dataset.requestDelete));
+    });
+  }
+
+  function renderReports() {
+    const approved = state.premiumRequests.filter(isApprovedRequest);
+    const pending = state.premiumRequests.filter(isPendingRequest);
+    const rejected = state.premiumRequests.filter(request => String(request.status || '').toLowerCase() === 'rejected');
+    const sevenDays = Date.now() + 7 * 24 * 60 * 60 * 1000;
+    const expiring = state.profiles.filter(profile => {
+      if (profile.plan !== 'premium' || !profile.plan_end_date) return false;
+      const time = new Date(profile.plan_end_date).getTime();
+      return Number.isFinite(time) && time <= sevenDays && time >= Date.now();
+    });
+
+    setText(refs.platformRevenueValue, NB.money(platformPremiumRevenue()));
+    setText(refs.platformApprovedRequests, approved.length);
+    setText(refs.platformPendingRequests, pending.length);
+    setText(refs.platformExpiringSoon, expiring.length);
+
+    if (refs.platformLatestPremium) {
+      const latestPremium = state.profiles
+        .filter(profile => profile.plan === 'premium' && profile.status !== 'deleted')
+        .sort((a, b) => String(b.plan_end_date || b.updated_at || '').localeCompare(String(a.plan_end_date || a.updated_at || '')))
+        .slice(0, 6);
+      refs.platformLatestPremium.innerHTML = latestPremium.map(profile => `
+        <div class="admin-feed-row">
+          <div><b>${safe(profile.display_name || profile.email || 'User')}</b><small>@${safe(profile.username || '-')}</small></div>
+          <span>${formatDate(profile.plan_end_date)}</span>
+        </div>
+      `).join('') || '<div class="text-muted small">Belum ada user premium.</div>';
+    }
+
+    if (refs.platformLatestRequests) {
+      const latestRequests = state.premiumRequests.slice(0, 8);
+      refs.platformLatestRequests.innerHTML = latestRequests.map(request => `
+        <div class="admin-feed-row">
+          <div><b>${safe(request.shop_name || request.email || 'Request')}</b><small>${safe(request.email || '-')}</small></div>
+          <span>${requestBadge(request.status || 'pending')}</span>
+        </div>
+      `).join('') || '<div class="text-muted small">Belum ada request premium.</div>';
+    }
   }
 
   function renderSettings() {
@@ -419,6 +513,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderUsers();
     renderOrders();
     renderRequests();
+    renderReports();
     renderSettings();
   }
 
@@ -515,6 +610,65 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (error) {
       nbToast(error.message || 'Gagal hapus produk user.', 'danger');
     }
+  }
+
+  async function deletePremiumRequest(requestId) {
+    const request = state.premiumRequests.find(item => item.id === requestId);
+    if (!request) return;
+    if (!confirm(`Hapus request premium dari ${request.email || request.shop_name || 'user ini'}?`)) return;
+
+    try {
+      await NB.remove('premium_requests', requestId);
+      nbToast('Request premium berhasil dihapus.');
+      await refresh();
+    } catch (error) {
+      nbToast(error.message || 'Gagal hapus request premium.', 'danger');
+    }
+  }
+
+  async function clearProcessedRequests() {
+    const processed = state.premiumRequests.filter(request => !isPendingRequest(request));
+    if (!processed.length) return nbToast('Tidak ada request selesai yang perlu dibersihkan.', 'info');
+    if (!confirm(`Bersihkan ${processed.length} request yang sudah approved/rejected? Request pending tidak akan dihapus.`)) return;
+
+    try {
+      await Promise.all(processed.map(request => NB.remove('premium_requests', request.id)));
+      nbToast('Request selesai berhasil dibersihkan.');
+      await refresh();
+    } catch (error) {
+      nbToast(error.message || 'Gagal membersihkan request.', 'danger');
+    }
+  }
+
+  function exportUsersCsv() {
+    downloadCsv('niagabio-users.csv', [
+      ['email', 'username', 'display_name', 'plan', 'status', 'plan_end_date', 'created_at'],
+      ...state.profiles.map(profile => [
+        profile.email,
+        profile.username,
+        profile.display_name,
+        profile.plan,
+        profile.status,
+        profile.plan_end_date,
+        profile.created_at
+      ])
+    ]);
+  }
+
+  function exportRequestsCsv() {
+    downloadCsv('niagabio-premium-requests.csv', [
+      ['email', 'shop_name', 'owner_name', 'status', 'proof_url', 'note', 'created_at', 'reviewed_at'],
+      ...state.premiumRequests.map(request => [
+        request.email,
+        request.shop_name,
+        request.owner_name,
+        request.status,
+        request.proof_url,
+        request.note,
+        request.created_at,
+        request.reviewed_at
+      ])
+    ]);
   }
 
   async function updateOrderStatus(orderId, status) {
@@ -683,7 +837,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
   function setAdminView(view = 'overview') {
-    const allowed = ['overview', 'users', 'orders', 'requests', 'settings'];
+    const allowed = ['overview', 'users', 'reports', 'requests', 'settings'];
     const activeView = allowed.includes(view) ? view : 'overview';
 
     document.querySelectorAll('[data-admin-panel]').forEach(panel => {
@@ -711,7 +865,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function initialAdminView() {
     const hash = String(location.hash || '').replace('#', '');
-    return ['overview', 'users', 'orders', 'requests', 'settings'].includes(hash) ? hash : 'overview';
+    return ['overview', 'users', 'reports', 'requests', 'settings'].includes(hash) ? hash : 'overview';
   }
 
   function bindEvents() {
@@ -723,6 +877,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     refs.orderFilter?.addEventListener('change', renderOrders);
     refs.requestSearch?.addEventListener('input', renderRequests);
     refs.requestFilter?.addEventListener('change', renderRequests);
+    refs.clearProcessedRequestsBtn?.addEventListener('click', clearProcessedRequests);
+    refs.exportUsersBtn?.addEventListener('click', exportUsersCsv);
+    refs.exportRequestsBtn?.addEventListener('click', exportRequestsCsv);
+    refs.printReportBtn?.addEventListener('click', () => window.print());
     refs.settingsForm?.addEventListener('submit', saveAdminSettings);
     refs.resetSettingsBtn?.addEventListener('click', refresh);
 

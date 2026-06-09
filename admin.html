@@ -36,9 +36,9 @@
           <i class="bi bi-people"></i>
           Kelola User
         </a>
-        <a class="side-link" href="#orders" data-admin-view="orders">
-          <i class="bi bi-receipt-cutoff"></i>
-          Order Platform
+        <a class="side-link" href="#reports" data-admin-view="reports">
+          <i class="bi bi-graph-up-arrow"></i>
+          Laporan Platform
         </a>
         <a class="side-link" href="#requests" data-admin-view="requests">
           <i class="bi bi-qr-code-scan"></i>
@@ -96,9 +96,9 @@
           <i class="bi bi-people"></i>
           User
         </button>
-        <button class="admin-view-tab" type="button" data-admin-view-target="orders">
-          <i class="bi bi-receipt-cutoff"></i>
-          Order
+        <button class="admin-view-tab" type="button" data-admin-view-target="reports">
+          <i class="bi bi-graph-up-arrow"></i>
+          Laporan
         </button>
         <button class="admin-view-tab" type="button" data-admin-view-target="requests">
           <i class="bi bi-qr-code-scan"></i>
@@ -119,9 +119,9 @@
                 <i class="bi bi-shield-check"></i>
                 Owner Area
               </span>
-              <h2 class="fw-black mb-2">Admin dipisah per menu supaya tidak penuh dan mudah dipakai dari HP.</h2>
+              <h2 class="fw-black mb-2">Kontrol semua user, premium, request, dan setting platform dari satu panel.</h2>
               <p class="text-muted mb-0">
-                Pilih menu Ringkasan, User, Order, Request, atau Setting. Hanya satu bagian tampil supaya layar tidak bikin pusing.
+                Order seller tidak ditampilkan sebagai menu utama agar Admin Master fokus ke kontrol platform. Pantau request premium, pendapatan premium, user aktif, dan setting penting.
               </p>
             </div>
             <div class="col-lg-4">
@@ -135,47 +135,47 @@
           </div>
         </section>
 
-        <section class="row g-3 g-xl-4 mb-4" aria-label="Statistik admin">
-          <div class="col-6 col-xl-2">
-            <div class="card-nb admin-metric">
-              <span class="icon-bubble mb-3"><i class="bi bi-people"></i></span>
+        <section class="admin-kpi-grid mb-4" aria-label="Statistik admin">
+          <div class="card-nb admin-metric">
+            <span class="icon-bubble"><i class="bi bi-people"></i></span>
+            <div>
               <div class="value" id="adminUsers">0</div>
-              <p class="text-muted mb-0">Total User</p>
+              <p class="text-muted mb-0">User Aktif</p>
             </div>
           </div>
-          <div class="col-6 col-xl-2">
-            <div class="card-nb admin-metric">
-              <span class="icon-bubble mb-3"><i class="bi bi-stars"></i></span>
+          <div class="card-nb admin-metric">
+            <span class="icon-bubble"><i class="bi bi-stars"></i></span>
+            <div>
               <div class="value" id="adminPremium">0</div>
-              <p class="text-muted mb-0">Premium</p>
+              <p class="text-muted mb-0">Premium Aktif</p>
             </div>
           </div>
-          <div class="col-6 col-xl-2">
-            <div class="card-nb admin-metric">
-              <span class="icon-bubble mb-3"><i class="bi bi-person"></i></span>
+          <div class="card-nb admin-metric">
+            <span class="icon-bubble"><i class="bi bi-person"></i></span>
+            <div>
               <div class="value" id="adminFree">0</div>
-              <p class="text-muted mb-0">Free</p>
+              <p class="text-muted mb-0">Free Aktif</p>
             </div>
           </div>
-          <div class="col-6 col-xl-2">
-            <div class="card-nb admin-metric">
-              <span class="icon-bubble mb-3"><i class="bi bi-person-slash"></i></span>
-              <div class="value" id="adminBlocked">0</div>
-              <p class="text-muted mb-0">Blocked</p>
-            </div>
-          </div>
-          <div class="col-6 col-xl-2">
-            <div class="card-nb admin-metric">
-              <span class="icon-bubble mb-3"><i class="bi bi-receipt"></i></span>
+          <div class="card-nb admin-metric">
+            <span class="icon-bubble"><i class="bi bi-hourglass-split"></i></span>
+            <div>
               <div class="value" id="adminOrders">0</div>
-              <p class="text-muted mb-0">Order</p>
+              <p class="text-muted mb-0">Request Pending</p>
             </div>
           </div>
-          <div class="col-6 col-xl-2">
-            <div class="card-nb admin-metric">
-              <span class="icon-bubble mb-3"><i class="bi bi-cash-stack"></i></span>
+          <div class="card-nb admin-metric">
+            <span class="icon-bubble"><i class="bi bi-person-slash"></i></span>
+            <div>
+              <div class="value" id="adminBlocked">0</div>
+              <p class="text-muted mb-0">Blocked/Deleted</p>
+            </div>
+          </div>
+          <div class="card-nb admin-metric admin-metric-wide">
+            <span class="icon-bubble"><i class="bi bi-cash-stack"></i></span>
+            <div>
               <div class="value fs-5" id="adminOmset">Rp0</div>
-              <p class="text-muted mb-0">Omset Selesai</p>
+              <p class="text-muted mb-0">Estimasi Pendapatan Premium</p>
             </div>
           </div>
         </section>
@@ -235,51 +235,60 @@
           </div>
         </section>
 
-        <section class="card-nb admin-section mb-4 admin-panel" id="adminOrdersSection" data-admin-panel="orders" hidden>
+        <section class="card-nb admin-section mb-4 admin-panel" id="adminReportsSection" data-admin-panel="reports" hidden>
           <div class="admin-section-head">
             <div>
               <h2 class="h5 fw-bold mb-1">
-                <i class="bi bi-receipt-cutoff text-green me-2"></i>
-                Order Platform
+                <i class="bi bi-graph-up-arrow text-green me-2"></i>
+                Laporan Platform
               </h2>
               <p class="text-muted mb-0 small">
-                Pantau pesanan, lihat bukti pembayaran, tandai selesai, atau batalkan.
+                Ringkasan pendapatan premium, performa user, dan data platform. Order toko tetap dikelola seller di menu Pesanan masing-masing.
               </p>
             </div>
-            <span class="admin-count-pill" id="adminOrderCountInfo">0 order</span>
-          </div>
-
-          <div class="admin-filter-grid admin-filter-grid-orders mb-3">
-            <div class="admin-input-icon">
-              <i class="bi bi-search"></i>
-              <input class="form-control" id="adminOrderSearch" placeholder="Cari produk, pembeli, nomor HP...">
+            <div class="d-flex flex-wrap gap-2">
+              <button class="btn btn-sm btn-outline-nb" type="button" id="adminExportUsersBtn">Export User</button>
+              <button class="btn btn-sm btn-outline-nb" type="button" id="adminExportRequestsBtn">Export Request</button>
+              <button class="btn btn-sm btn-nb" type="button" id="adminPrintReportBtn"><i class="bi bi-printer me-1"></i>Print</button>
             </div>
-            <select class="form-select" id="adminOrderFilter" aria-label="Filter order">
-              <option value="all">Semua status</option>
-              <option value="pending">Pending</option>
-              <option value="paid">Selesai</option>
-              <option value="cancelled">Batal</option>
-            </select>
           </div>
 
-          <div class="table-responsive admin-table-wrap">
-            <table class="table align-middle admin-table">
-              <thead>
-                <tr>
-                  <th>Produk</th>
-                  <th>Pembeli</th>
-                  <th>Total</th>
-                  <th>Status</th>
-                  <th>Bukti</th>
-                  <th class="text-end">Aksi</th>
-                </tr>
-              </thead>
-              <tbody id="orderRows">
-                <tr>
-                  <td colspan="6" class="text-center text-muted py-4">Memuat order...</td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="admin-report-grid mb-4">
+            <div class="admin-report-card">
+              <span>Pendapatan Premium</span>
+              <b id="platformRevenueValue">Rp0</b>
+              <small>Estimasi dari request premium approved.</small>
+            </div>
+            <div class="admin-report-card">
+              <span>Request Approved</span>
+              <b id="platformApprovedRequests">0</b>
+              <small>Pengajuan yang sudah disetujui.</small>
+            </div>
+            <div class="admin-report-card">
+              <span>Request Pending</span>
+              <b id="platformPendingRequests">0</b>
+              <small>Menunggu pengecekan bukti transfer.</small>
+            </div>
+            <div class="admin-report-card">
+              <span>Premium Expired 7 Hari</span>
+              <b id="platformExpiringSoon">0</b>
+              <small>User premium yang segera habis.</small>
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="admin-detail-card h-100">
+                <h3 class="h6 fw-bold mb-3">User Premium Terbaru</h3>
+                <div class="admin-mini-feed" id="platformLatestPremium">Memuat...</div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="admin-detail-card h-100">
+                <h3 class="h6 fw-bold mb-3">Aktivitas Request Terbaru</h3>
+                <div class="admin-mini-feed" id="platformLatestRequests">Memuat...</div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -291,10 +300,13 @@
                 Request Premium
               </h2>
               <p class="text-muted mb-0 small">
-                Pengajuan upgrade dari user Free: cek bukti transfer, approve, atau reject.
+                Fokus utama: pending request tampil dulu. Request yang sudah selesai bisa dibersihkan agar panel tidak penuh.
               </p>
             </div>
-            <span class="admin-count-pill" id="adminRequestCountInfo">0 request</span>
+            <div class="d-flex flex-wrap gap-2">
+              <span class="admin-count-pill" id="adminRequestCountInfo">0 request</span>
+              <button class="btn btn-sm btn-outline-danger" type="button" id="adminClearProcessedRequestsBtn">Bersihkan Selesai</button>
+            </div>
           </div>
 
           <div class="admin-filter-grid admin-filter-grid-orders mb-3">
@@ -303,31 +315,15 @@
               <input class="form-control" id="adminRequestSearch" placeholder="Cari toko, pemilik, email...">
             </div>
             <select class="form-select" id="adminRequestFilter" aria-label="Filter request premium">
+              <option value="pending" selected>Pending dulu</option>
               <option value="all">Semua status</option>
-              <option value="pending">Pending</option>
               <option value="approved">Approved</option>
               <option value="rejected">Rejected</option>
             </select>
           </div>
 
-          <div class="table-responsive admin-table-wrap">
-            <table class="table align-middle admin-table">
-              <thead>
-                <tr>
-                  <th>User</th>
-                  <th>Toko / Pemilik</th>
-                  <th>Status</th>
-                  <th>Bukti</th>
-                  <th>Tanggal</th>
-                  <th class="text-end">Aksi</th>
-                </tr>
-              </thead>
-              <tbody id="requestRows">
-                <tr>
-                  <td colspan="6" class="text-center text-muted py-4">Memuat request...</td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="admin-request-list" id="requestRows">
+            <div class="text-muted text-center py-4">Memuat request...</div>
           </div>
         </section>
 
