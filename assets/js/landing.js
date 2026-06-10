@@ -2,27 +2,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const intro = document.getElementById('brandIntro');
 
-  // Keep the brand intro light. It must never block the landing page for long.
+  // Brand intro dibuat stabil di mobile:
+  // - selalu tampil tiap page load, bukan cuma sekali per tab
+  // - durasi normal lebih pelan
+  // - kalau HP mengaktifkan reduce motion, tampil statis sebentar lalu hilang
   if (intro) {
-    let hasSeenIntro = false;
-    try {
-      hasSeenIntro = sessionStorage.getItem('niagabio_intro_seen') === '1';
-    } catch (error) {
-      hasSeenIntro = false;
-    }
+    intro.classList.remove('intro-done');
 
-    if (prefersReducedMotion || hasSeenIntro) {
+    const closeIntro = () => {
       intro.classList.add('intro-done');
-    } else {
-      window.setTimeout(() => {
-        intro.classList.add('intro-done');
-        try {
-          sessionStorage.setItem('niagabio_intro_seen', '1');
-        } catch (error) {
-          // Ignore storage errors.
-        }
-      }, 1150);
-    }
+    };
+
+    window.setTimeout(closeIntro, prefersReducedMotion ? 900 : 2600);
   }
 
   // No lazy reveal on landing. Content should feel instant on every device.

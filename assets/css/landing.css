@@ -965,7 +965,7 @@ body.landing-body {
     radial-gradient(circle at 28% 18%, rgba(217,255,82,.36), transparent 28%),
     radial-gradient(circle at 78% 18%, rgba(15,159,104,.18), transparent 34%),
     linear-gradient(135deg, #ffffff, #effdf5 60%, #ffffff);
-  transition: opacity .45s ease, visibility .45s ease;
+  transition: opacity .65s ease, visibility .65s ease;
 }
 .brand-intro.intro-done {
   opacity: 0;
@@ -1014,7 +1014,7 @@ body.landing-body {
   background: linear-gradient(135deg, var(--landing-green), #0f172a);
   box-shadow: 0 16px 34px rgba(15,159,104,.26);
   font-size: 1.55rem;
-  animation: cartDrive 1.35s cubic-bezier(.2,.8,.22,1) both;
+  animation: cartDrive 2.2s cubic-bezier(.2,.8,.22,1) both;
 }
 .intro-brand {
   position: relative;
@@ -1023,7 +1023,7 @@ body.landing-body {
   align-items: center;
   gap: 12px;
   transform-origin: center;
-  animation: brandBump 1.35s cubic-bezier(.2,.8,.22,1) both;
+  animation: brandBump 2.2s cubic-bezier(.2,.8,.22,1) both;
 }
 .intro-brand img {
   width: 56px;
@@ -1050,7 +1050,7 @@ body.landing-body {
   text-align: center;
   color: #64748b;
   font-weight: 850;
-  animation: introTextIn 1.4s ease both;
+  animation: introTextIn 2.15s ease both;
 }
 .intro-spark {
   position: absolute;
@@ -1059,7 +1059,7 @@ body.landing-body {
   border-radius: 999px;
   background: var(--landing-lime);
   opacity: 0;
-  animation: sparkPop 1.35s ease both;
+  animation: sparkPop 2.15s ease both;
 }
 .spark-one { left: 63%; top: 14px; }
 .spark-two { left: 70%; top: 36px; animation-delay: .05s; background: var(--landing-green); }
@@ -1432,7 +1432,7 @@ body.landing-body {
   .bot-body { max-height: calc(100dvh - 250px); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .brand-intro { display: none !important; }
+  .brand-intro { display: grid !important; }
   .intro-cart,
   .intro-brand,
   .intro-stage p,
@@ -1493,6 +1493,7 @@ body.landing-body {
 
 .brand-intro {
   z-index: 2500;
+  will-change: opacity, visibility;
 }
 
 .intro-stage {
@@ -1501,15 +1502,15 @@ body.landing-body {
 }
 
 .intro-cart {
-  animation-duration: 1.05s;
+  animation-duration: 2.2s;
 }
 
 .intro-brand {
-  animation-duration: 1.05s;
+  animation-duration: 2.2s;
 }
 
 .intro-stage p {
-  animation-duration: 1.08s;
+  animation-duration: 2.15s;
 }
 
 .landing-hero {
