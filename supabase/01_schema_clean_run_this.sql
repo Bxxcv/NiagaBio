@@ -1938,12 +1938,10 @@ with check (
     (
       (storage.foldername(name))[1] in ('avatars','products','gallery','qris','premium-proofs')
       and (storage.foldername(name))[2] = auth.uid()::text
-      and (storage.foldername(name))[3] is not null
     )
     or (
       (storage.foldername(name))[1] = 'premium-qris'
       and (storage.foldername(name))[2] = auth.uid()::text
-      and (storage.foldername(name))[3] is not null
       and public.is_admin()
     )
     or (

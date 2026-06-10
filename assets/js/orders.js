@@ -5,6 +5,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (!user) return;
 
   const $ = id => document.getElementById(id);
+  function setText(id, value) {
+    const el = $(id);
+    if (el) el.textContent = value;
+  }
   let allOrders = [];
   let filteredOrders = [];
 
@@ -150,24 +154,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  function setText(id, value) {
-    const element = $(id);
-    if (element) element.textContent = value;
-  }
-
   function renderSummary(orders) {
     const { paid, pending, cancelled, totalOmset, pendingNominal, averageOrder, productRecap } = computeSummary(orders);
 
-    setText('orderOmset', NB.money(totalOmset));
+    $('orderOmset').textContent = NB.money(totalOmset);
     setText('orderPending', pending.length);
     setText('orderPaid', paid.length);
-    setText('orderSelesai', paid.length); // fallback untuk HTML lama
-    setText('orderTotal', orders.length);
+    if ($('orderTotal')) setText('orderTotal', orders.length);
     setText('orderCancelled', `${cancelled.length} batal`);
-    setText('orderBatal', `${cancelled.length} batal`); // fallback untuk HTML lama
-    setText('orderPendingNominal', NB.money(pendingNominal));
-    setText('orderAverage', NB.money(averageOrder));
-    setText('orderBestProduct', productRecap[0]?.product || '-');
+    if ($('orderPendingNominal')) $('orderPendingNominal').textContent = NB.money(pendingNominal);
+    if ($('orderAverage')) $('orderAverage').textContent = NB.money(averageOrder);
+    if ($('orderBestProduct')) $('orderBestProduct').textContent = productRecap[0]?.product || '-';
 
     if ($('recapRows')) {
       $('recapRows').innerHTML = productRecap.map(item => `
