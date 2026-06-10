@@ -307,13 +307,23 @@
     return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text || 'Halo kak.')}`;
   }
 
+  function makeSafeUsername(base, forceSuffix = false) {
+    let safeBase = slugify(base);
+    if (safeBase.length < 3) safeBase = `user-${Date.now().toString(36)}`;
+    safeBase = safeBase.slice(0, 24).replace(/-+$/g, '') || 'user';
+
+    if (!forceSuffix) return safeBase;
+
+    const suffix = Math.random().toString(36).slice(2, 6);
+    return `${safeBase}-${suffix}`.slice(0, 32).replace(/-+$/g, '');
+  }
+
   function uniqueUsername(base) {
-    const safeBase = slugify(base) || 'user';
     const used = read(LS.profiles, []).map(profile => profile.username);
-    let value = safeBase;
+    let value = makeSafeUsername(base);
     let index = 1;
     while (used.includes(value)) {
-      value = `${safeBase}-${index++}`;
+      value = `${makeSafeUsername(base).slice(0, 26)}-${index++}`.slice(0, 32).replace(/-+$/g, '');
     }
     return value;
   }
@@ -514,19 +524,32 @@
       if (error) throw error;
 
       if (data.user) {
-        try {
-          await upsertProfile({
-            user_id: data.user.id,
-            email: cleanEmail,
-            username: slugify(displayName || cleanEmail.split('@')[0]) || `user-${Date.now()}`,
-            display_name: displayName,
-            bio: '',
-            avatar_url: 'assets/img/logo.jpg',
-            whatsapp_number: '',
-            theme_name: 'service'
-          });
-        } catch (profileError) {
-          console.warn('[NiagaBio] Profile belum dibuat otomatis:', profileError.message);
+        let lastProfileError = null;
+
+        for (let attempt = 0; attempt < 3; attempt += 1) {
+          try {
+            await upsertProfile({
+              user_id: data.user.id,
+              email: cleanEmail,
+              username: makeSafeUsername(displayName || cleanEmail.split('@')[0], attempt > 0),
+              display_name: displayName,
+              bio: '',
+              avatar_url: 'assets/img/logo.jpg',
+              whatsapp_number: '',
+              theme_name: 'service'
+            });
+            lastProfileError = null;
+            break;
+          } catch (profileError) {
+            lastProfileError = profileError;
+            const message = String(profileError.message || '').toLowerCase();
+            const isUsernameConflict = message.includes('duplicate') || message.includes('unique') || message.includes('23505');
+            if (!isUsernameConflict) break;
+          }
+        }
+
+        if (lastProfileError) {
+          console.warn('[NiagaBio] Profile belum dibuat otomatis:', lastProfileError.message);
         }
       }
 
