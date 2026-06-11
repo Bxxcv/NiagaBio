@@ -5,6 +5,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (!user) return;
 
   const $ = id => document.getElementById(id);
+  const firstEl = (...ids) => ids.map(id => $(id)).find(Boolean) || null;
+  const setText = (ids, value) => {
+    const el = Array.isArray(ids) ? firstEl(...ids) : $(ids);
+    if (el) el.textContent = String(value ?? '');
+  };
+  const setHtml = (id, value) => {
+    const el = $(id);
+    if (el) el.innerHTML = value;
+  };
   let allOrders = [];
   let filteredOrders = [];
 
@@ -63,7 +72,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function applyFilters() {
     const query = ($('orderSearch')?.value || '').toLowerCase().trim();
-    const status = $('statusFilter')?.value || 'all';
+    const rawStatus = $('statusFilter')?.value || 'all';
+    const statusMap = { selesai: 'paid', batal: 'cancelled' };
+    const status = statusMap[rawStatus] || rawStatus;
     const dateFilter = $('dateFilter')?.value || 'all';
 
     filteredOrders = allOrders.filter(order => {
@@ -153,14 +164,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   function renderSummary(orders) {
     const { paid, pending, cancelled, totalOmset, pendingNominal, averageOrder, productRecap } = computeSummary(orders);
 
-    $('orderOmset').textContent = NB.money(totalOmset);
-    $('orderPending').textContent = pending.length;
-    $('orderPaid').textContent = paid.length;
-    if ($('orderTotal')) $('orderTotal').textContent = orders.length;
-    if ($('orderCancelled')) $('orderCancelled').textContent = `${cancelled.length} batal`;
-    if ($('orderPendingNominal')) $('orderPendingNominal').textContent = NB.money(pendingNominal);
-    if ($('orderAverage')) $('orderAverage').textContent = NB.money(averageOrder);
-    if ($('orderBestProduct')) $('orderBestProduct').textContent = productRecap[0]?.product || '-';
+    setText('orderOmset', NB.money(totalOmset));
+    setText('orderPending', pending.length);
+    setText(['orderPaid', 'orderSelesai'], paid.length);
+    setText('orderTotal', orders.length);
+    setText(['orderCancelled', 'orderBatal'], `${cancelled.length} batal`);
+    setText('orderPendingNominal', NB.money(pendingNominal));
+    setText('orderAverage', NB.money(averageOrder));
+    setText('orderBestProduct', productRecap[0]?.product || '-');
 
     if ($('recapRows')) {
       $('recapRows').innerHTML = productRecap.map(item => `
@@ -179,10 +190,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if ($('filteredCount')) $('filteredCount').textContent = `${orders.length} order`;
 
     const empty = `<tr><td colspan="6"><div class="table-empty-action"><i class="bi bi-receipt"></i><b>Belum ada pesanan</b><span>Pesanan dari halaman toko akan muncul di sini setelah pembeli checkout.</span></div></td></tr>`;
-    $('orderRows').innerHTML = orders.map(rowHtml).join('') || empty;
-    if ($('orderCards')) {
-      $('orderCards').innerHTML = orders.map(cardHtml).join('') || '<div class="empty-state empty-action py-4"><i class="bi bi-receipt"></i><b>Belum ada pesanan</b><span>Pesanan dari halaman toko akan muncul di sini.</span></div>';
-    }
+    setHtml('orderRows', orders.map(rowHtml).join('') || empty);
+    setHtml('orderCards', orders.map(cardHtml).join('') || '<div class="empty-state empty-action py-4"><i class="bi bi-receipt"></i><b>Belum ada pesanan</b><span>Pesanan dari halaman toko akan muncul di sini.</span></div>');
     attachActions(orders);
   }
 
@@ -274,6 +283,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadOrders();
   } catch (error) {
     nbToast(error.message || 'Gagal memuat pesanan.', 'danger');
-    if ($('orderRows')) $('orderRows').innerHTML = '<tr><td colspan="6" class="text-center text-danger">Gagal memuat pesanan.</td></tr>';
+    setHtml('orderRows', '<tr><td colspan="6" class="text-center text-danger">Gagal memuat pesanan.</td></tr>');
   }
 });
