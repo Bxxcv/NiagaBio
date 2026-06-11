@@ -726,9 +726,43 @@
     const cleanUsername = slugify(username);
 
     if (sb) {
-      const { data, error } = await sb.from('profiles').select('*').eq('username', cleanUsername).eq('status', 'active').maybeSingle();
-      if (error) throw error;
-      return data;
+      // Public page tidak boleh lagi select * dari profiles.
+      // SQL 12 menyediakan RPC safe yang hanya mengembalikan field public + is_premium boolean.
+      const { data, error } = await sb.rpc('get_public_profile', { lookup_username: cleanUsername });
+
+      if (!error) {
+        const row = Array.isArray(data) ? data[0] : data;
+        if (!row) return null;
+
+        return {
+          user_id: row.user_id,
+          username: row.username,
+          display_name: row.display_name,
+          bio: row.bio,
+          avatar_url: row.avatar_url,
+          whatsapp_number: row.whatsapp_number,
+          theme_name: row.theme_name || 'service',
+          status: 'active',
+          plan: row.is_premium ? 'premium' : 'free',
+          plan_end_date: row.is_premium ? '2099-12-31T00:00:00Z' : null,
+          is_public_profile: true
+        };
+      }
+
+      const message = String(error.message || '').toLowerCase();
+      if (!message.includes('get_public_profile') && !message.includes('could not find the function')) {
+        throw error;
+      }
+
+      // Fallback sementara kalau SQL 12 belum dijalankan. Setelah SQL 12 aktif, path ini tidak dipakai.
+      const { data: fallbackData, error: fallbackError } = await sb
+        .from('profiles')
+        .select('user_id, username, display_name, bio, avatar_url, whatsapp_number, theme_name, plan, status, plan_end_date')
+        .eq('username', cleanUsername)
+        .eq('status', 'active')
+        .maybeSingle();
+      if (fallbackError) throw fallbackError;
+      return fallbackData;
     }
 
     return read(LS.profiles, []).find(profile => profile.username === cleanUsername && profile.status !== 'blocked') || null;

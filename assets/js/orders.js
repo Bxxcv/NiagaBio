@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function renderTables(orders) {
     renderSummary(orders);
-    if ($('filteredCount')) $('filteredCount').textContent = `${orders.length} order`;
+    setText('filteredCount', `${orders.length} order`);
 
     const empty = `<tr><td colspan="6"><div class="table-empty-action"><i class="bi bi-receipt"></i><b>Belum ada pesanan</b><span>Pesanan dari halaman toko akan muncul di sini setelah pembeli checkout.</span></div></td></tr>`;
     setHtml('orderRows', orders.map(rowHtml).join('') || empty);
