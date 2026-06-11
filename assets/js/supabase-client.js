@@ -27,6 +27,7 @@
     orders: 'nb_orders',
     settings: 'nb_app_settings',
     premiumRequests: 'nb_premium_requests',
+    passwordResetRequests: 'nb_password_reset_requests',
     notifications: 'nb_notifications'
   };
 
@@ -40,6 +41,7 @@
     orders: LS.orders,
     app_settings: LS.settings,
     premium_requests: LS.premiumRequests,
+    password_reset_requests: LS.passwordResetRequests,
     notifications: LS.notifications
   };
 
@@ -606,6 +608,101 @@
     localStorage.removeItem(LS.session);
   }
 
+
+  function passwordResetRedirectUrl() {
+    return `${location.origin}/reset-password`;
+  }
+
+  async function requestPasswordReset(email, note = '') {
+    const cleanEmail = String(email || '').trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+      throw new Error('Email tidak valid.');
+    }
+
+    if (sb) {
+      const { data, error } = await sb.rpc('request_password_reset', {
+        requester_email: cleanEmail,
+        requester_note: String(note || '').trim()
+      });
+      if (error) {
+        const message = String(error.message || '').toLowerCase();
+        if (message.includes('request_password_reset') || message.includes('could not find the function')) {
+          throw new Error('Fitur lupa password belum aktif. Jalankan supabase/11_password_reset_requests.sql dulu.');
+        }
+        throw error;
+      }
+      return data;
+    }
+
+    const profiles = read(LS.profiles, []);
+    const profile = profiles.find(item => String(item.email || '').toLowerCase() === cleanEmail);
+    const row = {
+      id: uid('pwdreq'),
+      user_id: profile?.user_id || null,
+      email: cleanEmail,
+      display_name: profile?.display_name || '',
+      username: profile?.username || '',
+      user_note: String(note || '').trim(),
+      status: 'pending',
+      reset_sent_count: 0,
+      created_at: now(),
+      updated_at: now()
+    };
+    const rows = read(LS.passwordResetRequests, []);
+    rows.unshift(row);
+    write(LS.passwordResetRequests, rows.slice(0, 200));
+
+    read(LS.profiles, [])
+      .filter(item => item.role === 'admin' && item.status !== 'blocked' && item.status !== 'deleted')
+      .forEach(admin => localCreateNotification({
+        user_id: admin.user_id,
+        actor_user_id: profile?.user_id || null,
+        type: 'password_reset_request_new',
+        title: 'Request lupa password',
+        message: `${cleanEmail} meminta bantuan reset password.`,
+        link_url: 'admin#requests',
+        metadata: { request_id: row.id, request_email: cleanEmail }
+      }));
+
+    return { success: true, id: row.id };
+  }
+
+  async function sendPasswordResetEmail(email) {
+    const cleanEmail = String(email || '').trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+      throw new Error('Email tidak valid.');
+    }
+
+    if (sb) {
+      const { data, error } = await sb.auth.resetPasswordForEmail(cleanEmail, {
+        redirectTo: passwordResetRedirectUrl()
+      });
+      if (error) throw error;
+      return data;
+    }
+
+    return { success: true };
+  }
+
+  async function updatePassword(password) {
+    if (String(password || '').length < 6) throw new Error('Password minimal 6 karakter.');
+
+    if (sb) {
+      const { data, error } = await sb.auth.updateUser({ password: String(password) });
+      if (error) throw error;
+      return data;
+    }
+
+    const user = await currentUser();
+    if (!user) throw new Error('Session reset password tidak ditemukan. Buka ulang link reset dari email.');
+    const users = read(LS.users, []);
+    const index = users.findIndex(item => item.id === user.id);
+    if (index < 0) throw new Error('User tidak ditemukan.');
+    users[index] = { ...users[index], password: String(password) };
+    write(LS.users, users);
+    return true;
+  }
+
   async function requireAuth() {
     const user = await currentUser();
     if (!user) {
@@ -948,6 +1045,58 @@
   }
 
 
+  async function listPasswordResetRequests(limit = 100) {
+    if (sb) {
+      const { data, error } = await sb
+        .from('password_reset_requests')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(Number(limit || 100));
+      if (error) {
+        const message = String(error.message || '').toLowerCase();
+        if (message.includes('password_reset_requests')) {
+          console.warn('[NiagaBio] Tabel password_reset_requests belum aktif. Jalankan SQL 11.');
+          return [];
+        }
+        throw error;
+      }
+      return data || [];
+    }
+
+    return read(LS.passwordResetRequests, [])
+      .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')))
+      .slice(0, Number(limit || 100));
+  }
+
+  async function adminUpdatePasswordResetRequest(requestId, status = 'sent') {
+    if (!requestId) throw new Error('Request tidak valid.');
+    const cleanStatus = String(status || 'sent').toLowerCase();
+
+    if (sb) {
+      const { data, error } = await sb.rpc('admin_update_password_reset_request', {
+        request_id: requestId,
+        new_status: cleanStatus
+      });
+      if (error) throw error;
+      return data;
+    }
+
+    const rows = read(LS.passwordResetRequests, []);
+    const index = rows.findIndex(item => String(item.id) === String(requestId));
+    if (index < 0) throw new Error('Request lupa password tidak ditemukan.');
+    rows[index] = {
+      ...rows[index],
+      status: cleanStatus,
+      reviewed_by: (await currentUser())?.id || null,
+      sent_at: cleanStatus === 'sent' ? now() : rows[index].sent_at || null,
+      reset_sent_count: cleanStatus === 'sent' ? Number(rows[index].reset_sent_count || 0) + 1 : Number(rows[index].reset_sent_count || 0),
+      updated_at: now()
+    };
+    write(LS.passwordResetRequests, rows);
+    return rows[index];
+  }
+
+
   function localCreateNotification(row) {
     const rows = read(LS.notifications, []);
     const notification = {
@@ -1152,6 +1301,9 @@
     signUp,
     signIn,
     signOut,
+    requestPasswordReset,
+    sendPasswordResetEmail,
+    updatePassword,
     requireAuth,
     getProfile,
     getProfileByUsername,
@@ -1165,6 +1317,8 @@
     saveSettings,
     adminUpdateProfile,
     createPremiumRequest,
+    listPasswordResetRequests,
+    adminUpdatePasswordResetRequest,
     resetSalesRecap,
     adminReviewPremiumRequest,
     adminSoftDeleteUser,

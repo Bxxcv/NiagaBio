@@ -41,16 +41,42 @@
         </label>
         <input class="form-control" id="loginEmail" required="" type="email"/>
        </div>
-       <div class="mb-4">
+       <div class="mb-3">
         <label class="form-label">
          Password
         </label>
         <input class="form-control" id="loginPassword" required="" type="password"/>
        </div>
+       <div class="d-flex justify-content-end mb-4">
+        <button class="btn btn-link p-0 fw-semibold text-green text-decoration-none" id="forgotPasswordToggle" type="button">
+         Lupa password?
+        </button>
+       </div>
        <button class="btn btn-nb w-100" type="submit">
         Masuk
        </button>
       </form>
+      <div class="alert alert-light border mt-4 mb-0" id="forgotPasswordBox" hidden="">
+       <form id="forgotPasswordForm">
+        <h2 class="h6 fw-bold mb-2">
+         Minta bantuan reset password
+        </h2>
+        <p class="small text-muted mb-3">
+         Email kamu akan masuk ke Admin Master. Admin akan mengirim link reset resmi ke email kamu.
+        </p>
+        <div class="mb-3">
+         <label class="form-label small fw-semibold" for="forgotEmail">Email akun</label>
+         <input class="form-control" id="forgotEmail" required="" type="email" placeholder="email@contoh.com"/>
+        </div>
+        <div class="mb-3">
+         <label class="form-label small fw-semibold" for="forgotNote">Catatan opsional</label>
+         <textarea class="form-control" id="forgotNote" rows="2" maxlength="300" placeholder="Contoh: saya lupa password akun toko saya"></textarea>
+        </div>
+        <button class="btn btn-outline-nb w-100" type="submit">
+         Kirim Permintaan
+        </button>
+       </form>
+      </div>
       <p class="text-center mt-4 mb-0">
        Belum punya akun?
        <a class="fw-bold text-green" href="register">

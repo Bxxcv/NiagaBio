@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     userRows: $('userRows'),
     orderRows: $('orderRows'),
     requestRows: $('requestRows'),
+    passwordResetRows: $('passwordResetRows'),
     platformRevenueValue: $('platformRevenueValue'),
     platformApprovedRequests: $('platformApprovedRequests'),
     platformPendingRequests: $('platformPendingRequests'),
@@ -27,9 +28,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     orderFilter: $('adminOrderFilter'),
     requestSearch: $('adminRequestSearch'),
     requestFilter: $('adminRequestFilter'),
+    passwordResetSearch: $('adminPasswordResetSearch'),
+    passwordResetFilter: $('adminPasswordResetFilter'),
     userCountInfo: $('adminUserCountInfo'),
     orderCountInfo: $('adminOrderCountInfo'),
     requestCountInfo: $('adminRequestCountInfo'),
+    passwordResetCountInfo: $('adminPasswordResetCountInfo'),
     settingsForm: $('adminSettingsForm'),
     maintenanceMode: $('maintenanceMode'),
     allowRegister: $('allowRegister'),
@@ -61,6 +65,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     products: [],
     orders: [],
     premiumRequests: [],
+    passwordResetRequests: [],
     settings: {},
     selectedUserId: null,
     loading: false
@@ -156,6 +161,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     return '<span class="badge text-bg-warning">Pending</span>';
   }
 
+  function passwordResetBadge(status) {
+    if (status === 'sent') return '<span class="badge text-bg-primary">Link Terkirim</span>';
+    if (status === 'done') return '<span class="badge text-bg-success">Selesai</span>';
+    if (status === 'cancelled') return '<span class="badge text-bg-secondary">Dibatalkan</span>';
+    return '<span class="badge text-bg-warning">Pending</span>';
+  }
+
   function showAccessDenied() {
     if (!refs.contentWrap) return;
     refs.contentWrap.innerHTML = `
@@ -188,17 +200,19 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   async function loadData() {
-    const [profiles, orders, products, premiumRequests] = await Promise.all([
+    const [profiles, orders, products, premiumRequests, passwordResetRequests] = await Promise.all([
       NB.all('profiles'),
       NB.all('orders'),
       safeAll('products'),
-      safeAll('premium_requests')
+      safeAll('premium_requests'),
+      NB.listPasswordResetRequests ? NB.listPasswordResetRequests() : []
     ]);
 
     state.profiles = profiles;
     state.orders = orders;
     state.products = products;
     state.premiumRequests = premiumRequests;
+    state.passwordResetRequests = passwordResetRequests;
     state.settings = await NB.getSettings();
 
     state.profiles.sort((a, b) => {
@@ -208,6 +222,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     state.premiumRequests.sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+    state.passwordResetRequests.sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
   }
 
   function renderSystemBadges() {
@@ -457,6 +472,91 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+
+  function filteredPasswordResetRequests() {
+    const status = refs.passwordResetFilter?.value || 'pending';
+    const keyword = (refs.passwordResetSearch?.value || '').trim().toLowerCase();
+
+    return state.passwordResetRequests.filter(request => {
+      const profile = request.user_id ? state.profiles.find(item => item.user_id === request.user_id) : null;
+      const text = [
+        request.email,
+        request.display_name,
+        request.username,
+        request.user_note,
+        request.status,
+        profile?.display_name,
+        profile?.username,
+        profile?.email
+      ].join(' ').toLowerCase();
+
+      const requestStatus = String(request.status || 'pending').toLowerCase();
+      return (status === 'all' || requestStatus === status) && (!keyword || text.includes(keyword));
+    });
+  }
+
+  function renderPasswordResetRequests() {
+    if (!refs.passwordResetRows) return;
+
+    const rows = filteredPasswordResetRequests();
+    const pendingTotal = state.passwordResetRequests.filter(request => String(request.status || 'pending').toLowerCase() === 'pending').length;
+    if (refs.passwordResetCountInfo) refs.passwordResetCountInfo.textContent = `${rows.length} tampil • ${pendingTotal} pending`;
+
+    refs.passwordResetRows.innerHTML = rows.map(request => {
+      const profile = request.user_id ? state.profiles.find(item => item.user_id === request.user_id) : null;
+      const status = String(request.status || 'pending').toLowerCase();
+      const pending = status === 'pending';
+      const email = request.email || profile?.email || '';
+      return `
+        <article class="admin-request-card ${pending ? 'is-pending' : ''}">
+          <div class="admin-request-main">
+            <div class="admin-request-user">
+              <div class="admin-request-avatar"><i class="bi bi-key"></i></div>
+              <div>
+                <h3>${safe(request.display_name || profile?.display_name || email || 'Request lupa password')}</h3>
+                <p>${safe(email || '-')} ${request.username || profile?.username ? `• @${safe(request.username || profile?.username)}` : ''}</p>
+              </div>
+            </div>
+            <div class="admin-request-meta">
+              ${passwordResetBadge(status)}
+              <span>${formatDateTime(request.created_at)}</span>
+            </div>
+          </div>
+          <div class="admin-request-info">
+            <div><span>Email</span><b>${safe(email || '-')}</b></div>
+            <div><span>Catatan User</span><b>${safe(request.user_note || 'Tidak ada catatan')}</b></div>
+            <div><span>Reset Terkirim</span><b>${Number(request.reset_sent_count || 0)}x</b></div>
+            <div><span>Terakhir Dikirim</span><b>${formatDateTime(request.sent_at)}</b></div>
+          </div>
+          <div class="admin-request-actions">
+            <button class="btn btn-sm btn-success" type="button" data-password-reset-send="${safe(request.id)}" ${email ? '' : 'disabled'}>
+              Kirim Link Reset
+            </button>
+            <button class="btn btn-sm btn-outline-nb" type="button" data-password-reset-done="${safe(request.id)}" ${status === 'done' ? 'disabled' : ''}>Tandai Selesai</button>
+            <button class="btn btn-sm btn-outline-secondary" type="button" data-password-reset-cancel="${safe(request.id)}" ${status === 'cancelled' ? 'disabled' : ''}>Batalkan</button>
+            <button class="btn btn-sm btn-outline-danger" type="button" data-password-reset-delete="${safe(request.id)}">Hapus</button>
+          </div>
+        </article>
+      `;
+    }).join('') || '<div class="empty-card text-center py-4"><b>Tidak ada request lupa password.</b><p class="text-muted mb-0 small">Request dari halaman login akan muncul di sini.</p></div>';
+
+    refs.passwordResetRows.querySelectorAll('[data-password-reset-send]').forEach(button => {
+      button.addEventListener('click', () => sendPasswordResetLink(button.dataset.passwordResetSend));
+    });
+
+    refs.passwordResetRows.querySelectorAll('[data-password-reset-done]').forEach(button => {
+      button.addEventListener('click', () => updatePasswordResetStatus(button.dataset.passwordResetDone, 'done'));
+    });
+
+    refs.passwordResetRows.querySelectorAll('[data-password-reset-cancel]').forEach(button => {
+      button.addEventListener('click', () => updatePasswordResetStatus(button.dataset.passwordResetCancel, 'cancelled'));
+    });
+
+    refs.passwordResetRows.querySelectorAll('[data-password-reset-delete]').forEach(button => {
+      button.addEventListener('click', () => deletePasswordResetRequest(button.dataset.passwordResetDelete));
+    });
+  }
+
   function renderReports() {
     const approved = state.premiumRequests.filter(isApprovedRequest);
     const pending = state.premiumRequests.filter(isPendingRequest);
@@ -513,6 +613,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderUsers();
     renderOrders();
     renderRequests();
+    renderPasswordResetRequests();
     renderReports();
     renderSettings();
   }
@@ -710,6 +811,54 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+
+  async function sendPasswordResetLink(requestId) {
+    const request = state.passwordResetRequests.find(item => String(item.id) === String(requestId));
+    if (!request) return;
+    const email = String(request.email || '').trim().toLowerCase();
+    if (!email) return nbToast('Email request tidak ditemukan.', 'danger');
+
+    if (!confirm(`Kirim link reset password ke ${email}?\n\nUser akan membuat password baru sendiri dari email resmi Supabase/NiagaBio.`)) return;
+
+    try {
+      await NB.sendPasswordResetEmail(email);
+      await NB.adminUpdatePasswordResetRequest(requestId, 'sent');
+      nbToast('Link reset password berhasil dikirim ke email user.');
+      await refresh();
+    } catch (error) {
+      nbToast(error.message || 'Gagal mengirim link reset password. Cek SMTP/redirect URL Supabase.', 'danger');
+    }
+  }
+
+  async function updatePasswordResetStatus(requestId, status) {
+    const request = state.passwordResetRequests.find(item => String(item.id) === String(requestId));
+    if (!request) return;
+    const label = status === 'done' ? 'tandai request ini selesai' : 'batalkan request ini';
+    if (!confirm(`Yakin ingin ${label}?`)) return;
+
+    try {
+      await NB.adminUpdatePasswordResetRequest(requestId, status);
+      nbToast(status === 'done' ? 'Request ditandai selesai.' : 'Request dibatalkan.');
+      await refresh();
+    } catch (error) {
+      nbToast(error.message || 'Gagal update request lupa password.', 'danger');
+    }
+  }
+
+  async function deletePasswordResetRequest(requestId) {
+    const request = state.passwordResetRequests.find(item => String(item.id) === String(requestId));
+    if (!request) return;
+    if (!confirm(`Hapus request lupa password dari ${request.email || 'user ini'}?`)) return;
+
+    try {
+      await NB.remove('password_reset_requests', requestId);
+      nbToast('Request lupa password berhasil dihapus.');
+      await refresh();
+    } catch (error) {
+      nbToast(error.message || 'Gagal hapus request lupa password.', 'danger');
+    }
+  }
+
   async function saveAdminSettings(event) {
     event.preventDefault();
 
@@ -877,6 +1026,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     refs.orderFilter?.addEventListener('change', renderOrders);
     refs.requestSearch?.addEventListener('input', renderRequests);
     refs.requestFilter?.addEventListener('change', renderRequests);
+    refs.passwordResetSearch?.addEventListener('input', renderPasswordResetRequests);
+    refs.passwordResetFilter?.addEventListener('change', renderPasswordResetRequests);
     refs.clearProcessedRequestsBtn?.addEventListener('click', clearProcessedRequests);
     refs.exportUsersBtn?.addEventListener('click', exportUsersCsv);
     refs.exportRequestsBtn?.addEventListener('click', exportRequestsCsv);

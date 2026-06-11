@@ -18,8 +18,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const qrisImage = document.getElementById('premiumQrisImage');
   const qrisEmpty = document.getElementById('premiumQrisEmpty');
   const premiumNote = document.getElementById('premiumNote');
-  const adminContactBox = document.getElementById('premiumAdminContactBox');
-  const adminWhatsappBtn = document.getElementById('premiumAdminWhatsappBtn');
   const form = document.getElementById('upgradeRequestForm');
   const submitBtn = document.getElementById('upgradeSubmitBtn');
 
@@ -33,16 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   freeContent?.classList.remove('d-none');
 
   if (premiumNote) {
-    premiumNote.textContent = settings.premium_note || 'Transfer sesuai nominal lalu upload bukti pembayaran. Harap hubungi admin melalui WhatsApp agar pesanan lebih cepat diproses.';
-  }
-
-  const adminPhone = NB.normalizePhone(settings.admin_whatsapp || '');
-  if (adminPhone && adminWhatsappBtn) {
-    const waText = `Halo Admin NiagaBio, saya sudah scan QRIS Premium dan ingin konfirmasi pembayaran agar lebih cepat diproses. Email akun: ${user.email || '-'}`;
-    adminWhatsappBtn.href = NB.whatsappUrl(adminPhone, waText);
-    adminContactBox?.classList.remove('d-none');
-  } else {
-    adminContactBox?.classList.add('d-none');
+    premiumNote.textContent = settings.premium_note || 'Transfer sesuai nominal lalu upload bukti pembayaran. Admin akan memproses upgrade setelah valid.';
   }
 
   if (settings.premium_qris_url) {
@@ -83,8 +72,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         note
       });
 
-      nbToast('Pengajuan upgrade terkirim. Hubungi admin via WhatsApp agar lebih cepat diproses.');
-      adminContactBox?.classList.remove('d-none');
+      nbToast('Pengajuan upgrade terkirim. Tunggu admin memproses upgrade kamu dalam waktu sekitar 2-3 jam.');
       form.reset();
     } catch (error) {
       nbToast(error.message || 'Gagal mengirim pengajuan upgrade.', 'danger');

@@ -73,12 +73,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       nbToast('Pengaturan checkout disimpan.');
     } catch (error) {
-      const message = String(error?.message || 'Gagal menyimpan checkout.');
-      if (/row-level security policy/i.test(message)) {
-        nbToast('Upload QRIS ditolak RLS Supabase. Jalankan supabase/09_fix_storage_qris_upload_rls.sql di SQL Editor.', 'danger');
-      } else {
-        nbToast(message, 'danger');
-      }
+      nbToast(error.message || 'Gagal menyimpan checkout.', 'danger');
     } finally {
       button.disabled = false;
     }

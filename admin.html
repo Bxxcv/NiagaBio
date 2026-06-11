@@ -41,8 +41,8 @@
           Laporan Platform
         </a>
         <a class="side-link" href="#requests" data-admin-view="requests">
-          <i class="bi bi-qr-code-scan"></i>
-          Request Premium
+          <i class="bi bi-inboxes"></i>
+          Request Masuk
         </a>
         <a class="side-link" href="#settings" data-admin-view="settings">
           <i class="bi bi-sliders"></i>
@@ -101,7 +101,7 @@
           Laporan
         </button>
         <button class="admin-view-tab" type="button" data-admin-view-target="requests">
-          <i class="bi bi-qr-code-scan"></i>
+          <i class="bi bi-inboxes"></i>
           Request
         </button>
         <button class="admin-view-tab" type="button" data-admin-view-target="settings">
@@ -324,6 +324,39 @@
 
           <div class="admin-request-list" id="requestRows">
             <div class="text-muted text-center py-4">Memuat request...</div>
+          </div>
+
+          <hr class="my-4">
+
+          <div class="admin-section-head align-items-start">
+            <div>
+              <h2 class="h5 fw-bold mb-1">
+                <i class="bi bi-key text-green me-2"></i>
+                Request Lupa Password
+              </h2>
+              <p class="text-muted mb-0 small">
+                User yang lupa password masuk ke tabel ini. Admin cukup kirim link reset resmi; jangan membuat password manual untuk user.
+              </p>
+            </div>
+            <span class="admin-count-pill" id="adminPasswordResetCountInfo">0 request</span>
+          </div>
+
+          <div class="admin-filter-grid admin-filter-grid-orders mb-3">
+            <div class="admin-input-icon">
+              <i class="bi bi-search"></i>
+              <input class="form-control" id="adminPasswordResetSearch" placeholder="Cari email, nama, username...">
+            </div>
+            <select class="form-select" id="adminPasswordResetFilter" aria-label="Filter request lupa password">
+              <option value="pending" selected>Pending dulu</option>
+              <option value="all">Semua status</option>
+              <option value="sent">Link terkirim</option>
+              <option value="done">Selesai</option>
+              <option value="cancelled">Dibatalkan</option>
+            </select>
+          </div>
+
+          <div class="admin-request-list" id="passwordResetRows">
+            <div class="text-muted text-center py-4">Memuat request lupa password...</div>
           </div>
         </section>
 

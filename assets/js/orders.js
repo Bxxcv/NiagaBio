@@ -5,10 +5,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (!user) return;
 
   const $ = id => document.getElementById(id);
-  function setText(id, value) {
-    const el = $(id);
-    if (el) el.textContent = value;
-  }
   let allOrders = [];
   let filteredOrders = [];
 
@@ -158,10 +154,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const { paid, pending, cancelled, totalOmset, pendingNominal, averageOrder, productRecap } = computeSummary(orders);
 
     $('orderOmset').textContent = NB.money(totalOmset);
-    setText('orderPending', pending.length);
-    setText('orderPaid', paid.length);
-    if ($('orderTotal')) setText('orderTotal', orders.length);
-    setText('orderCancelled', `${cancelled.length} batal`);
+    $('orderPending').textContent = pending.length;
+    $('orderPaid').textContent = paid.length;
+    if ($('orderTotal')) $('orderTotal').textContent = orders.length;
+    if ($('orderCancelled')) $('orderCancelled').textContent = `${cancelled.length} batal`;
     if ($('orderPendingNominal')) $('orderPendingNominal').textContent = NB.money(pendingNominal);
     if ($('orderAverage')) $('orderAverage').textContent = NB.money(averageOrder);
     if ($('orderBestProduct')) $('orderBestProduct').textContent = productRecap[0]?.product || '-';
