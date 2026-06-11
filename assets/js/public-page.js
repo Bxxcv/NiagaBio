@@ -277,6 +277,28 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
 
+  function cleanPublicPath(segment) {
+    return encodeURIComponent(String(segment || '').trim()).replace(/%2F/gi, '');
+  }
+
+  function storeUrl(profile) {
+    const slug = cleanPublicPath(profile.username || username || 'demo');
+    return slug ? `/u/${slug}` : '/';
+  }
+
+  function checkoutUrl(profile, product) {
+    const slug = cleanPublicPath(profile.username || username || 'demo');
+    const productSlug = cleanPublicPath(product.id);
+    return `/checkout/${slug}/${productSlug}`;
+  }
+
+  function categoryList(products) {
+    return Array.from(new Set(products
+      .map(product => String(product.category || '').trim())
+      .filter(Boolean)))
+      .slice(0, 10);
+  }
+
   function updateStoreMeta(profile) {
     const title = `${profile.display_name || profile.username || 'Toko'} - NiagaBio`;
     const desc = profile.bio || 'Lihat produk, link penting, dan checkout toko ini di NiagaBio.';
@@ -327,6 +349,11 @@ document.addEventListener('DOMContentLoaded', async () => {
           </header>
 
           <div class="public-body">
+            <div class="public-stats public-buyer-stats">
+              <div><strong>${products.length}</strong><span>Produk aktif</span></div>
+              <div><strong>${links.length}</strong><span>Link toko</span></div>
+              <div><strong>${premium ? 'Premium' : 'Free'}</strong><span>Status toko</span></div>
+            </div>
             ${links.length ? `
               <section class="public-section public-link-section">
                 <div class="public-section-head">
@@ -344,6 +371,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <h2>${NB.escapeHtml(template.productTitle)}</h2>
                 <span>${premium ? NB.escapeHtml(template.productHint) : 'Basic catalog'}</span>
               </div>
+
+              ${categoryList(products).length ? `
+                <div class="public-category-chips" role="list" aria-label="Filter kategori produk">
+                  <button class="public-category-chip active" type="button" data-category="Semua">Semua</button>
+                  ${categoryList(products).map(category => `<button class="public-category-chip" type="button" data-category="${NB.escapeHtml(category)}">${NB.escapeHtml(category)}</button>`).join('')}
+                </div>
+              ` : ''}
 
               ${premium ? `
                 <label class="public-search-wrap">
@@ -371,6 +405,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             <footer class="public-footer">
               <span>© ${year} ${NB.escapeHtml(displayName)}</span>
               <span class="public-powered">${NB.escapeHtml(template.footer)}</span>
+              <button id="copyStoreLink" type="button"><i class="bi bi-share me-1"></i>Bagikan toko</button>
             </footer>
           </div>
         </div>
@@ -458,7 +493,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const mode = checkout.checkout_mode || 'whatsapp';
 
       if (!demoModePage && premium && checkout.qris_enabled && (mode === 'qris_manual' || mode === 'qris_whatsapp')) {
-        location.href = `checkout?username=${encodeURIComponent(profile.username)}&product=${encodeURIComponent(product.id)}`;
+        location.href = checkoutUrl(profile, product);
         return;
       }
 
@@ -466,14 +501,43 @@ document.addEventListener('DOMContentLoaded', async () => {
       location.href = NB.whatsappUrl(profile.whatsapp_number || checkout.whatsapp_number, text);
     }
 
+    let activeCategory = 'Semua';
+
+    function applyProductFilters() {
+      const search = document.getElementById('productSearch');
+      const query = search ? search.value.toLowerCase().trim() : '';
+      const filtered = products.filter(product => {
+        const category = String(product.category || '').trim();
+        const categoryMatch = activeCategory === 'Semua' || category === activeCategory;
+        const queryMatch = !query || `${product.name} ${product.category} ${product.description}`.toLowerCase().includes(query);
+        return categoryMatch && queryMatch;
+      });
+      renderProducts(filtered);
+    }
+
     renderProducts(products);
 
     const search = document.getElementById('productSearch');
-    if (search) {
-      search.addEventListener('input', () => {
-        const query = search.value.toLowerCase().trim();
-        const filtered = products.filter(product => `${product.name} ${product.category} ${product.description}`.toLowerCase().includes(query));
-        renderProducts(filtered);
+    if (search) search.addEventListener('input', applyProductFilters);
+
+    document.querySelectorAll('[data-category]').forEach(button => {
+      button.addEventListener('click', () => {
+        activeCategory = button.dataset.category || 'Semua';
+        document.querySelectorAll('[data-category]').forEach(item => item.classList.toggle('active', item === button));
+        applyProductFilters();
+      });
+    });
+
+    const copyButton = document.getElementById('copyStoreLink');
+    if (copyButton) {
+      copyButton.addEventListener('click', async () => {
+        const url = `${location.origin}${storeUrl(profile)}`;
+        try {
+          await navigator.clipboard.writeText(url);
+          nbToast('Link toko berhasil disalin.', 'success');
+        } catch (error) {
+          nbToast('Gagal menyalin otomatis. Salin dari address bar.', 'warning');
+        }
       });
     }
   } catch (error) {

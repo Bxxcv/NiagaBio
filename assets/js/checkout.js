@@ -9,12 +9,33 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (root) root.innerHTML = `<div class="empty-state">${NB.escapeHtml(message)}</div>`;
   };
 
+  function cleanPath(segment) {
+    return encodeURIComponent(String(segment || '').trim()).replace(/%2F/gi, '');
+  }
+
   function storeUrl(profile) {
-    return `u?username=${encodeURIComponent(profile.username || username)}`;
+    const slug = cleanPath(profile.username || username || 'demo');
+    return slug ? `/u/${slug}` : '/';
   }
 
   function normalizePhone(phone) {
     return String(phone || '').replace(/[^0-9+]/g, '').trim();
+  }
+
+  function readableSize(bytes) {
+    return `${(Number(bytes || 0) / 1024 / 1024).toFixed(2)} MB`;
+  }
+
+  function validateProofFile(file) {
+    if (!file) return;
+    const allowed = ['image/jpeg', 'image/png', 'image/webp'];
+    const maxSize = 3 * 1024 * 1024;
+    if (!allowed.includes(file.type)) {
+      throw new Error('Format bukti harus JPG, PNG, atau WEBP.');
+    }
+    if (file.size > maxSize) {
+      throw new Error(`Ukuran bukti maksimal 3MB. File kamu ${readableSize(file.size)}.`);
+    }
   }
 
   function orderMessage({ profile, product, quantity, buyerName }) {
@@ -127,6 +148,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             </div>
           </div>
 
+          <div class="checkout-steps" aria-label="Langkah checkout">
+            <div><span>1</span><b>Scan QRIS</b><small>Bayar sesuai total</small></div>
+            <div><span>2</span><b>Isi data</b><small>Nama dan WhatsApp aktif</small></div>
+            <div><span>3</span><b>Kirim pesanan</b><small>Bukti masuk ke seller</small></div>
+          </div>
+
           <form id="orderForm" class="checkout-form">
             <div class="row g-3">
               <div class="col-md-6">
@@ -144,6 +171,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               <div class="col-md-6">
                 <label class="form-label">Bukti pembayaran</label>
                 <input id="proof" type="file" accept="image/jpeg,image/png,image/webp" class="form-control">
+                <small id="proofMeta" class="checkout-proof-help">JPG/PNG/WEBP maksimal 3MB.</small>
               </div>
             </div>
             <div class="checkout-actions">
@@ -163,8 +191,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     const qtyInput = document.getElementById('qty');
     const totalPreview = document.getElementById('totalPreview');
     const proofInput = document.getElementById('proof');
+    const proofMeta = document.getElementById('proofMeta');
     const buyerNameInput = document.getElementById('buyerName');
     const buyerPhoneInput = document.getElementById('buyerPhone');
+
+    if (proofInput && proofMeta) {
+      proofInput.addEventListener('change', () => {
+        const file = proofInput.files[0];
+        if (!file) {
+          proofMeta.textContent = 'JPG/PNG/WEBP maksimal 3MB.';
+          proofMeta.classList.remove('text-danger');
+          return;
+        }
+        try {
+          validateProofFile(file);
+          proofMeta.textContent = `${file.name} · ${readableSize(file.size)}`;
+          proofMeta.classList.remove('text-danger');
+        } catch (error) {
+          proofMeta.textContent = error.message;
+          proofMeta.classList.add('text-danger');
+        }
+      });
+    }
 
     const updateTotal = () => {
       const qty = Math.max(1, Number(qtyInput.value || 1));
@@ -186,6 +234,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (proofInput.files[0]) {
           try {
+            validateProofFile(proofInput.files[0]);
             proofUrl = await NB.uploadFile(proofInput.files[0], 'proofs');
           } catch (uploadError) {
             console.warn('[NiagaBio] Bukti bayar gagal diupload:', uploadError.message);
