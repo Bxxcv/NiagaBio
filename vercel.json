@@ -4,11 +4,11 @@
   "rewrites": [
     {
       "source": "/u/:username",
-      "destination": "/u.html?username=:username"
+      "destination": "/u.html"
     },
     {
       "source": "/checkout/:username/:product",
-      "destination": "/checkout.html?username=:username&product=:product"
+      "destination": "/checkout.html"
     }
   ],
   "headers": [

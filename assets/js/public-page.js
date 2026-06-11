@@ -289,7 +289,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   function checkoutUrl(profile, product) {
     const slug = cleanPublicPath(profile.username || username || 'demo');
     const productSlug = cleanPublicPath(product.id);
-    return `/checkout/${slug}/${productSlug}`;
+    // Pakai file statis + query agar checkout tidak bergantung ke rewrite Vercel.
+    // Ini lebih stabil di HP/browser dan tetap dibaca oleh checkout.js.
+    return `/checkout.html?username=${slug}&product=${productSlug}`;
   }
 
   function categoryList(products) {
