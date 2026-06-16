@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const pathUsername = pathLast && !['u', 'u.html'].includes(pathLast) ? pathLast : '';
   let username = params.get('username') || params.get('u') || pathUsername || 'demo';
   const hasExplicitUsername = Boolean(params.get('username') || params.get('u') || pathUsername);
+  const highlightedProductId = params.get('product') || params.get('p') || '';
 
   const demoProfile = {
     user_id: 'demo-user',
@@ -231,7 +232,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function productCard(product) {
     return `
-      <article class="public-product-card ${product.is_featured ? 'is-featured' : ''}">
+      <article class="public-product-card ${product.is_featured ? 'is-featured' : ''} ${String(product.id) === String(highlightedProductId) ? 'is-highlighted' : ''}" data-product-card="${NB.escapeHtml(product.id)}">
         <div class="public-product-media">
           <img src="${productImage(product.image_url)}" alt="${NB.escapeHtml(product.name)}">
           ${product.is_featured ? '<span class="public-featured-badge"><i class="bi bi-star-fill"></i></span>' : ''}
@@ -242,10 +243,15 @@ document.addEventListener('DOMContentLoaded', async () => {
           ${product.description ? `<p>${NB.escapeHtml(product.description)}</p>` : ''}
           <div class="public-product-foot">
             <strong>${NB.money(product.price)}</strong>
-            <button class="public-buy-btn" type="button" data-buy="${NB.escapeHtml(product.id)}">
-              <span>Beli</span>
-              <i class="bi bi-arrow-right"></i>
-            </button>
+            <div class="public-product-actions">
+              <button class="public-buy-btn" type="button" data-buy="${NB.escapeHtml(product.id)}">
+                <span>Beli</span>
+                <i class="bi bi-arrow-right"></i>
+              </button>
+              <button class="public-share-btn" type="button" data-share="${NB.escapeHtml(product.id)}" aria-label="Bagikan produk ${NB.escapeHtml(product.name)}">
+                <i class="bi bi-share"></i>
+              </button>
+            </div>
           </div>
         </div>
       </article>
@@ -451,6 +457,21 @@ document.addEventListener('DOMContentLoaded', async () => {
           buy(product);
         });
       });
+
+      document.querySelectorAll('[data-share]').forEach(button => {
+        button.addEventListener('click', () => {
+          const product = list.find(item => String(item.id) === String(button.dataset.share));
+          shareProduct(product);
+        });
+      });
+
+      if (highlightedProductId) {
+        requestAnimationFrame(() => {
+          const target = [...document.querySelectorAll('[data-product-card]')]
+            .find(element => String(element.dataset.productCard) === String(highlightedProductId));
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+      }
     }
 
     function buy(product) {
@@ -464,6 +485,35 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const text = `Halo kak, saya mau pesan:\nProduk: ${product.name}\nHarga: ${NB.money(product.price)}\nJumlah: 1`;
       location.href = NB.whatsappUrl(profile.whatsapp_number || checkout.whatsapp_number, text);
+    }
+
+    async function shareProduct(product) {
+      if (!product) return;
+      const productUrl = new URL(`${location.origin}/u`);
+      productUrl.searchParams.set('username', profile.username || username);
+      productUrl.searchParams.set('product', product.id);
+
+      const storeName = profile.display_name || profile.username || 'Toko';
+      const title = `${product.name} - ${storeName}`;
+      const text = `${product.name} - ${NB.money(product.price)} dari ${storeName}`;
+      const url = productUrl.toString();
+
+      try {
+        if (navigator.share) {
+          await navigator.share({ title, text, url });
+          return;
+        }
+
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(url);
+          nbToast('Link produk disalin.');
+          return;
+        }
+
+        window.prompt('Salin link produk:', url);
+      } catch (error) {
+        if (error.name !== 'AbortError') nbToast('Gagal membagikan produk.', 'warning');
+      }
     }
 
     renderProducts(products);

@@ -882,6 +882,84 @@
     return payload;
   }
 
+  function preparePublicOrderPayload(row) {
+    const paymentMethod = String(row.payment_method || 'qris_manual').toLowerCase();
+    if (!['whatsapp', 'qris_manual', 'qris_whatsapp'].includes(paymentMethod)) {
+      throw new Error('Metode pembayaran tidak valid.');
+    }
+
+    const buyerName = String(row.buyer_name || '').trim().slice(0, 80);
+    if (buyerName.length < 2) throw new Error('Nama pembeli wajib diisi minimal 2 karakter.');
+
+    const buyerPhone = normalizePhone(row.buyer_phone || '');
+    if (buyerPhone.length < 8 || buyerPhone.length > 18) throw new Error('Nomor WhatsApp pembeli tidak valid.');
+
+    const quantity = Math.max(1, Number(row.quantity || 1));
+    const proofUrl = normalizeImageUrl(row.proof_image_url || '', '');
+    if (paymentMethod !== 'whatsapp' && !proofUrl) {
+      throw new Error('Bukti pembayaran wajib diupload sebelum kirim pesanan.');
+    }
+
+    return {
+      seller_id: row.seller_id,
+      product_id: row.product_id,
+      buyer_name: buyerName,
+      buyer_phone: buyerPhone,
+      quantity,
+      payment_method: paymentMethod,
+      proof_image_url: proofUrl
+    };
+  }
+
+  async function createPublicOrder(row) {
+    const payload = preparePublicOrderPayload(row);
+
+    if (!payload.seller_id || !isUuid(payload.seller_id)) throw new Error('Seller tidak valid.');
+    if (!payload.product_id || !isUuid(payload.product_id)) throw new Error('Produk tidak valid.');
+
+    if (sb) {
+      const { data, error } = await sb.rpc('create_public_order', {
+        target_seller_id: payload.seller_id,
+        target_product_id: payload.product_id,
+        buyer_name_input: payload.buyer_name,
+        buyer_phone_input: payload.buyer_phone,
+        quantity_input: payload.quantity,
+        proof_image_url_input: payload.proof_image_url,
+        payment_method_input: payload.payment_method
+      });
+
+      if (!error) return Array.isArray(data) ? data[0] : data;
+
+      const message = String(error.message || '').toLowerCase();
+      const missingRpc = message.includes('create_public_order') || message.includes('could not find the function') || message.includes('schema cache');
+      if (!missingRpc) throw error;
+
+      console.warn('[NiagaBio] RPC create_public_order belum aktif. Jalankan supabase/13_checkout_order_flow_fix.sql:', error.message);
+    }
+
+    try {
+      return await save('orders', {
+        seller_id: payload.seller_id,
+        buyer_name: payload.buyer_name,
+        buyer_phone: payload.buyer_phone,
+        product_id: payload.product_id,
+        quantity: payload.quantity,
+        payment_method: payload.payment_method,
+        proof_image_url: payload.proof_image_url,
+        payment_status: 'pending',
+        paid_at: null,
+        created_at: now()
+      });
+    } catch (error) {
+      const message = String(error.message || '').toLowerCase();
+      if (message.includes('row-level security') || message.includes('violates row-level security')) {
+        throw new Error('Checkout ditolak oleh RLS orders. Jalankan SQL supabase/13_checkout_order_flow_fix.sql di Supabase SQL Editor, lalu deploy ulang.');
+      }
+      throw error;
+    }
+  }
+
+
   async function save(table, row) {
     const preparedRow = normalizePayloadForTable(table, row);
 
@@ -1354,6 +1432,7 @@
     listPasswordResetRequests,
     adminUpdatePasswordResetRequest,
     resetSalesRecap,
+    createPublicOrder,
     adminReviewPremiumRequest,
     adminSoftDeleteUser,
     listNotifications,

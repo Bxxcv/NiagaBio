@@ -5068,3 +5068,48 @@ body.admin-page {
     transform: none !important;
   }
 }
+
+/* v38 checkout/order flow + product sharing fix */
+.public-product-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  gap: 8px;
+  align-items: stretch;
+}
+.public-share-btn {
+  display: inline-grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  border: 1px solid color-mix(in srgb, var(--public-a) 24%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--public-a) 8%, #fff 92%);
+  color: var(--public-a);
+  font-weight: 900;
+}
+.public-share-btn:hover,
+.public-share-btn:focus-visible {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--public-a) 42%, transparent);
+  box-shadow: 0 10px 22px color-mix(in srgb, var(--public-a) 14%, transparent);
+  outline: 0;
+}
+.public-product-card.is-highlighted {
+  border-color: color-mix(in srgb, var(--public-a) 42%, transparent);
+  box-shadow: 0 18px 42px color-mix(in srgb, var(--public-a) 18%, transparent);
+}
+.checkout-proof-help {
+  line-height: 1.45;
+}
+@media (max-width: 420px) {
+  .public-product-actions {
+    grid-template-columns: minmax(0, 1fr) 40px;
+    gap: 7px;
+  }
+  .public-share-btn {
+    min-width: 40px;
+    min-height: 40px;
+    border-radius: 12px;
+    font-size: .86rem;
+  }
+}

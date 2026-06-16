@@ -142,8 +142,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <input id="qty" type="number" min="1" value="1" class="form-control" required>
               </div>
               <div class="col-md-6">
-                <label class="form-label">Bukti pembayaran</label>
-                <input id="proof" type="file" accept="image/jpeg,image/png,image/webp" class="form-control">
+                <label class="form-label">Bukti pembayaran <span class="text-danger">*</span></label>
+                <input id="proof" type="file" accept="image/jpeg,image/png,image/webp" class="form-control" required>
+                <div class="form-text checkout-proof-help">Wajib upload bukti bayar JPG, PNG, atau WebP sebelum pesanan dikirim.</div>
               </div>
             </div>
             <div class="checkout-actions">
@@ -182,30 +183,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         const quantity = Math.max(1, Number(qtyInput.value || 1));
         const buyerName = buyerNameInput.value.trim();
         const buyerPhone = normalizePhone(buyerPhoneInput.value);
-        let proofUrl = '';
-
-        if (proofInput.files[0]) {
-          try {
-            proofUrl = await NB.uploadFile(proofInput.files[0], 'proofs');
-          } catch (uploadError) {
-            console.warn('[NiagaBio] Bukti bayar gagal diupload:', uploadError.message);
-            nbToast('Bukti gagal diupload. Pesanan tetap dibuat, kamu bisa kirim bukti lewat WhatsApp.', 'warning');
-          }
+        const proofFile = proofInput.files?.[0];
+        if (!proofFile) {
+          throw new Error('Bukti pembayaran wajib diupload sebelum kirim pesanan.');
         }
 
-        await NB.save('orders', {
+        let proofUrl = '';
+        try {
+          proofUrl = await NB.uploadFile(proofFile, 'proofs');
+        } catch (uploadError) {
+          console.warn('[NiagaBio] Bukti bayar gagal diupload:', uploadError.message);
+          throw new Error(uploadError.message || 'Bukti pembayaran gagal diupload. Coba ulangi dengan file JPG, PNG, atau WebP maksimal 3MB.');
+        }
+
+        await NB.createPublicOrder({
           seller_id: profile.user_id,
           buyer_name: buyerName,
           buyer_phone: buyerPhone,
           product_id: product.id,
-          product_name: product.name,
           quantity,
-          total_price: Number(product.price || 0) * quantity,
           payment_method: 'qris_manual',
-          payment_status: 'pending',
-          proof_image_url: proofUrl,
-          created_at: NB.now(),
-          paid_at: null
+          proof_image_url: proofUrl
         });
 
         successView({ profile, product, quantity, total: Number(product.price || 0) * quantity, buyerName, buyerPhone });

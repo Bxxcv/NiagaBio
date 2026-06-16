@@ -23,11 +23,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         <td>${NB.money(product.price)}</td>
         <td>${product.is_featured ? '<span class="badge text-bg-success">Unggulan</span>' : '<span class="badge text-bg-light text-dark">Normal</span>'}</td>
         <td class="text-end">
+          <button class="btn btn-sm btn-outline-nb" data-share-product="${product.id}"><i class="bi bi-share me-1"></i>Share</button>
           <button class="btn btn-sm btn-outline-nb" data-edit="${product.id}">Edit</button>
           <button class="btn btn-sm btn-outline-danger" data-del="${product.id}">Hapus</button>
         </td>
       </tr>
     `).join('') || `<tr><td colspan="5"><div class="table-empty-action"><i class="bi bi-bag-plus"></i><b>Belum ada produk</b><span>Tambahkan produk pertama supaya toko kamu bisa menerima order.</span><a href="products" class="btn btn-nb btn-sm">Tambah Produk</a></div></td></tr>`;
+
+    document.querySelectorAll('[data-share-product]').forEach(button => {
+      button.addEventListener('click', () => shareProduct(rows.find(item => item.id === button.dataset.shareProduct)));
+    });
 
     document.querySelectorAll('[data-edit]').forEach(button => {
       button.addEventListener('click', () => fill(rows.find(item => item.id === button.dataset.edit)));
@@ -45,6 +50,35 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
       });
     });
+  }
+
+  async function shareProduct(product) {
+    if (!product) return;
+    if (!profile?.username) {
+      nbToast('Username toko belum tersedia. Lengkapi profil toko dulu.', 'warning');
+      return;
+    }
+
+    const url = `${location.origin}/u?username=${encodeURIComponent(profile.username)}&product=${encodeURIComponent(product.id)}`;
+    const title = `${product.name} - ${profile.display_name || profile.username}`;
+    const text = `${product.name} - ${NB.money(product.price)} dari ${profile.display_name || profile.username}`;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({ title, text, url });
+        return;
+      }
+
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(url);
+        nbToast('Link produk disalin.');
+        return;
+      }
+
+      window.prompt('Salin link produk:', url);
+    } catch (error) {
+      if (error.name !== 'AbortError') nbToast('Gagal membagikan produk.', 'warning');
+    }
   }
 
   function fill(product) {
