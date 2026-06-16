@@ -5113,3 +5113,16 @@ body.admin-page {
     font-size: .86rem;
   }
 }
+
+/* v39 favicon/meta share preview fix */
+.public-store-share {
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+}
+.public-store-share:hover,
+.public-store-share:focus-visible {
+  transform: translateY(-1px);
+  outline: 2px solid rgba(255,255,255,.72);
+  outline-offset: 3px;
+}

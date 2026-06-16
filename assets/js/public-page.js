@@ -287,6 +287,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const title = `${profile.display_name || profile.username || 'Toko'} - NiagaBio`;
     const desc = profile.bio || 'Lihat produk, link penting, dan checkout toko ini di NiagaBio.';
     const image = NB.normalizeImageUrl(profile.avatar_url || `${location.origin}/assets/img/og-niagabio.jpg`, `${location.origin}/assets/img/og-niagabio.jpg`);
+    const shareUrl = `${location.origin}/s/${encodeURIComponent(profile.username || username)}`;
 
     document.title = title;
     [
@@ -294,6 +295,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       ['meta[property="og:title"]', title],
       ['meta[property="og:description"]', desc],
       ['meta[property="og:image"]', image],
+      ['meta[property="og:image:secure_url"]', image],
+      ['meta[property="og:url"]', shareUrl],
       ['meta[name="twitter:title"]', title],
       ['meta[name="twitter:description"]', desc],
       ['meta[name="twitter:image"]', image]
@@ -301,6 +304,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       const el = document.querySelector(selector);
       if (el) el.setAttribute('content', value);
     });
+
+    const canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) canonical.setAttribute('href', shareUrl);
   }
 
   function renderShell({ profile, themeName, premium, products, links, socials, gallery }) {
@@ -329,6 +335,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             <div class="public-socials">
               ${socials.length ? socials.map(socialButton).join('') : ''}
+              <button class="public-social public-store-share" id="shareStoreBtn" type="button" aria-label="Bagikan toko">
+                <i class="bi bi-share"></i>
+              </button>
             </div>
           </header>
 
@@ -445,6 +454,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     renderShell({ profile, themeName, premium, products, links, socials, gallery });
 
+    const shareStoreBtn = document.getElementById('shareStoreBtn');
+    if (shareStoreBtn) shareStoreBtn.addEventListener('click', shareStore);
+
     function renderProducts(list) {
       const box = document.getElementById('productsBox');
       if (!box) return;
@@ -487,16 +499,46 @@ document.addEventListener('DOMContentLoaded', async () => {
       location.href = NB.whatsappUrl(profile.whatsapp_number || checkout.whatsapp_number, text);
     }
 
+    function storeShareUrl() {
+      return `${location.origin}/s/${encodeURIComponent(profile.username || username)}`;
+    }
+
+    function productShareUrl(product) {
+      return `${storeShareUrl()}/${encodeURIComponent(product.id)}`;
+    }
+
+    async function shareStore() {
+      const storeName = profile.display_name || profile.username || 'Toko';
+      const url = storeShareUrl();
+      const title = `${storeName} - NiagaBio`;
+      const text = profile.bio || `Lihat katalog produk dan link penting ${storeName}.`;
+
+      try {
+        if (navigator.share) {
+          await navigator.share({ title, text, url });
+          return;
+        }
+
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(url);
+          nbToast('Link toko disalin.');
+          return;
+        }
+
+        window.prompt('Salin link toko:', url);
+      } catch (error) {
+        if (error.name !== 'AbortError') nbToast('Gagal membagikan toko.', 'warning');
+      }
+    }
+
     async function shareProduct(product) {
       if (!product) return;
-      const productUrl = new URL(`${location.origin}/u`);
-      productUrl.searchParams.set('username', profile.username || username);
-      productUrl.searchParams.set('product', product.id);
-
       const storeName = profile.display_name || profile.username || 'Toko';
       const title = `${product.name} - ${storeName}`;
-      const text = `${product.name} - ${NB.money(product.price)} dari ${storeName}`;
-      const url = productUrl.toString();
+      const text = product.description
+        ? `${product.name} - ${product.description}`
+        : `${product.name} - ${NB.money(product.price)} dari ${storeName}`;
+      const url = productShareUrl(product);
 
       try {
         if (navigator.share) {

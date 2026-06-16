@@ -59,9 +59,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
-    const url = `${location.origin}/u?username=${encodeURIComponent(profile.username)}&product=${encodeURIComponent(product.id)}`;
+    const url = `${location.origin}/s/${encodeURIComponent(profile.username)}/${encodeURIComponent(product.id)}`;
     const title = `${product.name} - ${profile.display_name || profile.username}`;
-    const text = `${product.name} - ${NB.money(product.price)} dari ${profile.display_name || profile.username}`;
+    const text = product.description
+      ? `${product.name} - ${product.description}`
+      : `${product.name} - ${NB.money(product.price)} dari ${profile.display_name || profile.username}`;
 
     try {
       if (navigator.share) {
