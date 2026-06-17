@@ -89,9 +89,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function proofHtml(order) {
-    return order.proof_image_url
-      ? `<a href="${NB.safeHref(order.proof_image_url)}" target="_blank" rel="noopener"><img src="${NB.safeImageUrl(order.proof_image_url)}" class="proof-img" alt="Bukti bayar"></a>`
-      : '<span class="text-muted">-</span>';
+    if (!order.proof_image_url) return '<span class="text-muted">-</span>';
+
+    const ref = NB.escapeHtml(order.proof_image_url);
+    return `
+      <a href="#" target="_blank" rel="noopener" data-proof-ref="${ref}" class="proof-link is-proof-loading">
+        <img src="assets/img/placeholder-product.svg" data-proof-ref="${ref}" class="proof-img is-proof-loading" alt="Bukti bayar">
+      </a>
+    `;
   }
 
   function buyerWaUrl(order) {
@@ -192,6 +197,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const empty = `<tr><td colspan="6"><div class="table-empty-action"><i class="bi bi-receipt"></i><b>Belum ada pesanan</b><span>Pesanan dari halaman toko akan muncul di sini setelah pembeli checkout.</span></div></td></tr>`;
     setHtml('orderRows', orders.map(rowHtml).join('') || empty);
     setHtml('orderCards', orders.map(cardHtml).join('') || '<div class="empty-state empty-action py-4"><i class="bi bi-receipt"></i><b>Belum ada pesanan</b><span>Pesanan dari halaman toko akan muncul di sini.</span></div>');
+    NB.hydrateProofLinks(document);
     attachActions(orders);
   }
 

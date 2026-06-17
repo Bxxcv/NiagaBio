@@ -77,6 +77,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const safe = value => NB.escapeHtml(value ?? '');
 
+  function proofLink(ref) {
+    return ref
+      ? `<a class="btn btn-sm btn-outline-nb proof-link is-proof-loading" href="#" data-proof-ref="${safe(ref)}" target="_blank" rel="noopener">Buka Bukti</a>`
+      : '<span class="text-muted">-</span>';
+  }
+
   function setText(el, value) {
     if (el) el.textContent = String(value ?? '');
   }
@@ -380,7 +386,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           <td><div class="fw-semibold">${safe(order.buyer_name || '-')}</div><small class="text-muted">${safe(order.buyer_phone || '-')}</small></td>
           <td><div class="fw-bold">${NB.money(order.total_price)}</div><small class="text-muted">Qty ${safe(order.quantity || 1)}</small></td>
           <td>${orderBadge(order.payment_status)}</td>
-          <td>${order.proof_image_url ? `<a class="btn btn-sm btn-outline-nb" href="${NB.safeHref(order.proof_image_url)}" target="_blank" rel="noopener">Buka Bukti</a>` : '<span class="text-muted">-</span>'}</td>
+          <td>${proofLink(order.proof_image_url)}</td>
           <td class="text-end">
             <div class="admin-action-row justify-content-end">
               <button class="btn btn-sm btn-success" type="button" data-order-paid="${safe(order.id)}" ${order.payment_status === 'paid' ? 'disabled' : ''}>Selesai</button>
@@ -390,6 +396,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         </tr>
       `;
     }).join('') || '<tr><td colspan="6" class="text-center text-muted py-4">Belum ada order.</td></tr>';
+
+    NB.hydrateProofLinks(refs.orderRows);
 
     refs.orderRows.querySelectorAll('[data-order-paid]').forEach(button => {
       button.addEventListener('click', () => updateOrderStatus(button.dataset.orderPaid, 'paid'));
@@ -448,7 +456,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           <div class="admin-request-info">
             <div><span>Pemilik</span><b>${safe(request.owner_name || '-')}</b></div>
             <div><span>Catatan</span><b>${safe(request.note || 'Tidak ada catatan')}</b></div>
-            <div><span>Bukti</span>${request.proof_url ? `<a class="btn btn-sm btn-outline-nb" href="${NB.safeHref(request.proof_url)}" target="_blank" rel="noopener">Buka Bukti</a>` : '<b>-</b>'}</div>
+            <div><span>Bukti</span>${proofLink(request.proof_url)}</div>
           </div>
           <div class="admin-request-actions">
             <button class="btn btn-sm btn-success" type="button" data-request-approve="${safe(request.id)}" ${pending ? '' : 'disabled'}>Approve</button>
@@ -458,6 +466,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         </article>
       `;
     }).join('') || '<div class="empty-card text-center py-4"><b>Tidak ada request sesuai filter.</b><p class="text-muted mb-0 small">Pending request baru akan muncul di sini.</p></div>';
+
+    NB.hydrateProofLinks(refs.requestRows);
 
     refs.requestRows.querySelectorAll('[data-request-approve]').forEach(button => {
       button.addEventListener('click', () => reviewPremiumRequest(button.dataset.requestApprove, 'approved'));

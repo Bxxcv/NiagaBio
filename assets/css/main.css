@@ -5126,3 +5126,23 @@ body.admin-page {
   outline: 2px solid rgba(255,255,255,.72);
   outline-offset: 3px;
 }
+
+/* Private proof links (signed URL hydration) */
+.proof-link.is-proof-loading {
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+.proof-link.is-proof-error {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.proof-img.is-proof-loading {
+  filter: grayscale(1);
+  opacity: 0.6;
+}
+
+.proof-img.is-proof-error {
+  opacity: 0.35;
+}

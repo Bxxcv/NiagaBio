@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         let proofUrl = '';
         try {
-          proofUrl = await NB.uploadFile(proofFile, 'proofs');
+          proofUrl = await NB.uploadFile(proofFile, 'proofs', { sellerId: profile.user_id });
         } catch (uploadError) {
           console.warn('[NiagaBio] Bukti bayar gagal diupload:', uploadError.message);
           throw new Error(uploadError.message || 'Bukti pembayaran gagal diupload. Coba ulangi dengan file JPG, PNG, atau WebP maksimal 3MB.');

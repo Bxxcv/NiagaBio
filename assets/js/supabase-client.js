@@ -218,6 +218,127 @@
     return escapeHtml(normalizeImageUrl(value, fallback));
   }
 
+  const PRIVATE_PROOF_BUCKET = 'niagabio-private';
+  const proofSignedUrlCache = new Map();
+
+  function parsePrivateProofRef(value) {
+    const raw = stripUnsafeControls(value);
+    const prefix = `private:${PRIVATE_PROOF_BUCKET}/`;
+    if (!raw.toLowerCase().startsWith(prefix)) return null;
+
+    const path = raw.slice(prefix.length);
+    const match = path.match(/^(proofs|premium-proofs)\/([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})\/([^/]+\.(?:jpe?g|png|webp))$/i);
+    if (!match) return null;
+
+    return {
+      bucket: PRIVATE_PROOF_BUCKET,
+      path,
+      folder: match[1].toLowerCase(),
+      ownerId: match[2].toLowerCase(),
+      fileName: match[3]
+    };
+  }
+
+  function makePrivateProofRef(path) {
+    return `private:${PRIVATE_PROOF_BUCKET}/${path}`;
+  }
+
+  function isPrivateProofRef(value, folder = '', ownerId = '') {
+    const parsed = parsePrivateProofRef(value);
+    if (!parsed) return false;
+    if (folder && parsed.folder !== String(folder).toLowerCase()) return false;
+    if (ownerId && parsed.ownerId !== String(ownerId).toLowerCase()) return false;
+    return true;
+  }
+
+  function normalizeProofReference(value, folder = 'proofs', ownerId = '') {
+    const raw = stripUnsafeControls(value);
+    const cleanFolder = String(folder || '').toLowerCase();
+    const cleanOwnerId = String(ownerId || '').toLowerCase();
+
+    if (!raw) return '';
+    if (isPrivateProofRef(raw, cleanFolder, cleanOwnerId)) return raw;
+
+    const publicUrl = normalizeImageUrl(raw, '');
+    if (!publicUrl) return '';
+
+    try {
+      const parsed = new URL(publicUrl, location.origin);
+      const path = parsed.pathname.toLowerCase();
+      const extOk = /\.(jpe?g|png|webp)$/i.test(parsed.pathname);
+      if (!extOk) return '';
+
+      if (cleanFolder === 'proofs') {
+        return path.includes('/storage/v1/object/public/niagabio/proofs/') ? publicUrl : '';
+      }
+
+      if (cleanFolder === 'premium-proofs') {
+        const ownerPart = cleanOwnerId ? `/${cleanOwnerId}/` : '/';
+        return path.includes(`/storage/v1/object/public/niagabio/premium-proofs${ownerPart}`) ? publicUrl : '';
+      }
+    } catch (error) {
+      return '';
+    }
+
+    return '';
+  }
+
+  async function getProofDisplayUrl(value) {
+    const parsed = parsePrivateProofRef(value);
+    if (!parsed) return normalizeImageUrl(value, '');
+    if (!sb) return '';
+
+    const cacheKey = `${parsed.bucket}/${parsed.path}`;
+    const cached = proofSignedUrlCache.get(cacheKey);
+    if (cached && cached.expiresAt > Date.now() + 15000) return cached.url;
+
+    const { data, error } = await sb.storage.from(parsed.bucket).createSignedUrl(parsed.path, 300);
+    if (error) throw error;
+
+    const signedUrl = data?.signedUrl || '';
+    if (signedUrl) {
+      proofSignedUrlCache.set(cacheKey, { url: signedUrl, expiresAt: Date.now() + 285000 });
+    }
+    return signedUrl;
+  }
+
+  async function hydrateProofLinks(root = document) {
+    const scope = root || document;
+    const elements = Array.from(scope.querySelectorAll('[data-proof-ref]'));
+    await Promise.all(elements.map(async element => {
+      const ref = element.getAttribute('data-proof-ref') || '';
+      try {
+        const url = await getProofDisplayUrl(ref);
+        if (!url) throw new Error('Bukti tidak tersedia.');
+
+        if (element.tagName === 'IMG') {
+          element.src = url;
+          element.classList.remove('is-proof-loading');
+          return;
+        }
+
+        if (element.tagName === 'A') {
+          element.href = url;
+          element.classList.remove('disabled', 'is-proof-loading');
+          element.removeAttribute('aria-disabled');
+        }
+      } catch (error) {
+        if (element.tagName === 'IMG') {
+          element.alt = 'Bukti bayar tidak bisa dimuat';
+          element.classList.add('is-proof-error');
+          return;
+        }
+
+        if (element.tagName === 'A') {
+          element.removeAttribute('href');
+          element.classList.add('disabled', 'is-proof-error');
+          element.setAttribute('aria-disabled', 'true');
+          element.textContent = 'Bukti tidak bisa dibuka';
+        }
+      }
+    }));
+  }
+
   function assertSafeImageUrl(value, fallback = '') {
     const raw = String(value || '').trim();
     const normalized = normalizeImageUrl(raw, fallback);
@@ -440,7 +561,7 @@
 
   seedDemo();
 
-  async function uploadFile(file, folder = 'products') {
+  async function uploadFile(file, folder = 'products', options = {}) {
     if (!file) return '';
 
     const allowedTypes = {
@@ -467,22 +588,46 @@
     if (sb) {
       const randomId = window.crypto?.randomUUID ? window.crypto.randomUUID() : uid('file');
       const randomName = `${Date.now().toString(36)}-${randomId}.${ext}`;
-      let path = `proofs/${randomName}`;
 
-      if (cleanFolder !== 'proofs') {
-        const user = await currentUser();
-        if (!user) throw new Error('Login diperlukan untuk upload file.');
+      if (cleanFolder === 'proofs') {
+        const sellerId = String(options.sellerId || options.ownerId || '').trim();
+        if (!isUuid(sellerId)) throw new Error('Seller tidak valid untuk upload bukti bayar.');
 
-        if (cleanFolder === 'premium-qris') {
-          const profile = await getProfile(user.id);
-          if (String(profile?.role || '').toLowerCase() !== 'admin') {
-            throw new Error('Hanya admin yang boleh upload QRIS premium.');
-          }
-        }
-
-        path = `${cleanFolder}/${user.id}/${randomName}`;
+        const path = `proofs/${sellerId}/${randomName}`;
+        const { error } = await sb.storage.from(PRIVATE_PROOF_BUCKET).upload(path, file, {
+          cacheControl: '3600',
+          contentType: mime,
+          upsert: false
+        });
+        if (error) throw error;
+        return makePrivateProofRef(path);
       }
 
+      if (cleanFolder === 'premium-proofs') {
+        const user = await currentUser();
+        if (!user) throw new Error('Login diperlukan untuk upload bukti upgrade.');
+
+        const path = `premium-proofs/${user.id}/${randomName}`;
+        const { error } = await sb.storage.from(PRIVATE_PROOF_BUCKET).upload(path, file, {
+          cacheControl: '3600',
+          contentType: mime,
+          upsert: false
+        });
+        if (error) throw error;
+        return makePrivateProofRef(path);
+      }
+
+      const user = await currentUser();
+      if (!user) throw new Error('Login diperlukan untuk upload file.');
+
+      if (cleanFolder === 'premium-qris') {
+        const profile = await getProfile(user.id);
+        if (String(profile?.role || '').toLowerCase() !== 'admin') {
+          throw new Error('Hanya admin yang boleh upload QRIS premium.');
+        }
+      }
+
+      const path = `${cleanFolder}/${user.id}/${randomName}`;
       const { error } = await sb.storage.from('niagabio').upload(path, file, {
         cacheControl: '3600',
         contentType: mime,
@@ -895,7 +1040,7 @@
     if (buyerPhone.length < 8 || buyerPhone.length > 18) throw new Error('Nomor WhatsApp pembeli tidak valid.');
 
     const quantity = Math.max(1, Number(row.quantity || 1));
-    const proofUrl = normalizeImageUrl(row.proof_image_url || '', '');
+    const proofUrl = normalizeProofReference(row.proof_image_url || '', 'proofs', row.seller_id || '');
     if (!proofUrl) {
       throw new Error('Bukti pembayaran wajib diupload sebelum kirim pesanan.');
     }
@@ -1116,7 +1261,7 @@
       email: user.email,
       shop_name: String(payload.shop_name || '').trim(),
       owner_name: String(payload.owner_name || '').trim(),
-      proof_url: normalizeImageUrl(payload.proof_url || '', ''),
+      proof_url: normalizeProofReference(payload.proof_url || '', 'premium-proofs', user.id),
       note: String(payload.note || ''),
       status: 'pending',
       created_at: now()
@@ -1393,6 +1538,10 @@
     escapeHtml,
     normalizeExternalUrl,
     normalizeImageUrl,
+    normalizeProofReference,
+    parsePrivateProofRef,
+    getProofDisplayUrl,
+    hydrateProofLinks,
     safeHref,
     safeImageUrl,
     assertSafeImageUrl,
