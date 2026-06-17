@@ -12,6 +12,42 @@ const BRAND = 'NiagaBio';
 const DEFAULT_IMAGE = '/assets/img/og-niagabio.jpg';
 const DEFAULT_ICON = '/assets/img/favicon-32x32.png?v=4';
 
+const RATE_WINDOW_MS = 5 * 60 * 1000;
+const RATE_MAX_REQUESTS = 90;
+const rateStore = globalThis.__NIAGABIO_SHARE_RATE__ || new Map();
+globalThis.__NIAGABIO_SHARE_RATE__ = rateStore;
+
+function clientIp(req) {
+  const forwarded = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim();
+  return forwarded || String(req.headers['x-real-ip'] || req.socket?.remoteAddress || 'unknown');
+}
+
+function checkRateLimit(req) {
+  const now = Date.now();
+  const key = clientIp(req);
+  const current = rateStore.get(key) || { count: 0, resetAt: now + RATE_WINDOW_MS };
+
+  if (current.resetAt <= now) {
+    current.count = 0;
+    current.resetAt = now + RATE_WINDOW_MS;
+  }
+
+  current.count += 1;
+  rateStore.set(key, current);
+
+  // Bersihkan cache kecil ini agar serverless instance yang hidup lama tidak menyimpan key lama terus.
+  if (rateStore.size > 500) {
+    for (const [storedKey, storedValue] of rateStore.entries()) {
+      if (!storedValue || storedValue.resetAt <= now) rateStore.delete(storedKey);
+    }
+  }
+
+  return {
+    allowed: current.count <= RATE_MAX_REQUESTS,
+    retryAfter: Math.max(1, Math.ceil((current.resetAt - now) / 1000))
+  };
+}
+
 function escapeHtml(value = '') {
   return String(value ?? '').replace(/[&<>'"]/g, char => ({
     '&': '&amp;',
@@ -178,6 +214,13 @@ function renderShareHtml({ title, description, image, url, redirectUrl, origin }
 }
 
 module.exports = async function handler(req, res) {
+  const rate = checkRateLimit(req);
+  if (!rate.allowed) {
+    res.setHeader('Retry-After', String(rate.retryAfter));
+    res.status(429).send('Terlalu banyak request. Coba lagi sebentar.');
+    return;
+  }
+
   const origin = originFromRequest(req);
   const username = slugify(req.query.username || req.query.u || '');
   const productId = String(req.query.product || req.query.p || '').trim();

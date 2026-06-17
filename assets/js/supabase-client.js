@@ -1156,15 +1156,10 @@
             payment_status: payload.payment_status
           };
         } else {
-          payload = {
-            seller_id: payload.seller_id,
-            buyer_name: String(payload.buyer_name || '').trim(),
-            buyer_phone: normalizePhone(payload.buyer_phone),
-            product_id: payload.product_id,
-            quantity: Math.max(1, Number(payload.quantity || 1)),
-            payment_method: payload.payment_method || 'whatsapp',
-            proof_image_url: normalizeImageUrl(payload.proof_image_url || '', '')
-          };
+          // Production order baru wajib lewat RPC createPublicOrder().
+          // Jangan fallback direct insert, supaya harga, metode QRIS, bukti bayar,
+          // anti-spam, dan validasi produk tetap dipaksa dari database.
+          throw new Error('Gunakan createPublicOrder() untuk membuat pesanan baru.');
         }
       }
 
