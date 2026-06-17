@@ -884,8 +884,8 @@
 
   function preparePublicOrderPayload(row) {
     const paymentMethod = String(row.payment_method || 'qris_manual').toLowerCase();
-    if (!['whatsapp', 'qris_manual', 'qris_whatsapp'].includes(paymentMethod)) {
-      throw new Error('Metode pembayaran tidak valid.');
+    if (!['qris_manual', 'qris_whatsapp'].includes(paymentMethod)) {
+      throw new Error('Checkout hanya menerima pembayaran QRIS manual. Gunakan tombol WhatsApp untuk tanya penjual.');
     }
 
     const buyerName = String(row.buyer_name || '').trim().slice(0, 80);
@@ -896,7 +896,7 @@
 
     const quantity = Math.max(1, Number(row.quantity || 1));
     const proofUrl = normalizeImageUrl(row.proof_image_url || '', '');
-    if (paymentMethod !== 'whatsapp' && !proofUrl) {
+    if (!proofUrl) {
       throw new Error('Bukti pembayaran wajib diupload sebelum kirim pesanan.');
     }
 
@@ -932,31 +932,26 @@
 
       const message = String(error.message || '').toLowerCase();
       const missingRpc = message.includes('create_public_order') || message.includes('could not find the function') || message.includes('schema cache');
-      if (!missingRpc) throw error;
-
-      console.warn('[NiagaBio] RPC create_public_order belum aktif. Jalankan supabase/13_checkout_order_flow_fix.sql:', error.message);
-    }
-
-    try {
-      return await save('orders', {
-        seller_id: payload.seller_id,
-        buyer_name: payload.buyer_name,
-        buyer_phone: payload.buyer_phone,
-        product_id: payload.product_id,
-        quantity: payload.quantity,
-        payment_method: payload.payment_method,
-        proof_image_url: payload.proof_image_url,
-        payment_status: 'pending',
-        paid_at: null,
-        created_at: now()
-      });
-    } catch (error) {
-      const message = String(error.message || '').toLowerCase();
-      if (message.includes('row-level security') || message.includes('violates row-level security')) {
-        throw new Error('Checkout ditolak oleh RLS orders. Jalankan SQL supabase/13_checkout_order_flow_fix.sql di Supabase SQL Editor, lalu deploy ulang.');
+      if (missingRpc) {
+        throw new Error('Checkout belum siap. Jalankan SQL supabase/15_order_proof_antispam_hardening.sql di Supabase SQL Editor, lalu deploy ulang.');
       }
       throw error;
     }
+
+    // Local/demo fallback hanya dipakai saat Supabase tidak aktif.
+    // Di production dengan Supabase aktif, order wajib lewat RPC supaya harga, status, dan proof divalidasi database.
+    return await save('orders', {
+      seller_id: payload.seller_id,
+      buyer_name: payload.buyer_name,
+      buyer_phone: payload.buyer_phone,
+      product_id: payload.product_id,
+      quantity: payload.quantity,
+      payment_method: payload.payment_method,
+      proof_image_url: payload.proof_image_url,
+      payment_status: 'pending',
+      paid_at: null,
+      created_at: now()
+    });
   }
 
 
