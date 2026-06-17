@@ -2,17 +2,55 @@
   'use strict';
 
   const cfg = window.NIAGABIO_CONFIG || {};
+  const runtimeHost = String(location.hostname || '').toLowerCase();
+  const runtimeProtocol = String(location.protocol || '').toLowerCase();
+  const isLocalEnvironment = runtimeProtocol === 'file:' || ['localhost', '127.0.0.1', '::1'].includes(runtimeHost) || runtimeHost.endsWith('.localhost');
+  const isProductionHost = runtimeHost === 'niaga-bio.vercel.app' || runtimeHost.endsWith('.vercel.app') || cfg.PRODUCTION === true;
   const isPlaceholder = value => !value || /YOUR_|PASTE_|_HERE/i.test(String(value));
   const urlReady = Boolean(cfg.SUPABASE_URL && !isPlaceholder(cfg.SUPABASE_URL));
   const keyReady = Boolean(cfg.SUPABASE_ANON_KEY && !isPlaceholder(cfg.SUPABASE_ANON_KEY));
-  const canSupabase = Boolean(window.supabase && urlReady && keyReady && cfg.DEMO_MODE !== true);
+  const demoRequested = cfg.DEMO_MODE === true;
+  const localFallbackAllowed = Boolean(demoRequested && isLocalEnvironment && !isProductionHost);
+  const canSupabase = Boolean(window.supabase && urlReady && keyReady && !localFallbackAllowed);
   let sb = null;
+
+  if (demoRequested && !localFallbackAllowed) {
+    console.warn('[NiagaBio] DEMO_MODE diabaikan karena halaman tidak berjalan di lingkungan lokal yang aman.');
+  }
 
   try {
     sb = canSupabase ? window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY) : null;
   } catch (error) {
-    console.warn('[NiagaBio] Supabase config belum valid, fallback ke demo/localStorage:', error.message);
+    console.error('[NiagaBio] Supabase gagal dibuat:', error.message);
     sb = null;
+  }
+
+  function productionGuardError(action = 'memproses data') {
+    return new Error(`Koneksi database belum siap untuk ${action}. Refresh halaman. Jika masih terjadi, hubungi admin NiagaBio.`);
+  }
+
+  function assertDataLayer(action = 'memproses data') {
+    if (sb || localFallbackAllowed) return true;
+    throw productionGuardError(action);
+  }
+
+  function databaseReady() {
+    return Boolean(sb || localFallbackAllowed);
+  }
+
+  function showDataLayerWarning() {
+    if (databaseReady() || document.getElementById('nbDataLayerWarning')) return;
+    const warning = document.createElement('div');
+    warning.id = 'nbDataLayerWarning';
+    warning.setAttribute('role', 'alert');
+    warning.style.cssText = 'position:relative;z-index:9999;margin:0;padding:12px 16px;background:#fff3cd;color:#664d03;border-bottom:1px solid #ffecb5;font:14px/1.45 system-ui,-apple-system,Segoe UI,sans-serif;text-align:center';
+    warning.textContent = 'Koneksi database NiagaBio belum siap. Refresh halaman. Jika masih terjadi, hubungi admin.';
+    document.body.prepend(warning);
+  }
+
+  if (!databaseReady()) {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', showDataLayerWarning, { once: true });
+    else showDataLayerWarning();
   }
 
   const LS = {
@@ -87,6 +125,7 @@
   };
 
   function read(key, fallback) {
+    assertDataLayer('membaca data lokal');
     try {
       const value = JSON.parse(localStorage.getItem(key));
       return value ?? fallback;
@@ -96,6 +135,7 @@
   }
 
   function write(key, value) {
+    assertDataLayer('menyimpan data lokal');
     localStorage.setItem(key, JSON.stringify(value));
     return value;
   }
@@ -191,7 +231,7 @@
     if (/^(javascript|vbscript|file|blob):/i.test(lower)) return fallback;
 
     if (/^data:image\/(jpeg|jpg|png|webp);base64,/i.test(input)) {
-      return cfg.DEMO_MODE === true || !sb ? input : fallback;
+      return localFallbackAllowed ? input : fallback;
     }
 
     if (/^(assets\/img\/|\/assets\/img\/)/i.test(input)) {
@@ -473,7 +513,7 @@
   }
 
   function seedDemo() {
-    if (cfg.DEMO_MODE !== true) return;
+    if (!localFallbackAllowed) return;
     if (localStorage.getItem('nb_seeded_v2')) return;
 
     const adminId = 'user_admin';
@@ -481,7 +521,7 @@
 
     write(LS.settings, { ...defaultSettings });
     write(LS.users, [
-      { id: adminId, email: cfg.ADMIN_EMAIL || 'unrageunrage@gmail.com', password: 'admin123', created_at: now() },
+      { id: adminId, email: cfg.ADMIN_EMAIL || 'admin@niagabio.local', password: 'admin123', created_at: now() },
       { id: sellerId, email: 'demo@niagabio.local', password: 'demo123', created_at: now() }
     ]);
 
@@ -489,7 +529,7 @@
       {
         id: 'profile_admin',
         user_id: adminId,
-        email: cfg.ADMIN_EMAIL || 'unrageunrage@gmail.com',
+        email: cfg.ADMIN_EMAIL || 'admin@niagabio.local',
         username: 'admin',
         display_name: 'Admin NiagaBio',
         bio: 'Admin utama platform.',
@@ -638,6 +678,7 @@
       return data.publicUrl;
     }
 
+    assertDataLayer('upload file');
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => resolve(reader.result);
@@ -722,7 +763,7 @@
       avatar_url: 'assets/img/logo.jpg',
       whatsapp_number: '',
       plan: 'free',
-      role: cleanEmail === (cfg.ADMIN_EMAIL || '').toLowerCase() ? 'admin' : 'user',
+      role: localFallbackAllowed && cleanEmail === String(cfg.ADMIN_EMAIL || 'admin@niagabio.local').toLowerCase() ? 'admin' : 'user',
       status: 'active',
       plan_end_date: null,
       theme_name: 'service',
@@ -1083,8 +1124,9 @@
       throw error;
     }
 
-    // Local/demo fallback hanya dipakai saat Supabase tidak aktif.
-    // Di production dengan Supabase aktif, order wajib lewat RPC supaya harga, status, dan proof divalidasi database.
+    // Local/demo fallback hanya boleh berjalan di lingkungan lokal yang sengaja mengaktifkan DEMO_MODE.
+    // Production wajib lewat RPC supaya harga, status, dan proof divalidasi database.
+    assertDataLayer('membuat pesanan');
     return await save('orders', {
       seller_id: payload.seller_id,
       buyer_name: payload.buyer_name,
@@ -1528,6 +1570,11 @@
     sb,
     cfg,
     canSupabase,
+    localFallbackAllowed,
+    isLocalEnvironment,
+    isProductionHost,
+    databaseReady,
+    assertDataLayer,
     themes,
     limits,
     uid,
