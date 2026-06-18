@@ -10,5 +10,11 @@ Disallow: /gallery
 Disallow: /themes
 Disallow: /checkout-settings
 Disallow: /orders
+Disallow: /notifications
 Disallow: /upgrade
+Disallow: /checkout
+Disallow: /login
+Disallow: /register
+Disallow: /reset-password
+Disallow: /maintenance
 Sitemap: https://niaga-bio.vercel.app/sitemap.xml

@@ -514,7 +514,7 @@
 
   function seedDemo() {
     if (!localFallbackAllowed) return;
-    if (localStorage.getItem('nb_seeded_v2')) return;
+    if (localStorage.getItem('nb_seeded_v3')) return;
 
     const adminId = 'user_admin';
     const sellerId = 'user_demo';
@@ -549,7 +549,7 @@
         email: 'demo@niagabio.local',
         username: 'demo',
         display_name: 'Niaga Store',
-        bio: 'Katalog produk pilihan dengan checkout WhatsApp dan QRIS manual.',
+        bio: 'Katalog produk pilihan dengan checkout QRIS manual.',
         avatar_url: 'assets/img/logo.jpg',
         whatsapp_number: defaultSettings.admin_whatsapp,
         plan: 'premium',
@@ -584,19 +584,20 @@
     ]);
 
     write(LS.checkout, [
-      { id: 'chk_1', user_id: sellerId, checkout_mode: 'whatsapp', whatsapp_number: '6281234567890', qris_enabled: false, qris_image_url: '', qris_name: 'NIAGA STORE', payment_note: 'Transfer sesuai nominal lalu upload bukti pembayaran.', created_at: now() }
+      { id: 'chk_1', user_id: sellerId, checkout_mode: 'qris_manual', whatsapp_number: '6281234567890', qris_enabled: true, qris_image_url: 'assets/img/logo.jpg', qris_name: 'NIAGA STORE', payment_note: 'Transfer sesuai nominal lalu upload bukti pembayaran.', created_at: now() }
     ]);
 
     write(LS.premiumRequests, []);
     write(LS.notifications, []);
 
     write(LS.orders, [
-      { id: 'ord_1', seller_id: sellerId, buyer_name: 'Rizky', buyer_phone: '628111111111', product_id: 'prd_1', product_name: 'Hoodie Basic', quantity: 1, total_price: 120000, payment_method: 'whatsapp', payment_status: 'paid', proof_image_url: '', created_at: now(), paid_at: now() },
-      { id: 'ord_2', seller_id: sellerId, buyer_name: 'Dina', buyer_phone: '628222222222', product_id: 'prd_2', product_name: 'Kaos Oversize', quantity: 2, total_price: 170000, payment_method: 'qris_manual', payment_status: 'pending', proof_image_url: '', created_at: now(), paid_at: null }
+      { id: 'ord_1', seller_id: sellerId, buyer_name: 'Rizky', buyer_phone: '628111111111', product_id: 'prd_1', product_name: 'Hoodie Basic', quantity: 1, total_price: 120000, payment_method: 'qris_manual', payment_status: 'paid', proof_image_url: 'assets/img/logo.jpg', created_at: now(), paid_at: now() },
+      { id: 'ord_2', seller_id: sellerId, buyer_name: 'Dina', buyer_phone: '628222222222', product_id: 'prd_2', product_name: 'Kaos Oversize', quantity: 2, total_price: 170000, payment_method: 'qris_manual', payment_status: 'pending', proof_image_url: 'assets/img/logo.jpg', created_at: now(), paid_at: null }
     ]);
 
     localStorage.setItem('nb_seeded_v1', '1');
     localStorage.setItem('nb_seeded_v2', '1');
+    localStorage.setItem('nb_seeded_v3', '1');
   }
 
   seedDemo();

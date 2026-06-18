@@ -1,283 +1,149 @@
 # NiagaBio
 
-NiagaBio adalah website **link bio + mini katalog + checkout QRIS manual** untuk seller kecil, UMKM, jasa, produk digital, dan toko online yang ingin punya satu halaman toko rapi tanpa ribet.
+NiagaBio adalah website **link bio + katalog produk + checkout QRIS manual + dashboard pesanan** untuk seller kecil/UMKM yang ingin punya halaman toko rapi tanpa bikin website rumit.
 
-Project ini dibuat dengan stack ringan supaya mudah diedit dari HP dan mudah dideploy ke Vercel.
+Project ini tetap ringan: **HTML, CSS, Vanilla JavaScript, Supabase, dan Vercel**. Tidak memakai React, Tailwind build, npm, atau server yang harus dijalankan manual.
 
-## Demo dan route utama
+## Route utama
 
-- Landing page: `/`
-- Login: `/login`
-- Register: `/register`
-- Dashboard seller: `/dashboard`
-- Admin Master owner: `/admin`
-- Halaman toko publik: `/u?username=demo-account`
-- Checkout publik: `/checkout?username=demo-account&product=...`
-- Rekap pesanan seller: `/orders`
-- Notifikasi: `/notifications`
+| Route | Fungsi |
+| --- | --- |
+| `/` | Landing page |
+| `/login` | Login seller/admin |
+| `/register` | Daftar seller |
+| `/dashboard` | Dashboard seller |
+| `/admin` | Admin Master |
+| `/u?username=demo-account` | Toko publik |
+| `/s/demo-account` | Share preview toko untuk WhatsApp/Open Graph |
+| `/s/demo-account/product-id` | Share preview produk |
+| `/checkout?username=demo-account&product=...` | Checkout publik |
+| `/orders` | Pesanan dan rekap seller |
+| `/upgrade` | Upgrade Premium |
+| `/notifications` | Notifikasi in-app |
 
 ## Fitur utama
 
-### Untuk seller/user
+### Seller
 
-- Link bio toko.
-- Profil toko dengan logo, bio, WhatsApp, dan username public.
-- Katalog produk.
-- Link custom untuk WhatsApp, Instagram, Shopee, Tokopedia, TikTok, dan link lain.
-- Social link.
+- Profil toko dan username publik.
+- Link bio dan social link.
+- Katalog produk dengan kategori.
 - Gallery untuk Premium.
-- Template toko Free dan Premium.
+- Template toko Free/Premium.
 - Checkout QRIS manual.
 - Upload bukti pembayaran.
-- Rekap pesanan dan omset.
-- Export CSV rekap.
-- Notifikasi di dalam website.
+- Dashboard pesanan, rekap omset, dan export CSV.
+- Share toko dan share produk dengan preview WhatsApp.
 
-### Untuk owner/admin master
+### Admin Master
 
-- Dashboard Admin Master.
 - Kelola user Free/Premium/Blocked/Deleted.
 - Approve/reject request Premium.
-- Setting harga Premium.
-- Setting QRIS Premium.
-- Maintenance mode.
-- Register lock.
-- Laporan platform.
-- Export CSV user/request.
-- Soft delete user.
+- Setting harga Premium dan QRIS Premium.
+- Maintenance mode dan register lock.
+- Laporan platform dan export CSV.
+- Audit log untuk aksi penting.
 
-### Keamanan
+## Security status production candidate
 
-- Supabase RLS.
-- Admin role dari database, bukan dari frontend.
-- User biasa tidak boleh ubah `role`, `plan`, `status`, dan `plan_end_date`.
-- Upload file dibatasi JPG, JPEG, PNG, WEBP maksimal 3 MB.
-- Path storage user-scoped.
-- Sanitizer URL dan image URL di frontend.
-- Proteksi dasar XSS.
+Bagian penting yang sudah dikeraskan:
+
+- Supabase RLS aktif.
+- Admin role dari database/RLS, bukan dari frontend.
+- Field sensitif `role`, `plan`, `status`, dan `plan_end_date` dikunci trigger database.
+- Public checkout wajib lewat RPC `create_public_order`.
+- Order QRIS wajib bukti pembayaran.
+- Harga order dihitung di database, bukan dari frontend.
+- Bukti bayar baru masuk bucket private `niagabio-private`.
+- Seller/admin membuka bukti bayar lewat signed URL sementara.
+- Fallback localStorage/demo dimatikan di production.
+- Upload user hanya JPG, PNG, WEBP maksimal 3 MB.
+- Basic rate limit untuk `/api/share`.
 - Security headers Vercel.
-- SQL hardening bertahap sampai `08_security_reaudit_final.sql`.
 
-## Stack
-
-- HTML
-- CSS
-- Vanilla JavaScript
-- Bootstrap 5
-- Bootstrap Icons
-- Supabase Auth
-- Supabase Database/Postgres
-- Supabase Storage
-- Vercel static hosting
-
-Tidak memakai React, Next.js, build tool berat, atau backend custom.
+Catatan: Supabase anon key memang public untuk aplikasi frontend. Jangan pernah memasukkan `service_role`, secret SMTP, token admin, atau private API key ke frontend.
 
 ## Struktur folder
 
 ```txt
 NiagaBio-main/
-├── index.html                     # Landing page
-├── login.html                     # Login
-├── register.html                  # Register
-├── dashboard.html                 # Dashboard seller
-├── admin.html                     # Admin Master owner
-├── u.html                         # Public toko
-├── checkout.html                  # Checkout pembeli
-├── orders.html                    # Pesanan dan rekap seller
-├── notifications.html             # Notifikasi in-app
-├── privacy.html                   # Privacy policy
-├── terms.html                     # Terms
-├── refund.html                    # Kebijakan pembayaran/refund
+├── *.html                  # Halaman static utama
+├── api/                    # Vercel serverless function
+│   └── share.js            # Preview share toko/produk untuk WhatsApp/Open Graph
 ├── assets/
-│   ├── css/
-│   │   ├── main.css               # Style dashboard/admin/public
-│   │   └── landing.css            # Style landing page
-│   ├── js/
-│   │   ├── config.js              # Config Supabase
-│   │   ├── supabase-client.js     # Wrapper Supabase + helper security
-│   │   ├── common.js              # Guard umum/sidebar/notifikasi
-│   │   ├── admin.js               # Admin Master
-│   │   ├── dashboard.js           # Dashboard seller
-│   │   ├── public-page.js         # Render toko publik
-│   │   ├── checkout.js            # Checkout pembeli
-│   │   ├── orders.js              # Pesanan/rekap seller
-│   │   └── ...
-│   └── img/
-├── supabase/
-│   ├── 01_schema_clean_run_this.sql
-│   ├── 02_bootstrap_admin_after_signup.sql
-│   ├── 03_fix_theme_setter.sql
-│   ├── 04_upgrade_requests_admin_tools.sql
-│   ├── 05_reset_sales_recap.sql
-│   ├── 06_security_hardening.sql
-│   ├── 07_in_app_notifications.sql
-│   └── 08_security_reaudit_final.sql
+│   ├── css/                # CSS landing, dashboard, chatbot
+│   ├── img/                # Logo, favicon, OG image, placeholder
+│   └── js/                 # Logic frontend per halaman
+├── docs/                   # Dokumentasi project dan patch notes
+│   ├── patch-notes/        # Catatan patch per tahap
+│   ├── DESAIN.md
+│   ├── PROJECT_STRUCTURE.md
+│   ├── ROADMAP.md
+│   ├── SETUP_SUPABASE_DARI_NOL.md
+│   └── UPDATE_GUIDE.md
+├── supabase/               # SQL schema, patch, audit, dan hardening
 ├── robots.txt
 ├── sitemap.xml
 ├── site.webmanifest
-├── vercel.json
-├── DESAIN.md
-├── ROADMAP.md
-├── SETUP_SUPABASE_DARI_NOL.md
-├── PRODUCTION_CHECKLIST.md
-└── SECURITY_REAUDIT_V31.md
+└── vercel.json
 ```
 
-## Setup cepat dari nol
+Detail struktur ada di `docs/PROJECT_STRUCTURE.md`.
 
-### 1. Buat project Supabase
+## Setup cepat
 
-Buat project baru di Supabase, lalu masuk ke SQL Editor.
+1. Buat project Supabase.
+2. Buka SQL Editor.
+3. Untuk database baru, jalankan SQL sesuai urutan di `supabase/README.md`.
+4. Buat akun admin pertama.
+5. Jalankan `supabase/02_bootstrap_admin_after_signup.sql` setelah akun admin ada.
+6. Edit `assets/js/config.js`.
+7. Deploy ke Vercel.
 
-### 2. Jalankan schema utama
-
-Jalankan semua isi file:
-
-```txt
-supabase/01_schema_clean_run_this.sql
-```
-
-File ini sudah menyertakan schema utama dan patch security final.
-
-### 3. Setting Auth Supabase
-
-Untuk testing awal:
-
-```txt
-Authentication > Providers > Email
-- Email provider: ON
-- Confirm email: OFF
-```
-
-Jangan matikan Email provider.
-
-### 4. Buat akun admin pertama
-
-Di Supabase:
-
-```txt
-Authentication > Users > Add user
-```
-
-Buat user dengan email owner. Setelah itu jalankan:
-
-```txt
-supabase/02_bootstrap_admin_after_signup.sql
-```
-
-Pastikan hasilnya:
-
-```txt
-role = admin
-plan = premium
-status = active
-```
-
-### 5. Edit config
-
-Buka:
-
-```txt
-assets/js/config.js
-```
-
-Isi:
+Config frontend:
 
 ```js
 window.NIAGABIO_CONFIG = {
   SUPABASE_URL: "https://project-kamu.supabase.co",
-  SUPABASE_ANON_KEY: "anon_public_key_kamu",
-  ADMIN_EMAIL: "email-admin-kamu@example.com",
+  SUPABASE_ANON_KEY: "anon_or_publishable_key_kamu",
+  ADMIN_EMAIL: "",
   BRAND_NAME: "NiagaBio",
   PREMIUM_PRICE: 80000,
   DEMO_MODE: false
 };
 ```
 
-Penting:
+`ADMIN_EMAIL` sengaja kosong. Admin harus berasal dari database/RLS, bukan dari frontend.
 
-```txt
-Jangan pernah memasukkan service_role key ke frontend.
-```
+## Cara update aman
 
-### 6. Deploy ke Vercel
+Baca `docs/UPDATE_GUIDE.md` sebelum mengganti file. Ringkasnya:
 
-Upload repo ke GitHub, lalu deploy ke Vercel. Pastikan `vercel.json` tetap ada agar clean URL seperti `/admin`, `/login`, dan `/dashboard` berjalan.
+1. Backup ZIP lama.
+2. Replace file patch sesuai daftar.
+3. Jalankan SQL patch baru jika ada.
+4. Deploy ulang Vercel.
+5. Test login, dashboard, public page, checkout, upload bukti, orders, admin, dan share produk.
 
-## SQL patch tambahan
+Jangan run ulang `supabase/01_schema_clean_run_this.sql` di database production yang sudah berisi data, kecuali kamu memang setup database baru dari nol.
 
-Untuk database lama, patch bisa dijalankan bertahap jika belum pernah dijalankan:
+## Checklist test production
 
-```txt
-03_fix_theme_setter.sql
-04_upgrade_requests_admin_tools.sql
-05_reset_sales_recap.sql
-06_security_hardening.sql
-07_in_app_notifications.sql
-08_security_reaudit_final.sql
-```
+- Landing page tidak horizontal scroll.
+- Login/register berjalan.
+- Seller bisa tambah produk.
+- Public page `/u?username=...` tampil.
+- Share `/s/username/product-id` muncul preview di WhatsApp.
+- Checkout wajib upload bukti bayar.
+- Order masuk dashboard seller.
+- Bukti bayar baru bisa dibuka seller/admin.
+- Admin bisa approve/reject premium.
+- Audit log terisi untuk aksi penting.
+- Tidak ada error console fatal.
 
-Untuk fresh install, cukup jalankan `01_schema_clean_run_this.sql` dan `02_bootstrap_admin_after_signup.sql`.
+## Dokumentasi penting
 
-## SEO dan Google indexing
-
-File SEO yang sudah tersedia:
-
-- `robots.txt`
-- `sitemap.xml`
-- favicon
-- Open Graph image
-- meta description landing
-- canonical URL
-
-Agar website muncul di Google untuk keyword seperti **NiagaBio**, **niaga bio**, **link bio**, dan **katalog produk**, lakukan ini:
-
-1. Daftarkan website ke Google Search Console.
-2. Verifikasi ownership domain/URL prefix.
-3. Submit `https://niaga-bio.vercel.app/sitemap.xml`.
-4. Pakai URL Inspection untuk request indexing homepage.
-5. Cek indexing dengan query `site:niaga-bio.vercel.app`.
-6. Bangun sinyal brand dengan share link ke sosial media, profil Instagram/TikTok, GitHub README, dan beberapa backlink natural.
-
-Catatan: muncul di Google bisa butuh waktu. Indexing bisa dipercepat dengan Search Console, tapi ranking keyword tetap butuh konten, sinyal brand, dan waktu.
-
-## Checklist test sebelum promosi
-
-Pakai minimal 3 akun:
-
-- Akun admin master.
-- Akun user Free.
-- Akun user Premium.
-
-Test wajib:
-
-```txt
-1. Register/login normal.
-2. Admin hanya bisa dibuka role admin.
-3. User biasa tidak bisa buka /admin.
-4. User Free tidak bisa bypass fitur Premium.
-5. User Premium bisa ganti template Premium.
-6. Upload JPG/PNG/WEBP sukses.
-7. Upload SVG/GIF ditolak.
-8. Produk tampil di public page.
-9. Checkout membuat order pending.
-10. Seller bisa tandai order selesai/batal.
-11. Request Premium masuk ke Admin Master.
-12. Admin approve Premium.
-13. Notifikasi muncul di website.
-14. Maintenance mode berjalan.
-15. Link toko bisa dibuka dari HP dan desktop.
-```
-
-## Panduan desain dan roadmap
-
-- Baca `DESAIN.md` untuk aturan UI, warna, komponen, layout, responsive, dan copywriting.
-- Baca `ROADMAP.md` untuk urutan pengembangan manual agar tidak bingung.
-
-## Catatan production
-
-NiagaBio saat ini memakai QRIS manual. Jika ingin pembayaran otomatis seperti marketplace, perlu payment gateway dengan QRIS dynamic, webhook, dan backend/Edge Function. Jangan taruh secret payment gateway di frontend.
-
-## Lisensi
-
-Project pribadi NiagaBio. Gunakan dan modifikasi sesuai kebutuhan owner project.
+- `docs/UPDATE_GUIDE.md` — cara replace file dan deploy aman.
+- `docs/PROJECT_STRUCTURE.md` — peta file/folder.
+- `supabase/README.md` — urutan SQL dan catatan database.
+- `docs/patch-notes/` — catatan patch per tahap.

@@ -12,7 +12,7 @@ Patch ini menutup sisa catatan audit Qwen yang masih relevan setelah tahap sebel
 - `api/share.js`
 - `assets/js/supabase-client.js`
 - `supabase/18_rate_limit_audit_log_hardening.sql`
-- `docs/STAGE18_RATE_LIMIT_AUDIT_LOG.md`
+- `docs/patch-notes/STAGE18_RATE_LIMIT_AUDIT_LOG.md`
 
 ## Cara pasang
 
