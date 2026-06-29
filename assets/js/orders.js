@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const ref = NB.escapeHtml(order.proof_image_url);
     return `
       <a href="#" target="_blank" rel="noopener" data-proof-ref="${ref}" class="proof-link is-proof-loading">
-        <img src="assets/img/placeholder-product.svg" data-proof-ref="${ref}" class="proof-img is-proof-loading" alt="Bukti bayar">
+        <img src="assets/img/placeholders/product.svg" data-proof-ref="${ref}" class="proof-img is-proof-loading" alt="Bukti bayar">
       </a>
     `;
   }

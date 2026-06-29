@@ -12,11 +12,103 @@
     },
     {
       "source": "/u/:username",
-      "destination": "/u.html?username=:username"
+      "destination": "/pages/u.html?username=:username"
     },
     {
       "source": "/checkout/:username/:product",
-      "destination": "/checkout.html?username=:username&product=:product"
+      "destination": "/pages/checkout.html?username=:username&product=:product"
+    },
+    {
+      "source": "/404",
+      "destination": "/pages/404.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/pages/admin.html"
+    },
+    {
+      "source": "/chatbot",
+      "destination": "/pages/chatbot.html"
+    },
+    {
+      "source": "/checkout-settings",
+      "destination": "/pages/checkout-settings.html"
+    },
+    {
+      "source": "/checkout",
+      "destination": "/pages/checkout.html"
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/pages/dashboard.html"
+    },
+    {
+      "source": "/gallery",
+      "destination": "/pages/gallery.html"
+    },
+    {
+      "source": "/links",
+      "destination": "/pages/links.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/pages/login.html"
+    },
+    {
+      "source": "/maintenance",
+      "destination": "/pages/maintenance.html"
+    },
+    {
+      "source": "/notifications",
+      "destination": "/pages/notifications.html"
+    },
+    {
+      "source": "/orders",
+      "destination": "/pages/orders.html"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/pages/privacy.html"
+    },
+    {
+      "source": "/products",
+      "destination": "/pages/products.html"
+    },
+    {
+      "source": "/profile",
+      "destination": "/pages/profile.html"
+    },
+    {
+      "source": "/refund",
+      "destination": "/pages/refund.html"
+    },
+    {
+      "source": "/register",
+      "destination": "/pages/register.html"
+    },
+    {
+      "source": "/reset-password",
+      "destination": "/pages/reset-password.html"
+    },
+    {
+      "source": "/social",
+      "destination": "/pages/social.html"
+    },
+    {
+      "source": "/terms",
+      "destination": "/pages/terms.html"
+    },
+    {
+      "source": "/themes",
+      "destination": "/pages/themes.html"
+    },
+    {
+      "source": "/u",
+      "destination": "/pages/u.html"
+    },
+    {
+      "source": "/upgrade",
+      "destination": "/pages/upgrade.html"
     }
   ],
   "headers": [

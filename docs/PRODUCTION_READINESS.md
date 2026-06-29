@@ -79,13 +79,14 @@ Jangan langsung memindahkan file HTML utama karena route Vercel dan path relatif
 ```text
 /
   index.html
-  login.html
-  register.html
-  dashboard.html
-  products.html
-  orders.html
-  u.html
-  checkout.html
+  pages/
+    login.html
+    register.html
+    dashboard.html
+    products.html
+    orders.html
+    u.html
+    checkout.html
   admin.html
   assets/
     css/
@@ -118,11 +119,16 @@ Jangan langsung memindahkan file HTML utama karena route Vercel dan path relatif
     UPDATE_GUIDE.md
 ```
 
+Tahap struktur yang sudah aman dilakukan:
+
+1. Gambar lokal dirapikan ke subfolder `assets/img/brand`, `assets/img/preview`, dan `assets/img/placeholders`.
+2. HTML aplikasi dipindah ke `pages/`, dengan route bersih dijaga lewat `vercel.json`.
+3. `index.html` tetap di root supaya homepage tetap mudah dibuka di SPCK/Acode.
+
 Tahap berikutnya yang aman:
 
-1. Rapikan gambar lokal ke subfolder `assets/img/brand`, `assets/img/preview`, dan `assets/img/placeholders`.
-2. Pisahkan JS besar `supabase-client.js` menjadi modul kecil hanya kalau build system tidak dibutuhkan.
-3. Jangan pindahkan HTML ke folder `pages/` dulu, kecuali semua route Vercel dan link relatif ikut disesuaikan.
+1. Pisahkan JS besar `supabase-client.js` menjadi modul kecil hanya kalau build system tidak dibutuhkan.
+2. Tambahkan pagination untuk halaman data besar sebelum refactor UI lebih jauh.
 
 ## Catatan Untuk 1.000 Seller
 

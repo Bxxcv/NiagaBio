@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     productRows.innerHTML = rows.map(product => `
       <tr>
         <td>
-          <img class="preview-img me-2" src="${NB.safeImageUrl(product.image_url || 'assets/img/placeholder-product.svg')}" alt="">
+          <img class="preview-img me-2" src="${NB.safeImageUrl(product.image_url || 'assets/img/placeholders/product.svg')}" alt="">
           <span class="fw-bold">${NB.escapeHtml(product.name)}</span>
         </td>
         <td>${NB.escapeHtml(product.category || '-')}</td>
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     button.disabled = true;
 
     try {
-      let imageUrl = editing?.image_url || 'assets/img/placeholder-product.svg';
+      let imageUrl = editing?.image_url || 'assets/img/placeholders/product.svg';
       if (productImage.files[0]) imageUrl = await NB.uploadFile(productImage.files[0], 'products');
 
       await NB.save('products', {

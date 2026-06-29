@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     username: 'demo',
     display_name: 'Niaga Store',
     bio: 'Contoh halaman toko NiagaBio untuk katalog produk dan order WhatsApp.',
-    avatar_url: 'assets/img/logo.jpg',
+    avatar_url: 'assets/img/brand/logo.png',
     whatsapp_number: '6281234567890',
     plan: 'premium',
     status: 'active',
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       name: 'Hoodie Basic',
       price: 120000,
       description: 'Hoodie nyaman untuk harian.',
-      image_url: 'assets/img/placeholder-product.svg',
+      image_url: 'assets/img/placeholders/product.svg',
       category: 'Fashion',
       is_active: true,
       is_featured: true
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       name: 'Kaos Oversize',
       price: 85000,
       description: 'Kaos bahan adem dan cutting oversize.',
-      image_url: 'assets/img/placeholder-product.svg',
+      image_url: 'assets/img/placeholders/product.svg',
       category: 'Fashion',
       is_active: true,
       is_featured: true
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       name: 'Paket Stiker UMKM',
       price: 45000,
       description: 'Stiker custom untuk packaging.',
-      image_url: 'assets/img/placeholder-product.svg',
+      image_url: 'assets/img/placeholders/product.svg',
       category: 'Bisnis',
       is_active: true,
       is_featured: false
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   ];
 
   const demoGallery = [
-    { image_url: 'assets/img/placeholder-product.svg', caption: 'Contoh gallery produk' }
+    { image_url: 'assets/img/placeholders/product.svg', caption: 'Contoh gallery produk' }
   ];
 
 
@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function productImage(url) {
-    return NB.safeImageUrl(url || 'assets/img/placeholder-product.svg');
+    return NB.safeImageUrl(url || 'assets/img/placeholders/product.svg');
   }
 
   function themeLabel(themeName) {
@@ -286,7 +286,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   function updateStoreMeta(profile) {
     const title = `${profile.display_name || profile.username || 'Toko'} - NiagaBio`;
     const desc = profile.bio || 'Lihat produk, link penting, dan checkout toko ini di NiagaBio.';
-    const image = NB.normalizeImageUrl(profile.avatar_url || `${location.origin}/assets/img/og-niagabio.jpg`, `${location.origin}/assets/img/og-niagabio.jpg`);
+    const image = NB.normalizeImageUrl(profile.avatar_url || `${location.origin}/assets/img/brand/og-niagabio.jpg`, `${location.origin}/assets/img/brand/og-niagabio.jpg`);
     const shareUrl = `${location.origin}/s/${encodeURIComponent(profile.username || username)}`;
 
     document.title = title;
@@ -321,7 +321,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         <div class="public-card public-card-${themeName}">
           <header class="public-hero">
-            <img class="public-avatar" src="${NB.safeImageUrl(profile.avatar_url || 'assets/img/logo.jpg', 'assets/img/logo.jpg')}" alt="${NB.escapeHtml(displayName)}">
+            <img class="public-avatar" src="${NB.safeImageUrl(profile.avatar_url || 'assets/img/brand/logo.png', 'assets/img/brand/logo.png')}" alt="${NB.escapeHtml(displayName)}">
 
             <div class="public-identity">
               <p class="public-kicker">@${NB.escapeHtml(profile.username || 'toko')} · ${NB.escapeHtml(template.kicker)}</p>

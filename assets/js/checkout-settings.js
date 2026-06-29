@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   checkoutWhatsApp.value = settings.whatsapp_number || profile?.whatsapp_number || '';
   qrisName.value = settings.qris_name || '';
   paymentNote.value = settings.payment_note || '';
-  qrisPreview.src = NB.normalizeImageUrl(settings.qris_image_url || 'assets/img/logo.jpg', 'assets/img/logo.jpg');
+  qrisPreview.src = NB.normalizeImageUrl(settings.qris_image_url || 'assets/img/brand/logo.png', 'assets/img/brand/logo.png');
   qrisEnabled.checked = Boolean(settings.qris_enabled);
 
   if (!premium) {
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         username: profile?.username || NB.slugify(user.email.split('@')[0]),
         display_name: profile?.display_name || user.email.split('@')[0],
         bio: profile?.bio || '',
-        avatar_url: profile?.avatar_url || 'assets/img/logo.jpg',
+        avatar_url: profile?.avatar_url || 'assets/img/brand/logo.png',
         whatsapp_number: checkoutWhatsApp.value.trim(),
         theme_name: profile?.theme_name || 'service'
       });

@@ -87,13 +87,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       <section class="checkout-grid">
         <aside class="checkout-summary card-nb">
           <div class="checkout-store">
-            <img src="${NB.safeImageUrl(profile.avatar_url || 'assets/img/logo.jpg', 'assets/img/logo.jpg')}" alt="${NB.escapeHtml(profile.display_name || 'Toko')}">
+            <img src="${NB.safeImageUrl(profile.avatar_url || 'assets/img/brand/logo.png', 'assets/img/brand/logo.png')}" alt="${NB.escapeHtml(profile.display_name || 'Toko')}">
             <div>
               <small>Toko</small>
               <strong>${NB.escapeHtml(profile.display_name || profile.username || 'NiagaBio Store')}</strong>
             </div>
           </div>
-          <img src="${NB.safeImageUrl(product.image_url || 'assets/img/placeholder-product.svg')}" class="checkout-product-img" alt="${NB.escapeHtml(product.name)}">
+          <img src="${NB.safeImageUrl(product.image_url || 'assets/img/placeholders/product.svg')}" class="checkout-product-img" alt="${NB.escapeHtml(product.name)}">
           <h1>${NB.escapeHtml(product.name)}</h1>
           ${product.description ? `<p>${NB.escapeHtml(product.description)}</p>` : ''}
           <div class="checkout-price-line">
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               <h2>Scan, bayar, lalu kirim bukti</h2>
               <p>Pesanan akan masuk ke dashboard toko dan menunggu pengecekan pembayaran.</p>
             </div>
-            <img class="checkout-qris" src="${NB.safeImageUrl(checkout.qris_image_url, 'assets/img/logo.jpg')}" alt="QRIS ${NB.escapeHtml(checkout.qris_name || profile.display_name || '')}">
+            <img class="checkout-qris" src="${NB.safeImageUrl(checkout.qris_image_url, 'assets/img/brand/logo.png')}" alt="QRIS ${NB.escapeHtml(checkout.qris_name || profile.display_name || '')}">
           </div>
 
           <div class="checkout-note">

@@ -305,7 +305,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         <tr class="${deleted ? 'table-light opacity-75' : ''}">
           <td>
             <div class="admin-user-cell">
-              <img src="${NB.safeImageUrl(profile.avatar_url || 'assets/img/logo.jpg', 'assets/img/logo.jpg')}" alt="" class="admin-user-avatar">
+              <img src="${NB.safeImageUrl(profile.avatar_url || 'assets/img/brand/logo.png', 'assets/img/brand/logo.png')}" alt="" class="admin-user-avatar">
               <div>
                 <div class="fw-bold">${safe(profile.display_name || 'User NiagaBio')} ${roleBadge(profile.role)}</div>
                 <small class="text-muted">${safe(profile.email || '-')}</small>
@@ -926,7 +926,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         <div class="row g-3">
           <div class="col-md-5">
             <div class="admin-detail-card text-center">
-              <img src="${NB.safeImageUrl(profile.avatar_url || 'assets/img/logo.jpg', 'assets/img/logo.jpg')}" alt="" class="admin-detail-avatar mb-3">
+              <img src="${NB.safeImageUrl(profile.avatar_url || 'assets/img/brand/logo.png', 'assets/img/brand/logo.png')}" alt="" class="admin-detail-avatar mb-3">
               <h3 class="h5 fw-black mb-1">${safe(profile.display_name || 'User NiagaBio')}</h3>
               <p class="text-muted mb-2">${safe(profile.email || '-')}</p>
               <div class="d-flex justify-content-center gap-2 flex-wrap">${planBadge(profile.plan)}${statusBadge(profile.status || 'active')}${roleBadge(profile.role)}</div>
@@ -953,7 +953,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               <div class="admin-product-mini-list">
                 ${userProducts.map(product => `
                   <div class="admin-product-mini-item">
-                    <img src="${NB.safeImageUrl(product.image_url || 'assets/img/placeholder-product.svg')}" alt="">
+                    <img src="${NB.safeImageUrl(product.image_url || 'assets/img/placeholders/product.svg')}" alt="">
                     <div class="flex-grow-1">
                       <b>${safe(product.name || 'Produk')}</b>
                       <small>${NB.money(product.price)} ${product.category ? `• ${safe(product.category)}` : ''}</small>

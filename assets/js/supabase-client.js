@@ -223,7 +223,7 @@
     return escapeHtml(normalizeExternalUrl(input, fallback));
   }
 
-  function normalizeImageUrl(value, fallback = 'assets/img/placeholder-product.svg') {
+  function normalizeImageUrl(value, fallback = 'assets/img/placeholders/product.svg') {
     const input = stripUnsafeControls(value);
     if (!input) return fallback;
 
@@ -254,7 +254,7 @@
     }
   }
 
-  function safeImageUrl(value, fallback = 'assets/img/placeholder-product.svg') {
+  function safeImageUrl(value, fallback = 'assets/img/placeholders/product.svg') {
     return escapeHtml(normalizeImageUrl(value, fallback));
   }
 
@@ -533,7 +533,7 @@
         username: 'admin',
         display_name: 'Admin NiagaBio',
         bio: 'Admin utama platform.',
-        avatar_url: 'assets/img/logo.jpg',
+        avatar_url: 'assets/img/brand/logo.png',
         whatsapp_number: defaultSettings.admin_whatsapp,
         plan: 'premium',
         role: 'admin',
@@ -550,7 +550,7 @@
         username: 'demo',
         display_name: 'Niaga Store',
         bio: 'Katalog produk pilihan dengan checkout QRIS manual.',
-        avatar_url: 'assets/img/logo.jpg',
+        avatar_url: 'assets/img/brand/logo.png',
         whatsapp_number: defaultSettings.admin_whatsapp,
         plan: 'premium',
         role: 'user',
@@ -563,9 +563,9 @@
     ]);
 
     write(LS.products, [
-      { id: 'prd_1', user_id: sellerId, name: 'Hoodie Basic', price: 120000, description: 'Hoodie nyaman untuk harian.', image_url: 'assets/img/placeholder-product.svg', category: 'Fashion', is_active: true, is_featured: true, sort_order: 1, created_at: now() },
-      { id: 'prd_2', user_id: sellerId, name: 'Kaos Oversize', price: 85000, description: 'Kaos bahan adem dan cutting oversize.', image_url: 'assets/img/placeholder-product.svg', category: 'Fashion', is_active: true, is_featured: true, sort_order: 2, created_at: now() },
-      { id: 'prd_3', user_id: sellerId, name: 'Paket Stiker UMKM', price: 45000, description: 'Stiker custom untuk packaging.', image_url: 'assets/img/placeholder-product.svg', category: 'Bisnis', is_active: true, is_featured: false, sort_order: 3, created_at: now() }
+      { id: 'prd_1', user_id: sellerId, name: 'Hoodie Basic', price: 120000, description: 'Hoodie nyaman untuk harian.', image_url: 'assets/img/placeholders/product.svg', category: 'Fashion', is_active: true, is_featured: true, sort_order: 1, created_at: now() },
+      { id: 'prd_2', user_id: sellerId, name: 'Kaos Oversize', price: 85000, description: 'Kaos bahan adem dan cutting oversize.', image_url: 'assets/img/placeholders/product.svg', category: 'Fashion', is_active: true, is_featured: true, sort_order: 2, created_at: now() },
+      { id: 'prd_3', user_id: sellerId, name: 'Paket Stiker UMKM', price: 45000, description: 'Stiker custom untuk packaging.', image_url: 'assets/img/placeholders/product.svg', category: 'Bisnis', is_active: true, is_featured: false, sort_order: 3, created_at: now() }
     ]);
 
     write(LS.links, [
@@ -580,19 +580,19 @@
     ]);
 
     write(LS.galleries, [
-      { id: 'gal_1', user_id: sellerId, image_url: 'assets/img/placeholder-product.svg', caption: 'Contoh gallery produk', sort_order: 1, created_at: now() }
+      { id: 'gal_1', user_id: sellerId, image_url: 'assets/img/placeholders/product.svg', caption: 'Contoh gallery produk', sort_order: 1, created_at: now() }
     ]);
 
     write(LS.checkout, [
-      { id: 'chk_1', user_id: sellerId, checkout_mode: 'qris_manual', whatsapp_number: '6281234567890', qris_enabled: true, qris_image_url: 'assets/img/logo.jpg', qris_name: 'NIAGA STORE', payment_note: 'Transfer sesuai nominal lalu upload bukti pembayaran.', created_at: now() }
+      { id: 'chk_1', user_id: sellerId, checkout_mode: 'qris_manual', whatsapp_number: '6281234567890', qris_enabled: true, qris_image_url: 'assets/img/brand/logo.png', qris_name: 'NIAGA STORE', payment_note: 'Transfer sesuai nominal lalu upload bukti pembayaran.', created_at: now() }
     ]);
 
     write(LS.premiumRequests, []);
     write(LS.notifications, []);
 
     write(LS.orders, [
-      { id: 'ord_1', seller_id: sellerId, buyer_name: 'Rizky', buyer_phone: '628111111111', product_id: 'prd_1', product_name: 'Hoodie Basic', quantity: 1, total_price: 120000, payment_method: 'qris_manual', payment_status: 'paid', proof_image_url: 'assets/img/logo.jpg', created_at: now(), paid_at: now() },
-      { id: 'ord_2', seller_id: sellerId, buyer_name: 'Dina', buyer_phone: '628222222222', product_id: 'prd_2', product_name: 'Kaos Oversize', quantity: 2, total_price: 170000, payment_method: 'qris_manual', payment_status: 'pending', proof_image_url: 'assets/img/logo.jpg', created_at: now(), paid_at: null }
+      { id: 'ord_1', seller_id: sellerId, buyer_name: 'Rizky', buyer_phone: '628111111111', product_id: 'prd_1', product_name: 'Hoodie Basic', quantity: 1, total_price: 120000, payment_method: 'qris_manual', payment_status: 'paid', proof_image_url: 'assets/img/brand/logo.png', created_at: now(), paid_at: now() },
+      { id: 'ord_2', seller_id: sellerId, buyer_name: 'Dina', buyer_phone: '628222222222', product_id: 'prd_2', product_name: 'Kaos Oversize', quantity: 2, total_price: 170000, payment_method: 'qris_manual', payment_status: 'pending', proof_image_url: 'assets/img/brand/logo.png', created_at: now(), paid_at: null }
     ]);
 
     localStorage.setItem('nb_seeded_v1', '1');
@@ -723,7 +723,7 @@
               username: makeSafeUsername(displayName || cleanEmail.split('@')[0], attempt > 0),
               display_name: displayName,
               bio: '',
-              avatar_url: 'assets/img/logo.jpg',
+              avatar_url: 'assets/img/brand/logo.png',
               whatsapp_number: '',
               theme_name: 'service'
             });
@@ -761,7 +761,7 @@
       username: uniqueUsername(displayName || cleanEmail.split('@')[0]),
       display_name: displayName || 'User NiagaBio',
       bio: '',
-      avatar_url: 'assets/img/logo.jpg',
+      avatar_url: 'assets/img/brand/logo.png',
       whatsapp_number: '',
       plan: 'free',
       role: localFallbackAllowed && cleanEmail === String(cfg.ADMIN_EMAIL || 'admin@niagabio.local').toLowerCase() ? 'admin' : 'user',
@@ -1036,7 +1036,7 @@
       payload.description = String(payload.description || '').slice(0, 1000);
       payload.category = String(payload.category || '').trim().slice(0, 80);
       payload.price = Math.max(0, Number(payload.price || 0));
-      payload.image_url = assertSafeImageUrl(payload.image_url || 'assets/img/placeholder-product.svg', 'assets/img/placeholder-product.svg');
+      payload.image_url = assertSafeImageUrl(payload.image_url || 'assets/img/placeholders/product.svg', 'assets/img/placeholders/product.svg');
     }
 
     if (table === 'custom_links') {
