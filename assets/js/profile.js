@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       username: NB.slugify(user.email.split('@')[0]) || `user-${Date.now()}`,
       display_name: user.email.split('@')[0],
       bio: '',
-      avatar_url: 'assets/img/brand/logo.png',
+      avatar_url: 'assets/img/logo.jpg',
       whatsapp_number: '',
       theme_name: 'service'
     });
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   profileUsername.value = profile.username || '';
   profileBio.value = profile.bio || '';
   profileWhatsApp.value = profile.whatsapp_number || '';
-  avatarPreview.src = NB.normalizeImageUrl(profile.avatar_url || 'assets/img/brand/logo.png', 'assets/img/brand/logo.png');
+  avatarPreview.src = NB.normalizeImageUrl(profile.avatar_url || 'assets/img/logo.jpg', 'assets/img/logo.jpg');
 
   profileAvatar.addEventListener('change', () => {
     if (profileAvatar.files[0]) avatarPreview.src = URL.createObjectURL(profileAvatar.files[0]);
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     button.disabled = true;
 
     try {
-      let avatar = profile.avatar_url || 'assets/img/brand/logo.png';
+      let avatar = profile.avatar_url || 'assets/img/logo.jpg';
       if (profileAvatar.files[0]) avatar = await NB.uploadFile(profileAvatar.files[0], 'avatars');
 
       const updated = await NB.upsertProfile({
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         display_name: profileName.value.trim() || 'User NiagaBio',
         bio: profileBio.value.trim(),
         whatsapp_number: profileWhatsApp.value.trim(),
-        avatar_url: NB.normalizeImageUrl(avatar, 'assets/img/brand/logo.png'),
+        avatar_url: NB.normalizeImageUrl(avatar, 'assets/img/logo.jpg'),
         theme_name: profile.theme_name || 'service'
       });
 

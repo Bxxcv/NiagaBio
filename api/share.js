@@ -9,8 +9,8 @@ const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY
   || 'sb_publishable_OOa4ygxkWd2JO6jCGa-Cmg_UId6iVT5';
 
 const BRAND = 'NiagaBio';
-const DEFAULT_IMAGE = '/assets/img/brand/og-niagabio.jpg';
-const DEFAULT_ICON = '/assets/img/icons/favicon-32x32.png?v=4';
+const DEFAULT_IMAGE = '/assets/img/og-niagabio.jpg';
+const DEFAULT_ICON = '/assets/img/favicon-32x32.png?v=4';
 
 const RATE_WINDOW_MS = 5 * 60 * 1000;
 const RATE_MAX_REQUESTS = 90;

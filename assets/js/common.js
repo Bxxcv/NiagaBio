@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           username: NB.slugify(user.email.split('@')[0]) || `user-${Date.now()}`,
           display_name: user.email.split('@')[0],
           bio: '',
-          avatar_url: 'assets/img/brand/logo.png',
+          avatar_url: 'assets/img/logo.jpg',
           whatsapp_number: '',
           theme_name: 'service'
         });
