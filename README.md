@@ -1,149 +1,144 @@
 # NiagaBio
 
-NiagaBio adalah website **link bio + katalog produk + checkout QRIS manual + dashboard pesanan** untuk seller kecil/UMKM yang ingin punya halaman toko rapi tanpa bikin website rumit.
+NiagaBio adalah web app **link-in-bio + katalog produk + checkout manual + dashboard seller** untuk UMKM, seller online, dan creator yang ingin punya satu link rapi untuk jualan.
 
-Project ini tetap ringan: **HTML, CSS, Vanilla JavaScript, Supabase, dan Vercel**. Tidak memakai React, Tailwind build, npm, atau server yang harus dijalankan manual.
+## Ringkasan
+NiagaBio membantu user untuk:
+- membuat halaman profil/toko publik
+- menampilkan produk dan katalog
+- mengarahkan pembeli ke checkout / pembayaran manual
+- mengelola data toko dari dashboard
+- mengatur tampilan agar sesuai branding
 
-## Route utama
+Project ini dirancang agar:
+- ringan
+- mobile-first
+- mudah dipakai dari HP
+- tidak terasa seperti website template generik
 
-| Route | Fungsi |
-| --- | --- |
-| `/` | Landing page |
-| `/login` | Login seller/admin |
-| `/register` | Daftar seller |
-| `/dashboard` | Dashboard seller |
-| `/admin` | Admin Master |
-| `/u?username=demo-account` | Toko publik |
-| `/s/demo-account` | Share preview toko untuk WhatsApp/Open Graph |
-| `/s/demo-account/product-id` | Share preview produk |
-| `/checkout?username=demo-account&product=...` | Checkout publik |
-| `/orders` | Pesanan dan rekap seller |
-| `/upgrade` | Upgrade Premium |
-| `/notifications` | Notifikasi in-app |
+## Tech stack
+- HTML
+- CSS vanilla
+- JavaScript vanilla
+- Supabase
+- Vercel
 
-## Fitur utama
+## Deploy
+- Production: `https://niaga-bio.vercel.app`
+- Repository: `https://github.com/Bxxcv/NiagaBio`
+
+## Catatan penting
+- Project ini **bukan** React / Next.js / Vue app.
+- Project ini **bukan** backend monolith custom.
+- Logika data utama ada di Supabase.
+- Routing publik dan serverless helper mengikuti konfigurasi Vercel.
+
+## Struktur umum
+- `index.html` → landing page
+- `login.html`, `register.html`, `reset-password.html` → auth
+- `dashboard.html`, `profile.html`, `products.html`, `orders.html`, `themes.html`, dll → dashboard seller
+- `u.html` → halaman publik toko/user
+- `checkout.html` → checkout publik
+- `chatbot.html` → bantuan/chat
+- `assets/` → CSS, JS, image, icon
+- `supabase/` → SQL schema, RLS, security, audit, patch
+- `docs/` → dokumentasi internal
+- `api/` → serverless function untuk fitur tertentu
+
+## Alur user
+### User baru
+1. buka landing page
+2. daftar akun
+3. isi profil toko
+4. tambah produk
+5. atur link / tema / checkout
+6. bagikan link publik toko
+
+### Pembeli
+1. buka link toko publik
+2. lihat profil dan produk
+3. pilih produk
+4. lanjut checkout
+5. ikuti instruksi pembayaran
 
 ### Seller
+1. login
+2. buka dashboard
+3. update profil
+4. kelola produk
+5. cek order
+6. ubah tema dan halaman publik
 
-- Profil toko dan username publik.
-- Link bio dan social link.
-- Katalog produk dengan kategori.
-- Gallery untuk Premium.
-- Template toko Free/Premium.
-- Checkout QRIS manual.
-- Upload bukti pembayaran.
-- Dashboard pesanan, rekap omset, dan export CSV.
-- Share toko dan share produk dengan preview WhatsApp.
+## Konsep produk
+Nilai utama NiagaBio adalah:
+> “Satu link untuk tampil rapi, jualan lebih jelas, dan bikin pembeli lebih mudah order.”
 
-### Admin Master
+## Prinsip desain
+- jelas dalam 5 detik
+- tidak membingungkan user awam
+- tampilan profesional
+- tidak terlalu ramai
+- tidak terlalu kaku
+- tetap nyaman di HP
 
-- Kelola user Free/Premium/Blocked/Deleted.
-- Approve/reject request Premium.
-- Setting harga Premium dan QRIS Premium.
-- Maintenance mode dan register lock.
-- Laporan platform dan export CSV.
-- Audit log untuk aksi penting.
+## File penting untuk developer/AI
+Kalau mau memahami project dengan cepat, baca:
+- `READMEFORAI.md`
+- `docs/PROJECT_STRUCTURE.md`
+- `docs/DESAIN.md`
+- `supabase/README.md`
 
-## Security status production candidate
+## Pengembangan lokal
+Project ini bisa dikerjakan dari:
+- Acode
+- SPCK Editor
+- Termux
 
-Bagian penting yang sudah dikeraskan:
+Hal yang paling sering diedit:
+- HTML halaman
+- CSS landing / main
+- JS interaksi
+- SQL Supabase
 
-- Supabase RLS aktif.
-- Admin role dari database/RLS, bukan dari frontend.
-- Field sensitif `role`, `plan`, `status`, dan `plan_end_date` dikunci trigger database.
-- Public checkout wajib lewat RPC `create_public_order`.
-- Order QRIS wajib bukti pembayaran.
-- Harga order dihitung di database, bukan dari frontend.
-- Bukti bayar baru masuk bucket private `niagabio-private`.
-- Seller/admin membuka bukti bayar lewat signed URL sementara.
-- Fallback localStorage/demo dimatikan di production.
-- Upload user hanya JPG, PNG, WEBP maksimal 3 MB.
-- Basic rate limit untuk `/api/share`.
-- Security headers Vercel.
+## Aturan aman saat update
+- jangan ubah routing tanpa cek semua link
+- jangan ubah Supabase schema tanpa cek RLS
+- jangan hapus file lama yang masih dipakai halaman lain
+- jangan mengubah nama file page tanpa update referensi di JS / rewrite
 
-Catatan: Supabase anon key memang public untuk aplikasi frontend. Jangan pernah memasukkan `service_role`, secret SMTP, token admin, atau private API key ke frontend.
+## Troubleshooting singkat
+### Halaman 404
+Biasanya karena:
+- file HTML belum ada
+- rewrite belum benar
+- path salah
+- file berada di folder yang salah
 
-## Struktur folder
+### Halaman publik blank
+Biasanya karena:
+- data user di Supabase belum ada
+- RLS terlalu ketat
+- username tidak cocok
+- JS gagal mengambil data profil
 
-```txt
-NiagaBio-main/
-├── *.html                  # Halaman static utama
-├── api/                    # Vercel serverless function
-│   └── share.js            # Preview share toko/produk untuk WhatsApp/Open Graph
-├── assets/
-│   ├── css/                # CSS landing, dashboard, chatbot
-│   ├── img/                # Logo, favicon, OG image, placeholder
-│   └── js/                 # Logic frontend per halaman
-├── docs/                   # Dokumentasi project dan patch notes
-│   ├── patch-notes/        # Catatan patch per tahap
-│   ├── DESAIN.md
-│   ├── PROJECT_STRUCTURE.md
-│   ├── ROADMAP.md
-│   ├── SETUP_SUPABASE_DARI_NOL.md
-│   └── UPDATE_GUIDE.md
-├── supabase/               # SQL schema, patch, audit, dan hardening
-├── robots.txt
-├── sitemap.xml
-├── site.webmanifest
-└── vercel.json
-```
+### Login/register gagal
+Biasanya karena:
+- config Supabase salah
+- auth redirect belum diset
+- key/env belum cocok dengan production
 
-Detail struktur ada di `docs/PROJECT_STRUCTURE.md`.
+### Tampilan tidak update
+Biasanya karena:
+- cache browser
+- build/deploy belum refresh
+- file yang diedit bukan file yang dipakai halaman
 
-## Setup cepat
+## Tujuan jangka panjang
+NiagaBio diarahkan menjadi:
+- landing yang jelas
+- halaman publik toko yang enak dilihat
+- dashboard seller yang simple
+- solusi jualan yang gampang dipakai seller awam
 
-1. Buat project Supabase.
-2. Buka SQL Editor.
-3. Untuk database baru, jalankan SQL sesuai urutan di `supabase/README.md`.
-4. Buat akun admin pertama.
-5. Jalankan `supabase/02_bootstrap_admin_after_signup.sql` setelah akun admin ada.
-6. Edit `assets/js/config.js`.
-7. Deploy ke Vercel.
-
-Config frontend:
-
-```js
-window.NIAGABIO_CONFIG = {
-  SUPABASE_URL: "https://project-kamu.supabase.co",
-  SUPABASE_ANON_KEY: "anon_or_publishable_key_kamu",
-  ADMIN_EMAIL: "",
-  BRAND_NAME: "NiagaBio",
-  PREMIUM_PRICE: 80000,
-  DEMO_MODE: false
-};
-```
-
-`ADMIN_EMAIL` sengaja kosong. Admin harus berasal dari database/RLS, bukan dari frontend.
-
-## Cara update aman
-
-Baca `docs/UPDATE_GUIDE.md` sebelum mengganti file. Ringkasnya:
-
-1. Backup ZIP lama.
-2. Replace file patch sesuai daftar.
-3. Jalankan SQL patch baru jika ada.
-4. Deploy ulang Vercel.
-5. Test login, dashboard, public page, checkout, upload bukti, orders, admin, dan share produk.
-
-Jangan run ulang `supabase/01_schema_clean_run_this.sql` di database production yang sudah berisi data, kecuali kamu memang setup database baru dari nol.
-
-## Checklist test production
-
-- Landing page tidak horizontal scroll.
-- Login/register berjalan.
-- Seller bisa tambah produk.
-- Public page `/u?username=...` tampil.
-- Share `/s/username/product-id` muncul preview di WhatsApp.
-- Checkout wajib upload bukti bayar.
-- Order masuk dashboard seller.
-- Bukti bayar baru bisa dibuka seller/admin.
-- Admin bisa approve/reject premium.
-- Audit log terisi untuk aksi penting.
-- Tidak ada error console fatal.
-
-## Dokumentasi penting
-
-- `docs/UPDATE_GUIDE.md` — cara replace file dan deploy aman.
-- `docs/PROJECT_STRUCTURE.md` — peta file/folder.
-- `supabase/README.md` — urutan SQL dan catatan database.
-- `docs/patch-notes/` — catatan patch per tahap.
+## Lisensi / penggunaan internal
+Dokumen ini adalah panduan internal project. Sesuaikan dengan kebutuhan repo dan deployment yang sedang aktif.
