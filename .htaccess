@@ -6,7 +6,6 @@ RewriteCond %{REQUEST_FILENAME} !-d
 
 RewriteRule ^login/?$ login.html [L]
 RewriteRule ^register/?$ register.html [L]
-RewriteRule ^chatbot/?$ chatbot.html [L]
 RewriteRule ^dashboard/?$ dashboard.html [L]
 RewriteRule ^profile/?$ profile.html [L]
 RewriteRule ^products/?$ products.html [L]

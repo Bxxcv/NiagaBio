@@ -22,7 +22,6 @@ Dokumen ini dibuat agar project mudah diedit dari HP, SPCK Editor, Acode, GitHub
 | --- | --- |
 | `landing.css` | Style landing page |
 | `main.css` | Style dashboard, admin, public page, checkout |
-| `bot.css` | Style chatbot |
 
 Aturan: jangan campur style landing ke `main.css` kalau tidak perlu. Landing fokus di `landing.css`.
 
@@ -46,7 +45,7 @@ Aturan: jangan campur style landing ke `main.css` kalau tidak perlu. Landing fok
 | `upgrade.js` | Request Premium |
 | `notifications.js` | Notifikasi in-app |
 | `maintenance.js` | Maintenance page |
-| `chatbot.js` | Chatbot/FAQ helper |
+| `https://chat-bot-niaga-bio-six.vercel.app` | Chatbot/FAQ helper |
 
 File paling sensitif: `supabase-client.js`, `checkout.js`, `orders.js`, `admin.js`, `public-page.js`.
 

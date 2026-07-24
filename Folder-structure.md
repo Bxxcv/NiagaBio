@@ -21,7 +21,6 @@ NiagaBio/
 ├── 404.html
 ├── README.md
 ├── admin.html
-├── chatbot.html
 ├── checkout-settings.html
 ├── checkout.html
 ├── dashboard.html
@@ -64,7 +63,6 @@ Semua aset frontend ada di sini.
 File style utama:
 - `landing.css` → styling landing page
 - `main.css` → styling halaman inti/user page
-- `bot.css` → styling chatbot UI
 
 #### `assets/js/`
 File logic utama:
@@ -87,7 +85,6 @@ File logic utama:
 - `upgrade.js` → halaman upgrade plan
 - `notifications.js` → notifikasi in-app
 - `maintenance.js` → mode maintenance
-- `chatbot.js` → logic chatbot/help UI
 - `admin.js` → admin tools
 
 #### `assets/img/`
@@ -199,7 +196,7 @@ Catatan:
 - `admin.html`
 
 ### Support
-- `chatbot.html`
+- `https://chat-bot-niaga-bio-six.vercel.app`
 
 ---
 
@@ -272,9 +269,7 @@ Tugas:
 
 ### 6) Chatbot
 Flow:
-- `chatbot.html`
-- `assets/css/bot.css`
-- `assets/js/chatbot.js`
+- `https://chat-bot-niaga-bio-six.vercel.app`
 
 Tugas:
 - bantu user awam
