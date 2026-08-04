@@ -121,9 +121,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         <td>${badge(order.payment_status)}</td>
         <td class="text-end">
           <div class="btn-group btn-group-sm">
-            <a class="btn btn-outline-success ${order.buyer_phone ? '' : 'disabled'}" href="${NB.safeHref(buyerWaUrl(order))}" target="_blank" rel="noopener" title="WhatsApp pembeli"><i class="bi bi-whatsapp"></i></a>
-            <button class="btn btn-success" data-paid="${NB.escapeHtml(order.id)}" ${order.payment_status === 'paid' ? 'disabled' : ''}>Selesai</button>
-            <button class="btn btn-outline-danger" data-cancel="${NB.escapeHtml(order.id)}" ${order.payment_status === 'cancelled' ? 'disabled' : ''}>Batal</button>
+            <a class="nb-btn nb-btn-commerce nb-btn-sm ${order.buyer_phone ? '' : 'disabled'}" href="${NB.safeHref(buyerWaUrl(order))}" target="_blank" rel="noopener" title="WhatsApp pembeli"><i class="bi bi-whatsapp"></i></a>
+            <button class="nb-btn nb-btn-commerce nb-btn-sm" data-paid="${NB.escapeHtml(order.id)}" ${order.payment_status === 'paid' ? 'disabled' : ''}>Selesai</button>
+            <button class="nb-btn nb-btn-danger nb-btn-sm" data-cancel="${NB.escapeHtml(order.id)}" ${order.payment_status === 'cancelled' ? 'disabled' : ''}>Batal</button>
           </div>
         </td>
       </tr>
@@ -148,9 +148,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         </div>
         <div class="order-card-proof">${proofHtml(order)}</div>
         <div class="order-card-actions">
-          <a class="btn btn-outline-success ${order.buyer_phone ? '' : 'disabled'}" href="${NB.safeHref(buyerWaUrl(order))}" target="_blank" rel="noopener"><i class="bi bi-whatsapp me-1"></i>WA</a>
-          <button class="btn btn-success" data-paid="${NB.escapeHtml(order.id)}" ${order.payment_status === 'paid' ? 'disabled' : ''}>Selesai</button>
-          <button class="btn btn-outline-danger" data-cancel="${NB.escapeHtml(order.id)}" ${order.payment_status === 'cancelled' ? 'disabled' : ''}>Batal</button>
+          <a class="nb-btn nb-btn-commerce nb-btn-sm ${order.buyer_phone ? '' : 'disabled'}" href="${NB.safeHref(buyerWaUrl(order))}" target="_blank" rel="noopener"><i class="bi bi-whatsapp me-1"></i>WA</a>
+          <button class="nb-btn nb-btn-commerce nb-btn-sm" data-paid="${NB.escapeHtml(order.id)}" ${order.payment_status === 'paid' ? 'disabled' : ''}>Selesai</button>
+          <button class="nb-btn nb-btn-danger nb-btn-sm" data-cancel="${NB.escapeHtml(order.id)}" ${order.payment_status === 'cancelled' ? 'disabled' : ''}>Batal</button>
         </div>
       </article>
     `;

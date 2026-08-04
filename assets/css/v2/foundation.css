@@ -168,6 +168,13 @@
 /* ----------------------------------------------------------
    6. BUTTONS
    ---------------------------------------------------------- */
+:root {
+  --nb-action-primary: #083465;
+  --nb-action-primary-hover: #0b3d70;
+  --nb-action-commerce: #0f7a45;
+  --nb-action-commerce-hover: #128044;
+}
+
 .nb-btn {
   display: inline-flex;
   align-items: center;
@@ -179,9 +186,9 @@
   line-height: 1;
   text-decoration: none;
   border: 1px solid transparent;
-  border-radius: var(--nb-radius-md);
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease, transform 120ms ease;
   white-space: nowrap;
   user-select: none;
 }
@@ -189,22 +196,35 @@
   outline: 2px solid var(--nb-navy-800);
   outline-offset: 2px;
 }
+.nb-btn:active {
+  transform: translateY(1px);
+}
 
 /* Sizes */
-.nb-btn-sm  { height: 34px; padding: 0 12px; font-size: var(--nb-text-xs); }
-.nb-btn-md  { height: 42px; padding: 0 16px; font-size: var(--nb-text-sm); }
-.nb-btn-lg  { height: 48px; padding: 0 20px; font-size: var(--nb-text-md); }
+.nb-btn-sm  { height: 36px; padding: 0 12px; font-size: var(--nb-text-xs); border-radius: 8px; }
+.nb-btn-md  { height: 44px; padding: 0 16px; font-size: var(--nb-text-sm); border-radius: 8px; }
+.nb-btn-lg  { height: 50px; padding: 0 20px; font-size: var(--nb-text-md); border-radius: 10px; }
 .nb-btn-block { display: flex; width: 100%; }
 
 /* Variants */
 .nb-btn-primary {
-  background: var(--nb-green-700);
+  background: var(--nb-action-primary);
   color: #fff;
-  border-color: var(--nb-green-700);
+  border-color: var(--nb-action-primary);
 }
 .nb-btn-primary:hover {
-  background: var(--nb-green-600);
-  border-color: var(--nb-green-600);
+  background: var(--nb-action-primary-hover);
+  border-color: var(--nb-action-primary-hover);
+}
+
+.nb-btn-commerce {
+  background: var(--nb-action-commerce);
+  color: #fff;
+  border-color: var(--nb-action-commerce);
+}
+.nb-btn-commerce:hover {
+  background: var(--nb-action-commerce-hover);
+  border-color: var(--nb-action-commerce-hover);
 }
 
 .nb-btn-secondary {
@@ -272,12 +292,16 @@
   position: absolute;
   width: 16px;
   height: 16px;
-  border: 2px solid currentColor;
+  border: 2px solid rgba(255,255,255,.6);
   border-right-color: transparent;
   border-radius: 50%;
   animation: nb-spin 800ms linear infinite;
-  color: inherit;
-  filter: invert(1);
+}
+.nb-btn-loading.nb-btn-secondary::after,
+.nb-btn-loading.nb-btn-quiet::after,
+.nb-btn-loading.nb-btn-ghost::after {
+  border-color: rgba(23, 33, 43, .35);
+  border-right-color: transparent;
 }
 @keyframes nb-spin { to { transform: rotate(360deg); } }
 

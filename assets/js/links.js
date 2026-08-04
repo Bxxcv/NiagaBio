@@ -52,8 +52,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           <td class="text-truncate" style="max-width:280px">${NB.escapeHtml(link.url)}</td>
           <td>${link.is_active ? '<span class="badge text-bg-success">Aktif</span>' : '<span class="badge text-bg-secondary">Nonaktif</span>'}</td>
           <td class="text-end">
-            <button class="btn btn-sm btn-outline-nb" data-edit="${link.id}">Edit</button>
-            <button class="btn btn-sm btn-outline-danger" data-del="${link.id}">Hapus</button>
+            <button class="nb-btn nb-btn-secondary nb-btn-sm" data-edit="${link.id}">Edit</button>
+            <button class="nb-btn nb-btn-danger nb-btn-sm" data-del="${link.id}">Hapus</button>
           </td>
         </tr>
       `;

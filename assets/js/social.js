@@ -17,8 +17,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         <td><i class="bi ${NB.socialIcon(social.platform)} me-2 text-green"></i><span class="fw-bold text-capitalize">${NB.escapeHtml(social.platform)}</span></td>
         <td class="text-truncate" style="max-width:300px">${NB.escapeHtml(social.url)}</td>
         <td class="text-end">
-          <button class="btn btn-sm btn-outline-nb" data-edit="${social.id}">Edit</button>
-          <button class="btn btn-sm btn-outline-danger" data-del="${social.id}">Hapus</button>
+          <button class="nb-btn nb-btn-secondary nb-btn-sm" data-edit="${social.id}">Edit</button>
+          <button class="nb-btn nb-btn-danger nb-btn-sm" data-del="${social.id}">Hapus</button>
         </td>
       </tr>
     `).join('') || `<tr><td colspan="3"><div class="table-empty-action"><i class="bi bi-share"></i><b>Belum ada sosial media</b><span>Hubungkan Instagram, TikTok, YouTube, atau platform lainnya.</span></div></td></tr>`;

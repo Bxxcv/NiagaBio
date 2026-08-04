@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           <img src="${NB.safeImageUrl(item.image_url)}" alt="">
           <div class="pbody">
             <p class="fw-bold mb-2">${NB.escapeHtml(item.caption || 'Gallery')}</p>
-            <button class="btn btn-sm btn-outline-danger" data-del="${item.id}">Hapus</button>
+            <button class="nb-btn nb-btn-danger nb-btn-sm" data-del="${item.id}">Hapus</button>
           </div>
         </div>
       </div>

@@ -23,12 +23,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         <td>${NB.money(product.price)}</td>
         <td>${product.is_featured ? '<span class="badge text-bg-success">Unggulan</span>' : '<span class="badge text-bg-light text-dark">Normal</span>'}</td>
         <td class="text-end">
-          <button class="btn btn-sm btn-outline-nb" data-share-product="${product.id}"><i class="bi bi-share me-1"></i>Share</button>
-          <button class="btn btn-sm btn-outline-nb" data-edit="${product.id}">Edit</button>
-          <button class="btn btn-sm btn-outline-danger" data-del="${product.id}">Hapus</button>
+          <button class="nb-btn nb-btn-secondary nb-btn-sm" data-share-product="${product.id}"><i class="bi bi-share me-1"></i>Share</button>
+          <button class="nb-btn nb-btn-secondary nb-btn-sm" data-edit="${product.id}">Edit</button>
+          <button class="nb-btn nb-btn-danger nb-btn-sm" data-del="${product.id}">Hapus</button>
         </td>
       </tr>
-    `).join('') || `<tr><td colspan="5"><div class="table-empty-action"><i class="bi bi-bag-plus"></i><b>Belum ada produk</b><span>Tambahkan produk pertama supaya toko kamu bisa menerima order.</span><a href="products" class="btn btn-nb btn-sm">Tambah Produk</a></div></td></tr>`;
+    `).join('') || `<tr><td colspan="5"><div class="table-empty-action"><i class="bi bi-bag-plus"></i><b>Belum ada produk</b><span>Tambahkan produk pertama supaya toko kamu bisa menerima order.</span><a href="products" class="nb-btn nb-btn-primary nb-btn-sm">Tambah Produk</a></div></td></tr>`;
 
     document.querySelectorAll('[data-share-product]').forEach(button => {
       button.addEventListener('click', () => shareProduct(rows.find(item => item.id === button.dataset.shareProduct)));
