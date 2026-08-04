@@ -1,0 +1,309 @@
+/* ============================================================
+   NIAGABIO SELLER SHELL V2
+   Sidebar, topbar, layout, navigation grouping
+   Compatible with common.js sidebar toggle mechanism
+   Load AFTER main.css during transition
+   ============================================================ */
+
+/* ----------------------------------------------------------
+   APP SHELL
+   ---------------------------------------------------------- */
+.nb-app-shell {
+  min-height: 100vh;
+  display: flex;
+  background: var(--nb-canvas, #f6f7f5);
+}
+
+/* ----------------------------------------------------------
+   SIDEBAR
+   ---------------------------------------------------------- */
+.nb-sidebar {
+  width: 256px;
+  background: var(--nb-navy-950, #05284f);
+  color: #fff;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1020;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.15) transparent;
+}
+.nb-sidebar::-webkit-scrollbar { width: 5px; }
+.nb-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 10px; }
+
+/* Mobile off-canvas using common.js .show class */
+@media (max-width: 991.98px) {
+  .nb-sidebar {
+    transform: translateX(-100%);
+    transition: transform 280ms cubic-bezier(.2, .8, .2, 1);
+    box-shadow: 4px 0 24px rgba(0,0,0,.15);
+  }
+  .nb-sidebar.show {
+    transform: translateX(0);
+  }
+}
+
+/* Sidebar overlay (common.js creates .sidebar-overlay) */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 40, 79, .45);
+  border: 0;
+  padding: 0;
+  z-index: 1015;
+  cursor: pointer;
+}
+body.sidebar-open .sidebar-overlay {
+  display: block;
+}
+
+/* Sidebar brand */
+.nb-sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  flex-shrink: 0;
+}
+.nb-sidebar-brand img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+.nb-sidebar-brand span {
+  font-family: var(--nb-font-display, "Plus Jakarta Sans", sans-serif);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+/* Sidebar nav grouping */
+.nb-sidebar-nav {
+  flex: 1;
+  padding: 12px 0;
+}
+.nb-nav-group {
+  margin-bottom: 8px;
+}
+.nb-nav-label {
+  display: block;
+  padding: 8px 20px;
+  font-size: .7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: rgba(255,255,255,.45);
+}
+
+/* Side link */
+.nb-sidebar .side-link,
+.nb-side-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 16px;
+  margin: 2px 12px;
+  border-radius: 8px;
+  color: rgba(255,255,255,.75);
+  font-weight: 500;
+  font-size: .92rem;
+  transition: background-color 120ms, color 120ms;
+  text-decoration: none;
+}
+.nb-sidebar .side-link:hover,
+.nb-side-link:hover {
+  background: rgba(255,255,255,.06);
+  color: #fff;
+}
+.nb-sidebar .side-link.active,
+.nb-side-link.active {
+  background: rgba(255,255,255,.1);
+  color: #fff;
+  font-weight: 600;
+}
+.nb-sidebar .side-link.active::before,
+.nb-side-link.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 20px;
+  background: var(--nb-green-600, #128044);
+  border-radius: 0 3px 3px 0;
+}
+.nb-sidebar .side-link i,
+.nb-side-link i {
+  font-size: 1.05rem;
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* Sidebar footer */
+.nb-sidebar-footer {
+  padding: 12px 16px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  flex-shrink: 0;
+}
+.nb-sidebar-footer .side-link {
+  margin: 2px 0;
+}
+
+/* Plan badge in sidebar */
+.nb-plan-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font-size: .75rem;
+  font-weight: 600;
+  border-radius: 999px;
+  background: rgba(255,255,255,.1);
+  color: #fff;
+}
+.nb-plan-badge.premium {
+  background: var(--nb-green-600, #128044);
+}
+
+/* ----------------------------------------------------------
+   MAIN CONTENT
+   ---------------------------------------------------------- */
+.nb-main {
+  margin-left: 256px;
+  width: calc(100% - 256px);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+@media (max-width: 991.98px) {
+  .nb-main {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+/* ----------------------------------------------------------
+   TOPBAR
+   ---------------------------------------------------------- */
+.nb-topbar {
+  height: 60px;
+  background: #fff;
+  border-bottom: 1px solid var(--nb-line, #d9e0e6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 1010;
+}
+.nb-topbar-title {
+  font-family: var(--nb-font-display, "Plus Jakarta Sans", sans-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--nb-ink, #17212b);
+  line-height: 1.2;
+}
+.nb-topbar-meta {
+  font-size: .8rem;
+  color: var(--nb-muted, #667085);
+}
+
+/* Topbar actions */
+.nb-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Mobile menu toggle */
+.nb-menu-toggle {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 1px solid var(--nb-line, #d9e0e6);
+  border-radius: 8px;
+  color: var(--nb-ink-soft, #344054);
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background .12s;
+}
+.nb-menu-toggle:hover {
+  background: var(--nb-canvas, #f6f7f5);
+}
+
+/* ----------------------------------------------------------
+   CONTENT AREA
+   ---------------------------------------------------------- */
+.nb-content {
+  flex: 1;
+  padding: 24px;
+}
+@media (min-width: 768px) {
+  .nb-content { padding: 28px; }
+}
+@media (min-width: 1200px) {
+  .nb-content { padding: 32px; }
+}
+
+/* ----------------------------------------------------------
+   PAGE HEADER
+   ---------------------------------------------------------- */
+.nb-page-header {
+  margin-bottom: 24px;
+}
+.nb-page-header h1 {
+  font-family: var(--nb-font-display, "Plus Jakarta Sans", sans-serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--nb-ink, #17212b);
+  line-height: 1.25;
+}
+.nb-page-header p {
+  font-size: .92rem;
+  color: var(--nb-muted, #667085);
+  margin-top: 4px;
+}
+
+/* ----------------------------------------------------------
+   LEGACY BRIDGE (transisi dari main.css)
+   ---------------------------------------------------------- */
+/* Map old .app-shell to new structure */
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  background: var(--nb-canvas, #f6f7f5);
+}
+
+/* Keep old .sidebar working with new styles */
+.sidebar {
+  composes: nb-sidebar;
+}
+
+/* Keep old .main-content working */
+.main-content {
+  composes: nb-main;
+}
+
+/* Topbar bridge */
+.topbar {
+  composes: nb-topbar;
+}
+
+/* Content wrap bridge */
+.content-wrap {
+  composes: nb-content;
+}

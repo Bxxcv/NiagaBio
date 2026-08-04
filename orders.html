@@ -15,143 +15,192 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
   <link href="assets/css/main.css" rel="stylesheet" />
+  <link href="assets/css/v2/foundation.css" rel="stylesheet">
+  <link href="assets/css/v2/seller.css" rel="stylesheet">
 </head>
  <body data-protected="true">
   <div class="app-shell">
-   <aside class="sidebar">
-    <div class="d-flex align-items-center gap-2 mb-4">
-     <img alt="NiagaBio" class="nb-logo-sm" src="assets/img/logo.jpg" />
-     <span class="h4 fw-black text-green mb-0">NiagaBio</span>
-    </div>
-    <nav>
-     <a class="side-link" data-nav="dashboard" href="dashboard"><i class="bi bi-grid-1x2"></i>Dashboard</a>
-     <a class="side-link" data-nav="profile" href="profile"><i class="bi bi-person"></i>Profil</a>
-     <a class="side-link" data-nav="products" href="products"><i class="bi bi-bag"></i>Produk</a>
-     <a class="side-link" data-nav="links" href="links"><i class="bi bi-link-45deg"></i>Link Custom</a>
-     <a class="side-link" data-nav="social" href="social"><i class="bi bi-share"></i>Sosial Media</a>
-     <a class="side-link" data-nav="gallery" href="gallery"><i class="bi bi-images"></i>Gallery</a>
-     <a class="side-link" data-nav="themes" href="themes"><i class="bi bi-palette"></i>Tema</a>
-     <a class="side-link" data-nav="checkout" href="checkout-settings"><i class="bi bi-qr-code"></i>Checkout</a>
-     <a class="side-link" data-nav="orders" href="orders"><i class="bi bi-receipt"></i>Pesanan</a>
-     <a class="side-link" data-nav="upgrade" href="upgrade"><i class="bi bi-stars"></i>Upgrade</a>
-     <a class="side-link d-none" data-admin-only data-nav="admin" href="admin"><i class="bi bi-shield-lock"></i>Admin</a>
-     <hr />
-     <a class="side-link" href="u?username=demo" target="_blank"><i class="bi bi-eye"></i>Preview Toko</a>
-     <a class="side-link text-danger" data-logout href="#"><i class="bi bi-box-arrow-right"></i>Keluar</a>
-    </nav>
-   </aside>
+   <aside class="sidebar nb-sidebar">
+      <div class="nb-sidebar-brand">
+        <img src="assets/img/logo.jpg" alt="NiagaBio" width="32" height="32">
+        <span>NiagaBio</span>
+      </div>
+      <nav class="nb-sidebar-nav">
+        <div class="nb-nav-group">
+          <span class="nb-nav-label">Utama</span>
+          <a class="side-link " data-nav="dashboard" href="dashboard"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+          <a class="side-link " data-nav="products" href="products"><i class="bi bi-bag"></i> Produk</a>
+          <a class="side-link active" data-nav="orders" href="orders"><i class="bi bi-receipt"></i> Pesanan</a>
+        </div>
+        <div class="nb-nav-group">
+          <span class="nb-nav-label">Toko</span>
+          <a class="side-link " data-nav="profile" href="profile"><i class="bi bi-person"></i> Profil Toko</a>
+          <a class="side-link " data-nav="links" href="links"><i class="bi bi-link-45deg"></i> Link Custom</a>
+          <a class="side-link " data-nav="social" href="social"><i class="bi bi-share"></i> Sosial Media</a>
+          <a class="side-link " data-nav="gallery" href="gallery"><i class="bi bi-images"></i> Galeri</a>
+          <a class="side-link " data-nav="themes" href="themes"><i class="bi bi-palette"></i> Tema</a>
+          <a class="side-link " data-nav="checkout" href="checkout-settings"><i class="bi bi-qr-code"></i> Checkout</a>
+        </div>
+        <div class="nb-nav-group">
+          <span class="nb-nav-label">Akun</span>
+          <a class="side-link " data-nav="notifications" href="notifications"><i class="bi bi-bell"></i> Notifikasi</a>
+          <a class="side-link " data-nav="upgrade" href="upgrade" data-hide-when-premium><i class="bi bi-stars"></i> Upgrade</a>
+          <a class="side-link d-none" data-admin-only data-nav="admin" href="admin"><i class="bi bi-shield-lock"></i> Admin Master</a>
+        </div>
+      </nav>
+      <div class="nb-sidebar-footer">
+        <div class="d-flex align-items-center justify-content-between mb-2 px-2"><span class="nb-plan-badge" data-plan>Free</span></div>
+        <a class="side-link" id="sidebarPublicPreview" href="u?username=demo" target="_blank" rel="noopener"><i class="bi bi-eye"></i> Lihat Toko</a>
+        <a class="side-link" href="https://chat-bot-niaga-bio-six.vercel.app" target="_blank" rel="noopener"><i class="bi bi-robot"></i> Chat Bot</a>
+        <a class="side-link" data-logout href="#"><i class="bi bi-box-arrow-right"></i> Keluar</a>
+      </div>
+    </aside>
 
    <main class="main-content">
-    <header class="topbar">
-     <div class="d-flex align-items-center gap-2">
-      <button class="btn btn-outline-nb d-lg-none" data-sidebar-toggle>
-       <i class="bi bi-list"></i>
-      </button>
-      <div>
-       <h1 class="h4 fw-black mb-0">Pesanan & Rekap</h1>
-       <small class="text-muted">Pantau pembayaran, omset, dan performa produk.</small>
-      </div>
-     </div>
-     <span class="badge-soft" data-plan>Free</span>
-    </header>
-
-    <div class="content-wrap orders-final-page">
-     <section class="orders-hero card-nb p-4 mb-4">
-      <div>
-       <p class="eyebrow mb-2">Ringkasan toko</p>
-       <h2 class="fw-black mb-1">Rekap penjualan toko</h2>
-       <p class="text-muted mb-0">Data dihitung dari pesanan yang masuk ke toko kamu.</p>
-      </div>
-      <div class="orders-hero-actions">
-       <button class="btn btn-outline-nb" id="exportCsvBtn" type="button"><i class="bi bi-download me-1"></i>Export CSV</button>
-       <button class="btn btn-outline-danger" id="resetRecapBtn" type="button"><i class="bi bi-trash3 me-1"></i>Reset Rekap</button>
-       <button class="btn btn-nb" id="printBtn" type="button"><i class="bi bi-printer me-1"></i>Print</button>
-      </div>
-     </section>
-
-     <div class="row g-3 g-xl-4 mb-4">
-      <div class="col-6 col-xl-3"><div class="card-nb metric sales-metric"><span>Omset Selesai</span><div class="value fs-4" id="orderOmset">Rp0</div></div></div>
-      <div class="col-6 col-xl-3"><div class="card-nb metric sales-metric"><span>Total Pesanan</span><div class="value" id="orderTotal">0</div></div></div>
-      <div class="col-6 col-xl-3"><div class="card-nb metric sales-metric"><span>Menunggu</span><div class="value" id="orderPending">0</div></div></div>
-      <div class="col-6 col-xl-3"><div class="card-nb metric sales-metric"><span>Selesai</span><div class="value" id="orderPaid">0</div></div></div>
-     </div>
-
-     <div class="row g-4 mb-4">
-      <div class="col-lg-4"><div class="card-nb p-4 h-100"><p class="text-muted mb-1">Nominal Menunggu</p><h2 class="h4 fw-black text-green mb-0" id="orderPendingNominal">Rp0</h2><small class="text-muted">Belum masuk omset selesai.</small></div></div>
-      <div class="col-lg-4"><div class="card-nb p-4 h-100"><p class="text-muted mb-1">Rata-rata Order Selesai</p><h2 class="h4 fw-black mb-0" id="orderAverage">Rp0</h2><small class="text-muted">Nilai rata-rata pesanan selesai.</small></div></div>
-      <div class="col-lg-4"><div class="card-nb p-4 h-100"><p class="text-muted mb-1">Produk Terlaris</p><h2 class="h5 fw-black mb-0" id="orderBestProduct">-</h2><small class="text-muted">Berdasarkan omset selesai.</small></div></div>
-     </div>
-
-     <section class="card-nb p-4 mb-4 order-filter-card">
-      <div class="row g-3 align-items-end">
-       <div class="col-lg-5">
-        <label class="form-label">Cari order</label>
-        <div class="input-icon-wrap">
-         <i class="bi bi-search"></i>
-         <input class="form-control" id="orderSearch" placeholder="Nama pembeli, produk, nomor WA..." />
+    <header class="topbar nb-topbar">
+        <div class="d-flex align-items-center gap-3">
+          <button class="nb-menu-toggle d-lg-none" type="button" data-sidebar-toggle aria-label="Buka menu"><i class="bi bi-list"></i></button>
+          <div><div class="nb-topbar-title">Pesanan</div><div class="nb-topbar-meta">Cek dan kelola pesanan masuk</div></div>
         </div>
-       </div>
-       <div class="col-6 col-lg-2">
-        <label class="form-label">Status</label>
-        <select class="form-select" id="statusFilter">
-         <option value="all">Semua</option>
-         <option value="pending">Pending</option>
-         <option value="paid">Selesai</option>
-         <option value="cancelled">Batal</option>
-        </select>
-       </div>
-       <div class="col-6 col-lg-2">
-        <label class="form-label">Periode</label>
-        <select class="form-select" id="dateFilter">
-         <option value="all">Semua</option>
-         <option value="today">Hari ini</option>
-         <option value="7d">7 hari</option>
-         <option value="30d">30 hari</option>
-        </select>
-       </div>
-       <div class="col-lg-3">
-        <button class="btn btn-outline-nb w-100" id="resetFilterBtn" type="button"><i class="bi bi-arrow-counterclockwise me-1"></i>Reset Filter</button>
-       </div>
-      </div>
-     </section>
+        <div class="nb-topbar-actions">
+          <a href="notifications" class="nb-btn nb-btn-ghost nb-btn-icon" aria-label="Notifikasi"><i class="bi bi-bell"></i><span class="nb-sr-only">Notifikasi</span></a>
+        </div>
+      </header>
 
-     <div class="row g-4 mb-4">
-      <div class="col-xl-5">
-       <div class="card-nb p-4 h-100">
-        <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
-         <div>
-          <h2 class="h5 fw-bold mb-1">Rekap Produk Terjual</h2>
-          <p class="text-muted mb-0 small">Hanya menghitung pesanan yang sudah selesai.</p>
-         </div>
-         <span class="badge-soft" id="orderCancelled">0 batal</span>
+    <div class="content-wrap nb-content">
+      <div class="nb-page-header mb-4">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+          <div>
+            <h1>Pesanan</h1>
+            <p class="nb-text-muted">Rekap penjualan dan kelola pesanan masuk.</p>
+          </div>
+          <div class="d-flex gap-2">
+            <button class="nb-btn nb-btn-secondary nb-btn-sm" id="exportCsvBtn" type="button"><i class="bi bi-download"></i> Export CSV</button>
+            <button class="nb-btn nb-btn-ghost nb-btn-sm" id="printBtn" type="button"><i class="bi bi-printer"></i> Print</button>
+          </div>
         </div>
-        <div class="table-responsive">
-         <table class="table align-middle sales-recap-table">
-          <thead><tr><th>Produk</th><th>Selesai</th><th>Qty</th><th>Omset</th></tr></thead>
-          <tbody id="recapRows"></tbody>
-         </table>
-        </div>
-       </div>
       </div>
-      <div class="col-xl-7">
-       <div class="card-nb p-4 h-100">
-        <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
-         <div>
-          <h2 class="h5 fw-bold mb-1">Pesanan Masuk</h2>
-          <p class="text-muted mb-0 small">Tandai selesai setelah pembayaran valid.</p>
-         </div>
-         <span class="badge-soft" id="filteredCount">0 order</span>
+
+      <!-- KPI strip -->
+      <div class="nb-panel mb-4 p-0 overflow-hidden">
+        <div class="row g-0">
+          <div class="col-6 col-lg-3 p-4 border-end">
+            <div class="nb-text-xs nb-text-muted text-uppercase fw-semibold mb-1">Omset Selesai</div>
+            <div class="nb-h2" id="orderOmset">Rp0</div>
+          </div>
+          <div class="col-6 col-lg-3 p-4 border-end-lg">
+            <div class="nb-text-xs nb-text-muted text-uppercase fw-semibold mb-1">Total Pesanan</div>
+            <div class="nb-h2" id="orderTotal">0</div>
+          </div>
+          <div class="col-6 col-lg-3 p-4 border-end">
+            <div class="nb-text-xs nb-text-muted text-uppercase fw-semibold mb-1">Menunggu</div>
+            <div class="nb-h2" id="orderPending">0</div>
+          </div>
+          <div class="col-6 col-lg-3 p-4">
+            <div class="nb-text-xs nb-text-muted text-uppercase fw-semibold mb-1">Selesai</div>
+            <div class="nb-h2" id="orderPaid">0</div>
+          </div>
         </div>
-        <div class="order-list" id="orderCards"></div>
-        <div class="table-responsive order-table-wrap mt-3">
-         <table class="table align-middle">
-          <thead><tr><th>Produk</th><th>Pembeli</th><th>Total</th><th>Bukti</th><th>Status</th><th></th></tr></thead>
-          <tbody id="orderRows"></tbody>
-         </table>
-        </div>
-       </div>
       </div>
-     </div>
+
+      <!-- Secondary metrics -->
+      <div class="row g-4 mb-4">
+        <div class="col-lg-4">
+          <div class="nb-panel">
+            <div class="nb-text-xs nb-text-muted text-uppercase fw-semibold mb-1">Nominal Menunggu</div>
+            <div class="nb-h2 nb-text-green" id="orderPendingNominal">Rp0</div>
+            <div class="nb-text-xs nb-text-muted">Belum masuk omset selesai.</div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="nb-panel">
+            <div class="nb-text-xs nb-text-muted text-uppercase fw-semibold mb-1">Rata-rata Order Selesai</div>
+            <div class="nb-h2" id="orderAverage">Rp0</div>
+            <div class="nb-text-xs nb-text-muted">Nilai rata-rata pesanan selesai.</div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="nb-panel">
+            <div class="nb-text-xs nb-text-muted text-uppercase fw-semibold mb-1">Produk Terlaris</div>
+            <div class="nb-h3" id="orderBestProduct">-</div>
+            <div class="nb-text-xs nb-text-muted">Berdasarkan omset selesai.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="nb-panel mb-4">
+        <div class="row g-3 align-items-end">
+          <div class="col-lg-5">
+            <label class="nb-form-label" for="orderSearch">Cari order</label>
+            <div class="position-relative">
+              <i class="bi bi-search position-absolute" style="left:12px;top:50%;transform:translateY(-50%);color:var(--nb-muted)"></i>
+              <input class="nb-input" id="orderSearch" placeholder="Nama pembeli, produk, nomor WA..." style="padding-left:36px" />
+            </div>
+          </div>
+          <div class="col-6 col-lg-2">
+            <label class="nb-form-label" for="statusFilter">Status</label>
+            <select class="nb-select" id="statusFilter">
+              <option value="all">Semua</option>
+              <option value="pending">Pending</option>
+              <option value="paid">Selesai</option>
+              <option value="cancelled">Batal</option>
+            </select>
+          </div>
+          <div class="col-6 col-lg-2">
+            <label class="nb-form-label" for="dateFilter">Periode</label>
+            <select class="nb-select" id="dateFilter">
+              <option value="all">Semua</option>
+              <option value="today">Hari ini</option>
+              <option value="7d">7 hari</option>
+              <option value="30d">30 hari</option>
+            </select>
+          </div>
+          <div class="col-lg-3">
+            <button class="nb-btn nb-btn-secondary w-100" id="resetFilterBtn" type="button"><i class="bi bi-arrow-counterclockwise"></i> Reset Filter</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <!-- Rekap produk -->
+        <div class="col-xl-5">
+          <div class="nb-panel h-100">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div>
+                <h2 class="nb-h3 mb-0">Rekap Produk</h2>
+                <p class="nb-text-xs nb-text-muted mb-0">Hanya pesanan selesai.</p>
+              </div>
+              <span class="nb-badge nb-badge-neutral" id="orderCancelled">0 batal</span>
+            </div>
+            <div class="nb-table-wrap">
+              <table class="nb-table">
+                <thead><tr><th>Produk</th><th>Selesai</th><th>Qty</th><th>Omset</th></tr></thead>
+                <tbody id="recapRows"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- Pesanan masuk -->
+        <div class="col-xl-7">
+          <div class="nb-panel h-100">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div>
+                <h2 class="nb-h3 mb-0">Pesanan Masuk</h2>
+                <p class="nb-text-xs nb-text-muted mb-0">Tandai selesai setelah pembayaran valid.</p>
+              </div>
+              <span class="nb-badge nb-badge-neutral" id="filteredCount">0 order</span>
+            </div>
+            <div id="orderCards"></div>
+            <div class="nb-table-wrap mt-3">
+              <table class="nb-table">
+                <thead><tr><th>Produk</th><th>Pembeli</th><th>Total</th><th>Bukti</th><th>Status</th><th></th></tr></thead>
+                <tbody id="orderRows"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
    </main>
   </div>

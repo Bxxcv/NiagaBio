@@ -16,356 +16,319 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <link href="assets/css/main.css" rel="stylesheet">
+  <link href="assets/css/v2/foundation.css" rel="stylesheet">
+  <link href="assets/css/v2/seller.css" rel="stylesheet">
 </head>
 <body data-protected="true">
   <div class="app-shell">
-    <aside class="sidebar">
-      <div class="d-flex align-items-center gap-2 mb-4">
-        <img src="assets/img/logo.jpg" class="nb-logo-sm" alt="NiagaBio">
-        <span class="h4 fw-black text-green mb-0">NiagaBio</span>
+    <aside class="sidebar nb-sidebar">
+      <div class="nb-sidebar-brand">
+        <img src="assets/img/logo.jpg" alt="NiagaBio" width="32" height="32">
+        <span>NiagaBio</span>
       </div>
 
-      <nav>
-        <a class="side-link" data-nav="dashboard" href="dashboard">
-          <i class="bi bi-grid-1x2"></i>
-          Dashboard
-        </a>
-        <a class="side-link" data-nav="profile" href="profile">
-          <i class="bi bi-person"></i>
-          Profil
-        </a>
-        <a class="side-link" data-nav="products" href="products">
-          <i class="bi bi-bag"></i>
-          Produk
-        </a>
-        <a class="side-link" data-nav="links" href="links">
-          <i class="bi bi-link-45deg"></i>
-          Link Custom
-        </a>
-        <a class="side-link" data-nav="social" href="social">
-          <i class="bi bi-share"></i>
-          Sosial Media
-        </a>
-        <a class="side-link" data-nav="gallery" href="gallery">
-          <i class="bi bi-images"></i>
-          Gallery
-        </a>
-        <a class="side-link" data-nav="themes" href="themes">
-          <i class="bi bi-palette"></i>
-          Tema
-        </a>
-        <a class="side-link" data-nav="checkout" href="checkout-settings">
-          <i class="bi bi-qr-code"></i>
-          Checkout
-        </a>
-        <a class="side-link" data-nav="orders" href="orders">
-          <i class="bi bi-receipt"></i>
-          Pesanan
-        </a>
-        <a class="side-link" data-nav="upgrade" href="upgrade">
-          <i class="bi bi-stars"></i>
-          Upgrade
-        </a>
-        <a class="side-link d-none" data-admin-only data-nav="admin" href="admin">
-          <i class="bi bi-shield-lock"></i>
-          Admin
-        </a>
-        <hr>
+      <nav class="nb-sidebar-nav">
+        <div class="nb-nav-group">
+          <span class="nb-nav-label">Utama</span>
+          <a class="side-link active" data-nav="dashboard" href="dashboard">
+            <i class="bi bi-grid-1x2"></i> Dashboard
+          </a>
+          <a class="side-link" data-nav="products" href="products">
+            <i class="bi bi-bag"></i> Produk
+          </a>
+          <a class="side-link" data-nav="orders" href="orders">
+            <i class="bi bi-receipt"></i> Pesanan
+          </a>
+        </div>
+
+        <div class="nb-nav-group">
+          <span class="nb-nav-label">Toko</span>
+          <a class="side-link" data-nav="profile" href="profile">
+            <i class="bi bi-person"></i> Profil Toko
+          </a>
+          <a class="side-link" data-nav="links" href="links">
+            <i class="bi bi-link-45deg"></i> Link Custom
+          </a>
+          <a class="side-link" data-nav="social" href="social">
+            <i class="bi bi-share"></i> Sosial Media
+          </a>
+          <a class="side-link" data-nav="gallery" href="gallery">
+            <i class="bi bi-images"></i> Galeri
+          </a>
+          <a class="side-link" data-nav="themes" href="themes">
+            <i class="bi bi-palette"></i> Tema
+          </a>
+          <a class="side-link" data-nav="checkout" href="checkout-settings">
+            <i class="bi bi-qr-code"></i> Checkout
+          </a>
+        </div>
+
+        <div class="nb-nav-group">
+          <span class="nb-nav-label">Akun</span>
+          <a class="side-link" data-nav="notifications" href="notifications">
+            <i class="bi bi-bell"></i> Notifikasi
+          </a>
+          <a class="side-link" data-nav="upgrade" href="upgrade" data-hide-when-premium>
+            <i class="bi bi-stars"></i> Upgrade
+          </a>
+          <a class="side-link d-none" data-admin-only data-nav="admin" href="admin">
+            <i class="bi bi-shield-lock"></i> Admin Master
+          </a>
+        </div>
+      </nav>
+
+      <div class="nb-sidebar-footer">
+        <div class="d-flex align-items-center justify-content-between mb-2 px-2">
+          <span class="nb-plan-badge" data-plan>Free</span>
+        </div>
         <a class="side-link" id="sidebarPublicPreview" href="u?username=demo" target="_blank" rel="noopener">
-          <i class="bi bi-eye"></i>
-          Lihat Toko
+          <i class="bi bi-eye"></i> Lihat Toko
         </a>
         <a class="side-link" href="https://chat-bot-niaga-bio-six.vercel.app" target="_blank" rel="noopener">
-          <i class="bi bi-robot"></i>
-          Chat Bot
+          <i class="bi bi-robot"></i> Chat Bot
         </a>
-        <a class="side-link text-danger" data-logout href="#">
-          <i class="bi bi-box-arrow-right"></i>
-          Keluar
+        <a class="side-link" data-logout href="#">
+          <i class="bi bi-box-arrow-right"></i> Keluar
         </a>
-      </nav>
+      </div>
     </aside>
 
-    <main class="main-content">
-      <header class="topbar dashboard-topbar">
-        <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-outline-nb d-lg-none" type="button" data-sidebar-toggle aria-label="Buka menu">
+    <main class="main-content nb-main">
+      <header class="topbar nb-topbar">
+        <div class="d-flex align-items-center gap-3">
+          <button class="nb-menu-toggle d-lg-none" type="button" data-sidebar-toggle aria-label="Buka menu">
             <i class="bi bi-list"></i>
           </button>
           <div>
-            <h1 class="h4 fw-black mb-0">Dashboard</h1>
-            <small class="text-muted">Ringkasan toko dan progres setup kamu.</small>
+            <div class="nb-topbar-title">Dashboard</div>
+            <div class="nb-topbar-meta">Ringkasan toko dan progres setup</div>
           </div>
         </div>
-        <span class="badge-soft" data-plan>Free</span>
+        <div class="nb-topbar-actions">
+          <a href="notifications" class="nb-btn nb-btn-ghost nb-btn-icon" aria-label="Notifikasi">
+            <i class="bi bi-bell"></i>
+            <span class="nb-sr-only">Notifikasi</span>
+          </a>
+        </div>
       </header>
 
-      <div class="content-wrap user-dashboard">
-        <section class="dashboard-hero card-nb mb-4">
-          <div class="row g-4 align-items-center">
-            <div class="col-lg-7">
-              <span class="dashboard-eyebrow">Penjual Workspace</span>
-              <h2 class="fw-black mb-2">
-                Halo, <span data-user-name>User</span> <span class="hello-icon" aria-hidden="true"><i class="bi bi-shop-window"></i></span>
-              </h2>
-              <p class="text-muted mb-4">
-                Selamat datang di dashboard toko kamu. Mulai dari langkah paling penting, lalu cek toko publik sebelum dibagikan ke pembeli.
-              </p>
-              <div class="onboarding-next-card" id="nextStepCard">
-                <span class="next-step-eyebrow"><i class="bi bi-compass"></i> Langkah berikutnya</span>
-                <h3 class="h5 fw-black mb-2" id="nextStepTitle">Lengkapi profil toko</h3>
-                <p class="text-muted mb-3" id="nextStepDesc">Isi nama toko, username, WhatsApp, dan bio supaya halaman toko siap dipakai.</p>
-                <div class="d-flex flex-wrap gap-2">
-                  <a class="btn btn-nb btn-sm" id="nextStepAction" href="profile">
-                    <i class="bi bi-arrow-right-circle me-1"></i>
-                    Mulai sekarang
-                  </a>
-                  <a class="btn btn-outline-nb btn-sm" id="openPublicPageHero" href="u?username=demo" target="_blank" rel="noopener">
-                    <i class="bi bi-eye me-1"></i>
-                    Cek toko
-                  </a>
-                </div>
-              </div>
-              <div class="dashboard-url-line mt-3">
-                <i class="bi bi-link-45deg"></i>
-                <span id="publicUrlText">Link toko akan muncul setelah username dibuat.</span>
-              </div>
+      <div class="content-wrap nb-content">
+        <!-- Header kerja -->
+        <div class="nb-page-header mb-4">
+          <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <div>
+              <h1>Halo, <span data-user-name>User</span></h1>
+              <p class="nb-text-muted">Ringkasan toko dan langkah berikutnya.</p>
             </div>
-            <div class="col-lg-5">
-              <div class="plan-card-user">
-                <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
-                  <div>
-                    <small class="text-uppercase text-muted fw-bold">Paket aktif</small>
-                    <h3 class="h4 fw-black mb-1" id="planName">Free</h3>
-                    <p class="text-muted mb-0" id="planDesc">Fitur dasar untuk mulai jualan.</p>
-                  </div>
-                  <span class="icon-bubble">
-                    <i class="bi bi-stars"></i>
-                  </span>
-                </div>
-                <div class="plan-expiry" id="planExpiry">Upgrade kapan saja untuk membuka QRIS dan gallery.</div>
-                <div class="d-flex flex-wrap gap-2 mt-3">
-                  <a class="btn btn-nb btn-sm" id="openPublicPage" href="u?username=demo" target="_blank" rel="noopener">
-                    <i class="bi bi-eye me-1"></i>
-                    Preview toko
-                  </a>
-                  <a class="btn btn-outline-nb btn-sm" id="dashboardUpgradeBtn" href="upgrade">
-                    <i class="bi bi-lightning-charge me-1"></i>
-                    Upgrade
-                  </a>
-                </div>
-              </div>
+            <div class="d-flex gap-2">
+              <a class="nb-btn nb-btn-secondary nb-btn-sm" id="openPublicPage" href="u?username=demo" target="_blank" rel="noopener">
+                <i class="bi bi-eye"></i> Lihat Toko
+              </a>
+              <a class="nb-btn nb-btn-primary nb-btn-sm" id="dashboardUpgradeBtn" href="upgrade">
+                <i class="bi bi-stars"></i> Upgrade
+              </a>
             </div>
           </div>
-        </section>
+          <div class="mt-2 nb-text-sm nb-text-muted">
+            <i class="bi bi-link-45deg"></i>
+            <span id="publicUrlText">Link toko akan muncul setelah username dibuat.</span>
+          </div>
+        </div>
 
-        <section class="row g-3 mb-4">
-          <div class="col-6 col-xl-3">
-            <div class="card-nb metric metric-user">
-              <span class="icon-bubble mb-3"><i class="bi bi-bag"></i></span>
-              <div class="value" id="metricProducts">0</div>
-              <p class="text-muted mb-0">Produk</p>
+        <!-- Alert pekerjaan -->
+        <div class="nb-panel mb-4" id="nextStepCard">
+          <div class="d-flex align-items-start gap-3">
+            <div class="nb-badge nb-badge-info" style="flex-shrink:0"><i class="bi bi-compass"></i> Langkah berikutnya</div>
+            <div class="flex-fill">
+              <h3 class="nb-h4 mb-1" id="nextStepTitle">Lengkapi profil toko</h3>
+              <p class="nb-text-sm nb-text-muted mb-3" id="nextStepDesc">Isi nama toko, username, WhatsApp, dan bio supaya halaman toko siap dipakai.</p>
+              <div class="d-flex flex-wrap gap-2">
+                <a class="nb-btn nb-btn-primary nb-btn-sm" id="nextStepAction" href="profile">
+                  <i class="bi bi-arrow-right-circle"></i> Mulai sekarang
+                </a>
+                <a class="nb-btn nb-btn-secondary nb-btn-sm" id="openPublicPageHero" href="u?username=demo" target="_blank" rel="noopener">
+                  <i class="bi bi-eye"></i> Cek toko
+                </a>
+              </div>
             </div>
           </div>
-          <div class="col-6 col-xl-3">
-            <div class="card-nb metric metric-user">
-              <span class="icon-bubble mb-3"><i class="bi bi-receipt"></i></span>
-              <div class="value" id="metricOrders">0</div>
-              <p class="text-muted mb-0">Pesanan</p>
-            </div>
-          </div>
-          <div class="col-6 col-xl-3">
-            <div class="card-nb metric metric-user">
-              <span class="icon-bubble mb-3"><i class="bi bi-hourglass-split"></i></span>
-              <div class="value" id="metricPending">0</div>
-              <p class="text-muted mb-0">Pending</p>
-            </div>
-          </div>
-          <div class="col-6 col-xl-3">
-            <div class="card-nb metric metric-user">
-              <span class="icon-bubble mb-3"><i class="bi bi-cash-stack"></i></span>
-              <div class="value fs-4" id="metricRevenue">Rp0</div>
-              <p class="text-muted mb-0">Omset Selesai</p>
-            </div>
-          </div>
-        </section>
+        </div>
 
-        <section class="row g-4 mb-4">
+        <!-- KPI strip -->
+        <div class="nb-panel mb-4 p-0 overflow-hidden">
+          <div class="row g-0">
+            <div class="col-6 col-lg-3 p-4 border-end">
+              <div class="nb-text-xs nb-text-muted text-uppercase fw-semibold mb-1">Produk Aktif</div>
+              <div class="nb-h2" id="metricProducts">0</div>
+            </div>
+            <div class="col-6 col-lg-3 p-4 border-end-lg">
+              <div class="nb-text-xs nb-text-muted text-uppercase fw-semibold mb-1">Total Pesanan</div>
+              <div class="nb-h2" id="metricOrders">0</div>
+            </div>
+            <div class="col-6 col-lg-3 p-4 border-end">
+              <div class="nb-text-xs nb-text-muted text-uppercase fw-semibold mb-1">Menunggu</div>
+              <div class="nb-h2" id="metricPending">0</div>
+            </div>
+            <div class="col-6 col-lg-3 p-4">
+              <div class="nb-text-xs nb-text-muted text-uppercase fw-semibold mb-1">Omzet Selesai</div>
+              <div class="nb-h2" id="metricRevenue">Rp0</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+          <!-- Setup toko -->
           <div class="col-xl-7">
-            <div class="card-nb dashboard-panel h-100">
-              <div class="dashboard-panel-head">
+            <div class="nb-panel h-100">
+              <div class="d-flex align-items-center justify-content-between mb-4">
                 <div>
-                  <h2 class="h5 fw-black mb-1">Progres setup toko</h2>
-                  <p class="text-muted mb-0">Lengkapi bagian penting biar toko siap dipromosikan.</p>
+                  <h2 class="nb-h3">Progres setup toko</h2>
+                  <p class="nb-text-sm nb-text-muted mb-0">Lengkapi bagian penting biar toko siap dipromosikan.</p>
                 </div>
-                <span class="setup-score" id="setupProgressText">0%</span>
+                <span class="nb-badge nb-badge-navy" id="setupProgressText">0%</span>
               </div>
-              <div class="progress dashboard-progress mb-4" role="progressbar" aria-label="Progres setup toko">
-                <div id="setupProgressBar" class="progress-bar" style="width:0%"></div>
+              <div class="progress mb-4" style="height:6px" role="progressbar" aria-label="Progres setup toko">
+                <div id="setupProgressBar" class="progress-bar bg-success" style="width:0%"></div>
               </div>
-              <div class="setup-list">
-                <a class="setup-item" id="setupProfile" href="profile">
-                  <span class="setup-icon"><i class="bi bi-person"></i></span>
-                  <div>
-                    <b>Profil toko</b>
-                    <small>Nama toko, username, WhatsApp, dan bio.</small>
+              <div class="d-flex flex-column gap-2">
+                <a class="d-flex align-items-center gap-3 p-3 rounded nb-bg-surface nb-border" id="setupProfile" href="profile">
+                  <i class="bi bi-person nb-text-navy" style="font-size:1.2rem"></i>
+                  <div class="flex-fill">
+                    <div class="nb-text-sm nb-fw-600">Profil toko</div>
+                    <div class="nb-text-xs nb-text-muted">Nama toko, username, WhatsApp, dan bio.</div>
                   </div>
-                  <i class="bi bi-chevron-right ms-auto"></i>
+                  <i class="bi bi-chevron-right nb-text-muted"></i>
                 </a>
-                <a class="setup-item" id="setupProducts" href="products">
-                  <span class="setup-icon"><i class="bi bi-bag"></i></span>
-                  <div>
-                    <b>Produk</b>
-                    <small>Minimal 1 produk aktif untuk mulai menerima order.</small>
+                <a class="d-flex align-items-center gap-3 p-3 rounded nb-bg-surface nb-border" id="setupProducts" href="products">
+                  <i class="bi bi-bag nb-text-navy" style="font-size:1.2rem"></i>
+                  <div class="flex-fill">
+                    <div class="nb-text-sm nb-fw-600">Produk</div>
+                    <div class="nb-text-xs nb-text-muted">Minimal 1 produk aktif untuk mulai menerima order.</div>
                   </div>
-                  <i class="bi bi-chevron-right ms-auto"></i>
+                  <i class="bi bi-chevron-right nb-text-muted"></i>
                 </a>
-                <a class="setup-item" id="setupLinks" href="links">
-                  <span class="setup-icon"><i class="bi bi-link-45deg"></i></span>
-                  <div>
-                    <b>Link & sosial</b>
-                    <small>Tambahkan link penting atau akun sosial media.</small>
+                <a class="d-flex align-items-center gap-3 p-3 rounded nb-bg-surface nb-border" id="setupLinks" href="links">
+                  <i class="bi bi-link-45deg nb-text-navy" style="font-size:1.2rem"></i>
+                  <div class="flex-fill">
+                    <div class="nb-text-sm nb-fw-600">Link & sosial</div>
+                    <div class="nb-text-xs nb-text-muted">Tambahkan link penting atau akun sosial media.</div>
                   </div>
-                  <i class="bi bi-chevron-right ms-auto"></i>
+                  <i class="bi bi-chevron-right nb-text-muted"></i>
                 </a>
-                <a class="setup-item" id="setupCheckout" href="checkout-settings">
-                  <span class="setup-icon"><i class="bi bi-qr-code"></i></span>
-                  <div>
-                    <b>Checkout</b>
-                    <small>Atur WhatsApp order atau QRIS untuk Premium.</small>
+                <a class="d-flex align-items-center gap-3 p-3 rounded nb-bg-surface nb-border" id="setupCheckout" href="checkout-settings">
+                  <i class="bi bi-qr-code nb-text-navy" style="font-size:1.2rem"></i>
+                  <div class="flex-fill">
+                    <div class="nb-text-sm nb-fw-600">Checkout</div>
+                    <div class="nb-text-xs nb-text-muted">Atur WhatsApp order atau QRIS untuk Premium.</div>
                   </div>
-                  <i class="bi bi-chevron-right ms-auto"></i>
+                  <i class="bi bi-chevron-right nb-text-muted"></i>
                 </a>
               </div>
             </div>
           </div>
 
+          <!-- Limit usage -->
           <div class="col-xl-5">
-            <div class="card-nb dashboard-panel h-100">
-              <div class="dashboard-panel-head">
+            <div class="nb-panel h-100">
+              <h2 class="nb-h3 mb-1">Penggunaan paket</h2>
+              <p class="nb-text-sm nb-text-muted mb-4">Pemakaian fitur berdasarkan paket kamu.</p>
+              <div class="d-flex flex-column gap-4">
                 <div>
-                  <h2 class="h5 fw-black mb-1">Limit akun</h2>
-                  <p class="text-muted mb-0">Pemakaian fitur berdasarkan paket kamu.</p>
+                  <div class="d-flex justify-content-between nb-text-sm mb-1">
+                    <span class="nb-fw-600">Produk</span>
+                    <span class="nb-text-muted" id="limitProductsText">0 / 5</span>
+                  </div>
+                  <div class="progress" style="height:6px"><div id="limitProductsBar" class="progress-bar bg-success" style="width:0%"></div></div>
+                </div>
+                <div>
+                  <div class="d-flex justify-content-between nb-text-sm mb-1">
+                    <span class="nb-fw-600">Link custom</span>
+                    <span class="nb-text-muted" id="limitLinksText">0 / 5</span>
+                  </div>
+                  <div class="progress" style="height:6px"><div id="limitLinksBar" class="progress-bar bg-success" style="width:0%"></div></div>
+                </div>
+                <div>
+                  <div class="d-flex justify-content-between nb-text-sm mb-1">
+                    <span class="nb-fw-600">Sosial media</span>
+                    <span class="nb-text-muted" id="limitSocialText">0 / 3</span>
+                  </div>
+                  <div class="progress" style="height:6px"><div id="limitSocialBar" class="progress-bar bg-success" style="width:0%"></div></div>
+                </div>
+                <div>
+                  <div class="d-flex justify-content-between nb-text-sm mb-1">
+                    <span class="nb-fw-600">Galeri</span>
+                    <span class="nb-text-muted" id="limitGalleryText">0 / 0</span>
+                  </div>
+                  <div class="progress" style="height:6px"><div id="limitGalleryBar" class="progress-bar bg-secondary" style="width:0%"></div></div>
                 </div>
               </div>
-              <div class="limit-list">
-                <div class="limit-item">
-                  <div>
-                    <b>Produk</b>
-                    <small id="limitProductsText">0 / 5</small>
-                  </div>
-                  <div class="progress limit-progress">
-                    <div id="limitProductsBar" class="progress-bar" style="width:0%"></div>
-                  </div>
-                </div>
-                <div class="limit-item">
-                  <div>
-                    <b>Link custom</b>
-                    <small id="limitLinksText">0 / 5</small>
-                  </div>
-                  <div class="progress limit-progress">
-                    <div id="limitLinksBar" class="progress-bar" style="width:0%"></div>
-                  </div>
-                </div>
-                <div class="limit-item">
-                  <div>
-                    <b>Sosial media</b>
-                    <small id="limitSocialText">0 / 3</small>
-                  </div>
-                  <div class="progress limit-progress">
-                    <div id="limitSocialBar" class="progress-bar" style="width:0%"></div>
-                  </div>
-                </div>
-                <div class="limit-item">
-                  <div>
-                    <b>Gallery</b>
-                    <small id="limitGalleryText">0 / 0</small>
-                  </div>
-                  <div class="progress limit-progress">
-                    <div id="limitGalleryBar" class="progress-bar" style="width:0%"></div>
-                  </div>
-                </div>
-              </div>
-              <div class="alert alert-light border mb-0 mt-3" id="limitNotice">
+              <div class="mt-4 p-3 rounded nb-bg-navy-50 nb-text-sm nb-text-muted" id="limitNotice">
                 Free cukup untuk mulai. Premium membuka katalog besar, gallery, QRIS, dan tema niche.
               </div>
             </div>
           </div>
-        </section>
+        </div>
 
-        <section class="row g-4">
+        <div class="row g-4">
+          <!-- Pesanan terbaru -->
           <div class="col-xl-8">
-            <div class="card-nb dashboard-panel">
-              <div class="dashboard-panel-head">
+            <div class="nb-panel">
+              <div class="d-flex align-items-center justify-content-between mb-4">
                 <div>
-                  <h2 class="h5 fw-black mb-1">Pesanan terbaru</h2>
-                  <p class="text-muted mb-0">5 order terakhir yang masuk ke toko kamu.</p>
+                  <h2 class="nb-h3">Pesanan terbaru</h2>
+                  <p class="nb-text-sm nb-text-muted mb-0">5 order terakhir yang masuk ke toko kamu.</p>
                 </div>
-                <a href="orders" class="btn btn-outline-nb btn-sm">Lihat semua</a>
+                <a href="orders" class="nb-btn nb-btn-secondary nb-btn-sm">Lihat semua</a>
               </div>
-              <div class="table-responsive dashboard-table-wrap">
-                <table class="table align-middle mb-0">
+              <div class="nb-table-wrap">
+                <table class="nb-table">
                   <thead>
-                    <tr>
-                      <th>Produk</th>
-                      <th>Pembeli</th>
-                      <th>Total</th>
-                      <th>Status</th>
-                    </tr>
+                    <tr><th>Produk</th><th>Pembeli</th><th>Total</th><th>Status</th></tr>
                   </thead>
                   <tbody id="recentOrders">
-                    <tr>
-                      <td colspan="4" class="text-center text-muted py-4">Memuat pesanan...</td>
-                    </tr>
+                    <tr><td colspan="4" class="text-center nb-text-muted py-4">Memuat pesanan...</td></tr>
                   </tbody>
                 </table>
               </div>
             </div>
           </div>
 
+          <!-- Aksi cepat -->
           <div class="col-xl-4">
-            <div class="card-nb dashboard-panel quick-panel">
-              <div class="dashboard-panel-head">
-                <div>
-                  <h2 class="h5 fw-black mb-1">Aksi cepat</h2>
-                  <p class="text-muted mb-0">Langsung ke fitur yang sering dipakai.</p>
-                </div>
-              </div>
-              <div class="quick-action-grid">
-                <a href="products" class="quick-action-card">
-                  <i class="bi bi-plus-circle"></i>
-                  <span>Tambah Produk</span>
+            <div class="nb-panel">
+              <h2 class="nb-h3 mb-1">Aksi cepat</h2>
+              <p class="nb-text-sm nb-text-muted mb-4">Langsung ke fitur yang sering dipakai.</p>
+              <div class="d-flex flex-column gap-2">
+                <a href="products" class="d-flex align-items-center gap-3 p-3 rounded nb-bg-surface nb-border nb-text-sm nb-fw-600">
+                  <i class="bi bi-plus-circle nb-text-green"></i> Tambah Produk
                 </a>
-                <a href="profile" class="quick-action-card">
-                  <i class="bi bi-person-gear"></i>
-                  <span>Edit Profil</span>
+                <a href="profile" class="d-flex align-items-center gap-3 p-3 rounded nb-bg-surface nb-border nb-text-sm nb-fw-600">
+                  <i class="bi bi-person-gear nb-text-green"></i> Edit Profil Toko
                 </a>
-                <a href="checkout-settings" class="quick-action-card">
-                  <i class="bi bi-qr-code"></i>
-                  <span>Checkout</span>
+                <a href="checkout-settings" class="d-flex align-items-center gap-3 p-3 rounded nb-bg-surface nb-border nb-text-sm nb-fw-600">
+                  <i class="bi bi-qr-code nb-text-green"></i> Atur Checkout
                 </a>
-                <a href="themes" class="quick-action-card">
-                  <i class="bi bi-palette"></i>
-                  <span>Ganti Tema</span>
+                <a href="themes" class="d-flex align-items-center gap-3 p-3 rounded nb-bg-surface nb-border nb-text-sm nb-fw-600">
+                  <i class="bi bi-palette nb-text-green"></i> Ganti Tema
                 </a>
               </div>
-              <div class="dashboard-mini-stats mt-4">
-                <div>
-                  <span id="metricLinks">0</span>
-                  <small>Link</small>
+              <div class="d-flex gap-3 mt-4 pt-4 nb-border-top">
+                <div class="text-center flex-fill">
+                  <div class="nb-h3" id="metricLinks">0</div>
+                  <div class="nb-text-xs nb-text-muted">Link</div>
                 </div>
-                <div>
-                  <span id="metricSocial">0</span>
-                  <small>Sosial</small>
+                <div class="text-center flex-fill">
+                  <div class="nb-h3" id="metricSocial">0</div>
+                  <div class="nb-text-xs nb-text-muted">Sosial</div>
                 </div>
-                <div>
-                  <span id="metricGallery">0</span>
-                  <small>Gallery</small>
+                <div class="text-center flex-fill">
+                  <div class="nb-h3" id="metricGallery">0</div>
+                  <div class="nb-text-xs nb-text-muted">Galeri</div>
                 </div>
               </div>
             </div>
           </div>
-        </section>
+        </div>
       </div>
     </main>
   </div>

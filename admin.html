@@ -15,7 +15,8 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/v2/foundation.css">
+  <link rel="stylesheet" href="assets/css/v2/admin.css">
 </head>
 <body class="admin-page" data-protected="true">
   <div class="app-shell admin-shell">
@@ -67,136 +68,93 @@
       </nav>
     </aside>
 
-    <main class="main-content admin-main">
-      <header class="topbar admin-topbar">
-        <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-outline-nb d-lg-none" type="button" data-sidebar-toggle aria-label="Buka menu">
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <div class="d-flex align-items-center gap-3">
+          <button class="nb-menu-toggle d-lg-none" type="button" data-sidebar-toggle aria-label="Buka menu">
             <i class="bi bi-list"></i>
           </button>
           <div>
-            <h1 class="h4 fw-black mb-0">Admin Master</h1>
-            <small class="text-muted">Panel khusus owner NiagaBio</small>
+            <h1>Admin Master</h1>
+            <small>Panel khusus owner NiagaBio</small>
           </div>
         </div>
-
         <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-outline-nb btn-sm admin-refresh-btn" type="button" id="adminRefreshBtn">
-            <i class="bi bi-arrow-clockwise me-1"></i>
-            Refresh
+          <button class="btn-outline-nb btn-sm" type="button" id="adminRefreshBtn">
+            <i class="bi bi-arrow-clockwise"></i> Refresh
           </button>
-          <span class="badge-soft badge-admin" data-plan>Admin</span>
+          <span class="admin-count-pill badge-admin" data-plan>Admin</span>
         </div>
       </header>
 
       <nav class="admin-view-tabs" aria-label="Navigasi Admin Master">
         <button class="admin-view-tab active" type="button" data-admin-view-target="overview">
-          <i class="bi bi-speedometer2"></i>
-          Ringkasan
+          <i class="bi bi-speedometer2"></i> Ringkasan
         </button>
         <button class="admin-view-tab" type="button" data-admin-view-target="users">
-          <i class="bi bi-people"></i>
-          User
+          <i class="bi bi-people"></i> User
         </button>
         <button class="admin-view-tab" type="button" data-admin-view-target="reports">
-          <i class="bi bi-graph-up-arrow"></i>
-          Laporan
+          <i class="bi bi-graph-up-arrow"></i> Laporan
         </button>
         <button class="admin-view-tab" type="button" data-admin-view-target="requests">
-          <i class="bi bi-inboxes"></i>
-          Request
+          <i class="bi bi-inboxes"></i> Request
         </button>
         <button class="admin-view-tab" type="button" data-admin-view-target="settings">
-          <i class="bi bi-sliders"></i>
-          Setting
+          <i class="bi bi-sliders"></i> Setting
         </button>
       </nav>
 
-      <div class="content-wrap admin-content" id="adminOverview">
+      <div class="admin-content" id="adminOverview">
         <div class="admin-panel active" id="adminOverviewPanel" data-admin-panel="overview">
-        <section class="admin-hero card-nb p-4 p-md-5 mb-4">
-          <div class="row align-items-center g-4">
-            <div class="col-lg-8">
-              <span class="pill mb-3">
-                <i class="bi bi-shield-check"></i>
-                Owner Area
-              </span>
-              <h2 class="fw-black mb-2">Kontrol semua user, premium, request, dan setting platform dari satu panel.</h2>
-              <p class="text-muted mb-0">
-                Order seller tidak ditampilkan sebagai menu utama agar Admin Master fokus ke kontrol platform. Pantau request premium, pendapatan premium, user aktif, dan setting penting.
-              </p>
-            </div>
-            <div class="col-lg-4">
-              <div class="admin-quick-card">
-                <div class="small text-muted mb-2">Status sistem</div>
-                <div class="d-flex flex-wrap gap-2" id="adminSystemBadges">
-                  <span class="badge text-bg-light">Memuat...</span>
-                </div>
+          <section class="admin-hero mb-4">
+            <span class="pill"><i class="bi bi-shield-check"></i> Owner Area</span>
+            <h2>Kontrol semua user, premium, request, dan setting platform dari satu panel.</h2>
+            <p>Order seller tidak ditampilkan sebagai menu utama agar Admin Master fokus ke kontrol platform. Pantau request premium, pendapatan premium, user aktif, dan setting penting.</p>
+            <div class="admin-quick-card mt-3" style="max-width:320px">
+              <div class="small text-muted mb-2">Status sistem</div>
+              <div class="d-flex flex-wrap gap-2" id="adminSystemBadges">
+                <span class="admin-count-pill">Memuat...</span>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <section class="admin-kpi-grid mb-4" aria-label="Statistik admin">
-          <div class="card-nb admin-metric">
-            <span class="icon-bubble"><i class="bi bi-people"></i></span>
-            <div>
-              <div class="value" id="adminUsers">0</div>
-              <p class="text-muted mb-0">User Aktif</p>
+          <section class="admin-kpi-grid mb-4" aria-label="Statistik admin">
+            <div class="admin-metric">
+              <span class="icon-bubble"><i class="bi bi-people"></i></span>
+              <div><div class="value" id="adminUsers">0</div><p>User Aktif</p></div>
             </div>
-          </div>
-          <div class="card-nb admin-metric">
-            <span class="icon-bubble"><i class="bi bi-stars"></i></span>
-            <div>
-              <div class="value" id="adminPremium">0</div>
-              <p class="text-muted mb-0">Premium Aktif</p>
+            <div class="admin-metric">
+              <span class="icon-bubble"><i class="bi bi-stars"></i></span>
+              <div><div class="value" id="adminPremium">0</div><p>Premium Aktif</p></div>
             </div>
-          </div>
-          <div class="card-nb admin-metric">
-            <span class="icon-bubble"><i class="bi bi-person"></i></span>
-            <div>
-              <div class="value" id="adminFree">0</div>
-              <p class="text-muted mb-0">Free Aktif</p>
+            <div class="admin-metric">
+              <span class="icon-bubble"><i class="bi bi-person"></i></span>
+              <div><div class="value" id="adminFree">0</div><p>Free Aktif</p></div>
             </div>
-          </div>
-          <div class="card-nb admin-metric">
-            <span class="icon-bubble"><i class="bi bi-hourglass-split"></i></span>
-            <div>
-              <div class="value" id="adminOrders">0</div>
-              <p class="text-muted mb-0">Request Pending</p>
+            <div class="admin-metric">
+              <span class="icon-bubble"><i class="bi bi-hourglass-split"></i></span>
+              <div><div class="value" id="adminOrders">0</div><p>Request Pending</p></div>
             </div>
-          </div>
-          <div class="card-nb admin-metric">
-            <span class="icon-bubble"><i class="bi bi-person-slash"></i></span>
-            <div>
-              <div class="value" id="adminBlocked">0</div>
-              <p class="text-muted mb-0">Blocked/Deleted</p>
+            <div class="admin-metric">
+              <span class="icon-bubble"><i class="bi bi-person-slash"></i></span>
+              <div><div class="value" id="adminBlocked">0</div><p>Blocked/Deleted</p></div>
             </div>
-          </div>
-          <div class="card-nb admin-metric admin-metric-wide">
-            <span class="icon-bubble"><i class="bi bi-cash-stack"></i></span>
-            <div>
-              <div class="value fs-5" id="adminOmset">Rp0</div>
-              <p class="text-muted mb-0">Estimasi Pendapatan Premium</p>
+            <div class="admin-metric admin-metric-wide">
+              <span class="icon-bubble"><i class="bi bi-cash-stack"></i></span>
+              <div><div class="value" style="font-size:1.3rem" id="adminOmset">Rp0</div><p>Estimasi Pendapatan Premium</p></div>
             </div>
-          </div>
-        </section>
-
+          </section>
         </div>
 
-        <section class="card-nb admin-section mb-4 admin-panel" id="adminUsersSection" data-admin-panel="users" hidden>
+        <section class="nb-panel admin-section mb-4 admin-panel" id="adminUsersSection" data-admin-panel="users" hidden>
           <div class="admin-section-head">
             <div>
-              <h2 class="h5 fw-bold mb-1">
-                <i class="bi bi-people text-green me-2"></i>
-                Kelola User
-              </h2>
-              <p class="text-muted mb-0 small">
-                Upgrade Premium, set Free, blokir, unblokir, dan lihat detail akun.
-              </p>
+              <h2><i class="bi bi-people text-green me-2"></i> Kelola User</h2>
+              <p>Upgrade Premium, set Free, blokir, unblokir, dan lihat detail akun.</p>
             </div>
             <span class="admin-count-pill" id="adminUserCountInfo">0 user</span>
           </div>
-
           <div class="admin-filter-grid mb-3">
             <div class="admin-input-icon">
               <i class="bi bi-search"></i>
@@ -214,46 +172,26 @@
               <option value="deleted">Deleted</option>
             </select>
           </div>
-
-          <div class="table-responsive admin-table-wrap">
-            <table class="table align-middle admin-table">
-              <thead>
-                <tr>
-                  <th>User</th>
-                  <th>Toko</th>
-                  <th>Plan</th>
-                  <th>Status</th>
-                  <th>Plan End</th>
-                  <th class="text-end">Aksi</th>
-                </tr>
-              </thead>
-              <tbody id="userRows">
-                <tr>
-                  <td colspan="6" class="text-center text-muted py-4">Memuat user...</td>
-                </tr>
-              </tbody>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead><tr><th>User</th><th>Toko</th><th>Plan</th><th>Status</th><th>Plan End</th><th class="text-end">Aksi</th></tr></thead>
+              <tbody id="userRows"><tr><td colspan="6" class="text-center text-muted py-4">Memuat user...</td></tr></tbody>
             </table>
           </div>
         </section>
 
-        <section class="card-nb admin-section mb-4 admin-panel" id="adminReportsSection" data-admin-panel="reports" hidden>
+        <section class="nb-panel admin-section mb-4 admin-panel" id="adminReportsSection" data-admin-panel="reports" hidden>
           <div class="admin-section-head">
             <div>
-              <h2 class="h5 fw-bold mb-1">
-                <i class="bi bi-graph-up-arrow text-green me-2"></i>
-                Laporan Platform
-              </h2>
-              <p class="text-muted mb-0 small">
-                Ringkasan pendapatan premium, performa user, dan data platform. Order toko tetap dikelola seller di menu Pesanan masing-masing.
-              </p>
+              <h2><i class="bi bi-graph-up-arrow text-green me-2"></i> Laporan Platform</h2>
+              <p>Ringkasan pendapatan premium, performa user, dan data platform.</p>
             </div>
             <div class="d-flex flex-wrap gap-2">
-              <button class="btn btn-sm btn-outline-nb" type="button" id="adminExportUsersBtn">Export User</button>
-              <button class="btn btn-sm btn-outline-nb" type="button" id="adminExportRequestsBtn">Export Request</button>
-              <button class="btn btn-sm btn-nb" type="button" id="adminPrintReportBtn"><i class="bi bi-printer me-1"></i>Print</button>
+              <button class="btn-outline-nb btn-sm" type="button" id="adminExportUsersBtn">Export User</button>
+              <button class="btn-outline-nb btn-sm" type="button" id="adminExportRequestsBtn">Export Request</button>
+              <button class="btn-nb btn-sm" type="button" id="adminPrintReportBtn"><i class="bi bi-printer"></i> Print</button>
             </div>
           </div>
-
           <div class="admin-report-grid mb-4">
             <div class="admin-report-card">
               <span>Pendapatan Premium</span>
@@ -276,40 +214,33 @@
               <small>User premium yang segera habis.</small>
             </div>
           </div>
-
           <div class="row g-3">
             <div class="col-lg-6">
               <div class="admin-detail-card h-100">
-                <h3 class="h6 fw-bold mb-3">User Premium Terbaru</h3>
+                <h3>User Premium Terbaru</h3>
                 <div class="admin-mini-feed" id="platformLatestPremium">Memuat...</div>
               </div>
             </div>
             <div class="col-lg-6">
               <div class="admin-detail-card h-100">
-                <h3 class="h6 fw-bold mb-3">Aktivitas Request Terbaru</h3>
+                <h3>Aktivitas Request Terbaru</h3>
                 <div class="admin-mini-feed" id="platformLatestRequests">Memuat...</div>
               </div>
             </div>
           </div>
         </section>
 
-        <section class="card-nb admin-section mb-4 admin-panel" id="adminPremiumRequestsSection" data-admin-panel="requests" hidden>
+        <section class="nb-panel admin-section mb-4 admin-panel" id="adminPremiumRequestsSection" data-admin-panel="requests" hidden>
           <div class="admin-section-head">
             <div>
-              <h2 class="h5 fw-bold mb-1">
-                <i class="bi bi-qr-code-scan text-green me-2"></i>
-                Request Premium
-              </h2>
-              <p class="text-muted mb-0 small">
-                Fokus utama: pending request tampil dulu. Request yang sudah selesai bisa dibersihkan agar panel tidak penuh.
-              </p>
+              <h2><i class="bi bi-qr-code-scan text-green me-2"></i> Request Premium</h2>
+              <p>Fokus utama: pending request tampil dulu. Request yang sudah selesai bisa dibersihkan.</p>
             </div>
             <div class="d-flex flex-wrap gap-2">
               <span class="admin-count-pill" id="adminRequestCountInfo">0 request</span>
-              <button class="btn btn-sm btn-outline-danger" type="button" id="adminClearProcessedRequestsBtn">Bersihkan Selesai</button>
+              <button class="btn-outline-danger btn-sm" type="button" id="adminClearProcessedRequestsBtn">Bersihkan Selesai</button>
             </div>
           </div>
-
           <div class="admin-filter-grid admin-filter-grid-orders mb-3">
             <div class="admin-input-icon">
               <i class="bi bi-search"></i>
@@ -322,26 +253,19 @@
               <option value="rejected">Rejected</option>
             </select>
           </div>
-
           <div class="admin-request-list" id="requestRows">
             <div class="text-muted text-center py-4">Memuat request...</div>
           </div>
 
-          <hr class="my-4">
+          <hr class="my-4" style="border-color:var(--nb-line)">
 
           <div class="admin-section-head align-items-start">
             <div>
-              <h2 class="h5 fw-bold mb-1">
-                <i class="bi bi-key text-green me-2"></i>
-                Request Lupa Password
-              </h2>
-              <p class="text-muted mb-0 small">
-                User yang lupa password masuk ke tabel ini. Admin cukup kirim link reset resmi; jangan membuat password manual untuk user.
-              </p>
+              <h2><i class="bi bi-key text-green me-2"></i> Request Lupa Password</h2>
+              <p>User yang lupa password masuk ke tabel ini. Admin cukup kirim link reset resmi.</p>
             </div>
             <span class="admin-count-pill" id="adminPasswordResetCountInfo">0 request</span>
           </div>
-
           <div class="admin-filter-grid admin-filter-grid-orders mb-3">
             <div class="admin-input-icon">
               <i class="bi bi-search"></i>
@@ -355,76 +279,67 @@
               <option value="cancelled">Dibatalkan</option>
             </select>
           </div>
-
           <div class="admin-request-list" id="passwordResetRows">
             <div class="text-muted text-center py-4">Memuat request lupa password...</div>
           </div>
         </section>
 
-        <section class="card-nb admin-section admin-panel" id="adminSettingsSection" data-admin-panel="settings" hidden>
+        <section class="nb-panel admin-section admin-panel" id="adminSettingsSection" data-admin-panel="settings" hidden>
           <div class="admin-section-head">
             <div>
-              <h2 class="h5 fw-bold mb-1">
-                <i class="bi bi-sliders text-green me-2"></i>
-                Setting Platform
-              </h2>
-              <p class="text-muted small mb-0">
-                Maintenance mode, buka/tutup register, harga premium, QRIS upgrade, dan WhatsApp admin.
-              </p>
+              <h2><i class="bi bi-sliders text-green me-2"></i> Setting Platform</h2>
+              <p>Maintenance mode, buka/tutup register, harga premium, QRIS upgrade, dan WhatsApp admin.</p>
             </div>
           </div>
-
           <form id="adminSettingsForm" class="admin-settings-form">
             <div class="row g-3">
               <div class="col-md-6">
-                <div class="form-check form-switch admin-setting-box">
-                  <input class="form-check-input" id="maintenanceMode" type="checkbox">
-                  <label class="form-check-label fw-bold" for="maintenanceMode">Maintenance Mode</label>
-                  <div class="small text-muted">Jika aktif, user biasa diarahkan ke maintenance.</div>
+                <div class="admin-setting-box">
+                  <label class="form-check" style="margin:0">
+                    <input id="maintenanceMode" type="checkbox">
+                    <span class="nb-fw-600">Maintenance Mode</span>
+                  </label>
+                  <div class="nb-text-xs nb-text-muted mt-1">Jika aktif, user biasa diarahkan ke maintenance.</div>
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="form-check form-switch admin-setting-box">
-                  <input class="form-check-input" id="allowRegister" type="checkbox">
-                  <label class="form-check-label fw-bold" for="allowRegister">Izinkan Register</label>
-                  <div class="small text-muted">Matikan kalau pendaftaran sementara ditutup.</div>
+                <div class="admin-setting-box">
+                  <label class="form-check" style="margin:0">
+                    <input id="allowRegister" type="checkbox">
+                    <span class="nb-fw-600">Izinkan Register</span>
+                  </label>
+                  <div class="nb-text-xs nb-text-muted mt-1">Matikan kalau pendaftaran sementara ditutup.</div>
                 </div>
               </div>
-              <div class="col-md-12">
-                <label class="form-label fw-semibold" for="maintenanceMessage">Pesan Maintenance</label>
+              <div class="col-12">
+                <label class="form-label" for="maintenanceMessage">Pesan Maintenance</label>
                 <textarea class="form-control" id="maintenanceMessage" rows="3" placeholder="Website sedang maintenance. Silakan coba lagi nanti."></textarea>
               </div>
               <div class="col-md-6">
-                <label class="form-label fw-semibold" for="premiumPrice">Harga Premium</label>
+                <label class="form-label" for="premiumPrice">Harga Premium</label>
                 <input class="form-control" id="premiumPrice" min="0" placeholder="80000" type="number">
               </div>
               <div class="col-md-6">
-                <label class="form-label fw-semibold" for="adminWhatsApp">WhatsApp Admin</label>
+                <label class="form-label" for="adminWhatsApp">WhatsApp Admin</label>
                 <input class="form-control" id="adminWhatsApp" placeholder="628xxxx">
               </div>
               <div class="col-md-6">
-                <label class="form-label fw-semibold" for="adminPremiumQrisUrl">QRIS Premium URL</label>
+                <label class="form-label" for="adminPremiumQrisUrl">QRIS Premium URL</label>
                 <input class="form-control" id="adminPremiumQrisUrl" placeholder="https://.../qris.png">
-                <small class="text-muted">Boleh isi URL manual atau upload file di bawah.</small>
+                <div class="nb-text-xs nb-text-muted">Boleh isi URL manual atau upload file di bawah.</div>
               </div>
               <div class="col-md-6">
-                <label class="form-label fw-semibold" for="adminPremiumQrisFile">Upload QRIS Premium</label>
+                <label class="form-label" for="adminPremiumQrisFile">Upload QRIS Premium</label>
                 <input class="form-control" id="adminPremiumQrisFile" type="file" accept="image/jpeg,image/png,image/webp">
               </div>
-              <div class="col-md-12">
-                <label class="form-label fw-semibold" for="adminPremiumNote">Catatan Upgrade Premium</label>
+              <div class="col-12">
+                <label class="form-label" for="adminPremiumNote">Catatan Upgrade Premium</label>
                 <textarea class="form-control" id="adminPremiumNote" rows="3" placeholder="Transfer sesuai nominal lalu upload bukti pembayaran."></textarea>
               </div>
             </div>
             <div class="d-flex flex-wrap gap-2 mt-4">
-              <button class="btn btn-nb" type="submit" id="adminSaveSettingsBtn">
-                <i class="bi bi-save me-1"></i>
-                Simpan Setting
-              </button>
-              <button class="btn btn-outline-nb" type="button" id="adminResetSettingsBtn">
-                <i class="bi bi-arrow-counterclockwise me-1"></i>
-                Muat Ulang
-              </button>
+              <button class="btn-nb" type="submit" id="adminSaveSettingsBtn"><i class="bi bi-save"></i> Simpan Setting</button>
+              <button class="btn-outline-nb" type="button" id="adminResetSettingsBtn"><i class="bi bi-arrow-counterclockwise"></i> Muat Ulang</button>
             </div>
           </form>
         </section>

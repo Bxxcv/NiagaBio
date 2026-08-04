@@ -316,9 +316,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     root.innerHTML = `
       <section class="public-shell public-theme-${themeName}" data-theme="${themeName}">
-        <div class="public-bg-orb public-bg-orb-one"></div>
-        <div class="public-bg-orb public-bg-orb-two"></div>
-
         <div class="public-card public-card-${themeName}">
           <header class="public-hero">
             <img class="public-avatar" src="${NB.safeImageUrl(profile.avatar_url || 'assets/img/logo.jpg', 'assets/img/logo.jpg')}" alt="${NB.escapeHtml(displayName)}">
@@ -384,7 +381,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             ` : ''}
 
             <footer class="public-footer">
-              <span>© ${year} ${NB.escapeHtml(displayName)}</span>
+              <span>&copy; ${year} ${NB.escapeHtml(displayName)}</span>
               <span class="public-powered">${NB.escapeHtml(template.footer)}</span>
             </footer>
           </div>
