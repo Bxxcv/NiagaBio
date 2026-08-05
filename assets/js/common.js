@@ -2,14 +2,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.querySelectorAll('[data-year]').forEach(element => {
     element.textContent = new Date().getFullYear();
   });
-
+  
   const sidebar = document.querySelector('.sidebar');
-  const sidebarOverlay = document.createElement('button');
-  sidebarOverlay.type = 'button';
-  sidebarOverlay.className = 'sidebar-overlay';
-  sidebarOverlay.setAttribute('aria-label', 'Tutup menu');
-  document.body.appendChild(sidebarOverlay);
-
+  let sidebarOverlay = null;
+  if (sidebar) {
+    sidebarOverlay = document.createElement('button');
+    sidebarOverlay.type = 'button';
+    sidebarOverlay.className = 'sidebar-overlay';
+    sidebarOverlay.setAttribute('aria-label', 'Tutup menu');
+    document.body.appendChild(sidebarOverlay);
+  }
+  
   function setSidebar(open) {
     if (!sidebar) return;
     sidebar.classList.toggle('show', open);
@@ -18,30 +21,32 @@ document.addEventListener('DOMContentLoaded', async () => {
       button.setAttribute('aria-expanded', open ? 'true' : 'false');
     });
   }
-
+  
   document.querySelectorAll('[data-sidebar-toggle]').forEach(button => {
     button.setAttribute('aria-expanded', 'false');
     button.addEventListener('click', () => setSidebar(!sidebar?.classList.contains('show')));
   });
-
-  sidebarOverlay.addEventListener('click', () => setSidebar(false));
-
+  
+  if (sidebarOverlay) {
+    sidebarOverlay.addEventListener('click', () => setSidebar(false));
+  }
+  
   document.querySelectorAll('.sidebar .side-link').forEach(link => {
     link.addEventListener('click', () => {
       if (window.innerWidth < 992) setSidebar(false);
     });
   });
-
+  
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape') setSidebar(false);
   });
-
+  
   window.addEventListener('resize', () => {
     if (window.innerWidth >= 992) setSidebar(false);
   });
-
+  
   const hasNBClient = Boolean(window.NB);
-
+  
   const logout = document.querySelector('[data-logout]');
   if (logout && hasNBClient) {
     logout.addEventListener('click', async event => {
@@ -50,19 +55,19 @@ document.addEventListener('DOMContentLoaded', async () => {
       location.href = 'login';
     });
   }
-
+  
   // Halaman publik/legal hanya memuat common.js tanpa Supabase client.
   // Jangan jalankan auth/maintenance guard kalau NB belum tersedia.
   if (!hasNBClient) return;
-
+  
   const user = await NB.currentUser();
   let profile = null;
-
+  
   if (document.body.dataset.protected === 'true' && !user) {
     location.href = 'login';
     return;
   }
-
+  
   if (user) {
     try {
       profile = await NB.getProfile(user.id);
@@ -82,7 +87,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.warn('[NiagaBio] Gagal memuat profil:', error.message);
     }
   }
-
+  
   try {
     const settings = await NB.getSettings();
     const page = (location.pathname.split('/').filter(Boolean).pop() || 'index').replace(/\.html$/i, '');
@@ -90,7 +95,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const isMaintenancePage = page === 'maintenance';
     const isLoginPage = page === 'login';
     const isAdmin = String(profile?.role || '').toLowerCase() === 'admin';
-
+    
     if (maintenanceEnabled && !isAdmin && !isMaintenancePage && !isLoginPage) {
       window.NB_MAINTENANCE_REDIRECTING = true;
       sessionStorage.setItem('nb_maintenance_message', settings.maintenance_message || 'Website sedang maintenance.');
@@ -100,13 +105,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   } catch (error) {
     console.warn('[NiagaBio] Maintenance guard dilewati:', error.message);
   }
-
+  
   document.querySelectorAll('[data-auth-show]').forEach(element => element.classList.toggle('d-none', !user));
   document.querySelectorAll('[data-auth-hide]').forEach(element => element.classList.toggle('d-none', Boolean(user)));
   const isAdminProfile = profile?.role === 'admin';
   document.body.classList.toggle('is-admin', isAdminProfile);
   document.querySelectorAll('[data-admin-only]').forEach(element => element.classList.toggle('d-none', !isAdminProfile));
-
+  
   if (profile?.username) {
     const publicHref = `u?username=${encodeURIComponent(profile.username)}`;
     document.querySelectorAll('a[href^="u?username=demo"], a[href="u"], #sidebarPublicPreview, #openPublicPage, #openPublicPageHero').forEach(link => {
@@ -116,20 +121,20 @@ document.addEventListener('DOMContentLoaded', async () => {
       input.value = `${location.origin}/u?username=${profile.username}`;
     });
   }
-
+  
   const premiumProfile = NB.isPremium(profile);
   document.querySelectorAll('[data-plan]').forEach(element => {
     element.textContent = isAdminProfile ? 'Admin' : (premiumProfile ? 'Premium' : 'Free');
     element.className = isAdminProfile ? 'badge-soft badge-admin' : 'badge-soft';
   });
-
+  
   if (premiumProfile || isAdminProfile) {
     document.querySelectorAll('[data-nav="upgrade"], [data-hide-when-premium]').forEach(element => {
       element.classList.add('d-none');
     });
   }
-
-
+  
+  
   function ensureNotificationEntry() {
     const navs = document.querySelectorAll('.sidebar nav, .admin-nav');
     navs.forEach(nav => {
@@ -139,13 +144,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       link.dataset.nav = 'notifications';
       link.href = 'notifications';
       link.innerHTML = '<i class="bi bi-bell"></i><span>Notifikasi</span><span class="notification-badge d-none" data-notif-badge>0</span>';
-
+      
       const before = nav.querySelector('[data-nav="upgrade"]') || nav.querySelector('[data-admin-only]') || nav.querySelector('hr') || nav.querySelector('.admin-sidebar-divider');
       if (before) nav.insertBefore(link, before);
       else nav.appendChild(link);
     });
   }
-
+  
   async function refreshNotificationBadge(showToast = false) {
     if (!window.NB?.unreadNotificationsCount) return;
     try {
@@ -154,7 +159,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         badge.textContent = count > 99 ? '99+' : String(count);
         badge.classList.toggle('d-none', count <= 0);
       });
-
+      
       if (showToast && count > 0 && window.NB?.listNotifications) {
         const items = await NB.listNotifications(5);
         const latestUnread = items.find(item => !item.is_read);
@@ -169,7 +174,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.warn('[NiagaBio] Notifikasi belum siap:', error.message);
     }
   }
-
+  
   ensureNotificationEntry();
   if ((location.pathname.split('/').filter(Boolean).pop() || '').replace(/\.html$/i, '') === 'notifications') {
     setActiveSide('notifications');
@@ -188,14 +193,14 @@ document.addEventListener('DOMContentLoaded', async () => {
  */
 function nbApplyPremiumStoreIcon(profile, premiumOverride) {
   const defaultIcon = '/assets/img/favicon-32x32.png?v=4';
-  const premium = typeof premiumOverride === 'boolean'
-    ? premiumOverride
-    : Boolean(window.NB?.isPremium?.(profile));
+  const premium = typeof premiumOverride === 'boolean' ?
+    premiumOverride :
+    Boolean(window.NB?.isPremium?.(profile));
   const rawAvatar = String(profile?.avatar_url || '').trim();
-  const normalizedAvatar = rawAvatar && window.NB?.normalizeImageUrl
-    ? NB.normalizeImageUrl(rawAvatar, '')
-    : rawAvatar;
-
+  const normalizedAvatar = rawAvatar && window.NB?.normalizeImageUrl ?
+    NB.normalizeImageUrl(rawAvatar, '') :
+    rawAvatar;
+  
   let normalizedPath = rawAvatar
     .replace(/^https?:\/\/[^/]+/i, '')
     .replace(/^\.\//, '/')
@@ -209,18 +214,18 @@ function nbApplyPremiumStoreIcon(profile, premiumOverride) {
     '/assets/illustrator/niagabio-logo.svg',
     '/favicon.ico'
   ].includes(normalizedPath);
-
-  const iconUrl = premium && normalizedAvatar && !usesDefaultBrandLogo
-    ? normalizedAvatar
-    : defaultIcon;
-
+  
+  const iconUrl = premium && normalizedAvatar && !usesDefaultBrandLogo ?
+    normalizedAvatar :
+    defaultIcon;
+  
   document.querySelectorAll('link[rel~="icon"], link[rel="apple-touch-icon"]').forEach(link => {
     link.setAttribute('href', iconUrl);
     link.removeAttribute('type');
     if (link.getAttribute('rel') !== 'apple-touch-icon') link.removeAttribute('sizes');
     link.dataset.storeBranding = premium && iconUrl !== defaultIcon ? 'premium' : 'niagabio';
   });
-
+  
   // Pastikan browser memiliki satu kandidat favicon terakhir yang tidak membawa
   // deklarasi MIME/ukuran lama ketika logo seller berupa JPG atau WebP.
   let dynamicIcon = document.querySelector('link[data-premium-store-icon]');
@@ -232,7 +237,7 @@ function nbApplyPremiumStoreIcon(profile, premiumOverride) {
   }
   dynamicIcon.href = iconUrl;
   dynamicIcon.dataset.storeBranding = premium && iconUrl !== defaultIcon ? 'premium' : 'niagabio';
-
+  
   return {
     applied: premium && iconUrl !== defaultIcon,
     iconUrl
@@ -248,7 +253,7 @@ function nbEscape(value) {
     '<': '&lt;',
     '>': '&gt;',
     '"': '&quot;'
-  }[char]));
+  } [char]));
 }
 
 function nbToast(message, type = 'success') {
@@ -258,7 +263,7 @@ function nbToast(message, type = 'success') {
     wrapper.className = 'toast-container position-fixed bottom-0 end-0 p-3';
     document.body.appendChild(wrapper);
   }
-
+  
   const id = `toast_${Date.now()}`;
   const className = type === 'danger' ? 'text-bg-danger' : type === 'warning' ? 'text-bg-warning' : 'text-bg-success';
   wrapper.insertAdjacentHTML('beforeend', `
@@ -269,12 +274,12 @@ function nbToast(message, type = 'success') {
       </div>
     </div>
   `);
-
+  
   const element = document.getElementById(id);
   const toast = window.bootstrap ? new bootstrap.Toast(element, { delay: 3500 }) : null;
   if (toast) toast.show();
   else alert(message);
-
+  
   element.addEventListener('hidden.bs.toast', () => element.remove());
 }
 
