@@ -40,10 +40,10 @@ document.addEventListener('DOMContentLoaded', async () => {
           <span>Total</span><strong>${NB.money(total)}</strong>
         </div>
         <div class="d-grid gap-2 mt-4">
-          <a class="btn btn-nb" href="${NB.safeHref(NB.whatsappUrl(profile.whatsapp_number, waText))}" target="_blank" rel="noopener">
+          <a class="nb-btn nb-btn--commerce" href="${NB.safeHref(NB.whatsappUrl(profile.whatsapp_number, waText))}" target="_blank" rel="noopener">
             <i class="bi bi-whatsapp me-1"></i>Kirim WhatsApp
           </a>
-          <a class="btn btn-outline-nb" href="${NB.safeHref(storeUrl(profile))}">
+          <a class="nb-btn nb-btn--outline" href="${NB.safeHref(storeUrl(profile))}">
             <i class="bi bi-arrow-left me-1"></i>Kembali ke Toko
           </a>
         </div>
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     root.innerHTML = `
       <div class="checkout-backbar">
-        <a class="btn btn-outline-nb" href="${NB.safeHref(storeUrl(profile))}">
+        <a class="nb-btn nb-btn--outline" href="${NB.safeHref(storeUrl(profile))}">
           <i class="bi bi-arrow-left me-1"></i>Kembali ke Toko
         </a>
         <span><i class="bi bi-shield-check me-1"></i>Checkout aman via QRIS manual</span>
@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             <span>Total</span>
             <strong id="totalPreview">${NB.money(product.price)}</strong>
           </div>
-          <a class="btn btn-light w-100 mt-3" href="${NB.safeHref(storeUrl(profile))}">
+          <a class="nb-btn nb-btn--soft w-100 mt-3" href="${NB.safeHref(storeUrl(profile))}">
             <i class="bi bi-shop me-1"></i>Lihat produk lain
           </a>
         </aside>
@@ -148,10 +148,10 @@ document.addEventListener('DOMContentLoaded', async () => {
               </div>
             </div>
             <div class="checkout-actions">
-              <button class="btn btn-nb" type="submit">
+              <button class="nb-btn nb-btn--commerce" type="submit">
                 <i class="bi bi-send me-1"></i>Kirim Pesanan
               </button>
-              <a class="btn btn-outline-nb" href="${NB.safeHref(NB.whatsappUrl(sellerPhone, orderMessage({ profile, product, quantity: 1 })))}" target="_blank" rel="noopener">
+              <a class="nb-btn nb-btn--outline" href="${NB.safeHref(NB.whatsappUrl(sellerPhone, orderMessage({ profile, product, quantity: 1 })))}" target="_blank" rel="noopener">
                 <i class="bi bi-whatsapp me-1"></i>Tanya Penjual
               </a>
             </div>

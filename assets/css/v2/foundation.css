@@ -166,15 +166,18 @@
 .nb-shadow-2 { box-shadow: var(--nb-shadow-2); }
 
 /* ----------------------------------------------------------
-   6. BUTTONS
+   6. BUTTONS  (BEM + compatibility alias)
    ---------------------------------------------------------- */
 :root {
   --nb-action-primary: #083465;
   --nb-action-primary-hover: #0b3d70;
   --nb-action-commerce: #0f7a45;
   --nb-action-commerce-hover: #128044;
+  --nb-action-premium: #d97706;
+  --nb-action-premium-hover: #b45309;
 }
 
+/* ---------- Base ---------- */
 .nb-btn {
   display: inline-flex;
   align-items: center;
@@ -188,9 +191,11 @@
   border: 1px solid transparent;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease, transform 120ms ease;
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
   white-space: nowrap;
   user-select: none;
+  min-height: 44px;
+  padding: 0 16px;
 }
 .nb-btn:focus-visible {
   outline: 2px solid var(--nb-navy-800);
@@ -200,94 +205,204 @@
   transform: translateY(1px);
 }
 
-/* Sizes */
-.nb-btn-sm  { height: 36px; padding: 0 12px; font-size: var(--nb-text-xs); border-radius: 8px; }
-.nb-btn-md  { height: 44px; padding: 0 16px; font-size: var(--nb-text-sm); border-radius: 8px; }
-.nb-btn-lg  { height: 50px; padding: 0 20px; font-size: var(--nb-text-md); border-radius: 10px; }
-.nb-btn-block { display: flex; width: 100%; }
+/* ---------- Sizes ---------- */
+.nb-btn--sm, .nb-btn-sm  { height: 36px; padding: 0 12px; font-size: var(--nb-text-xs); border-radius: 8px; }
+.nb-btn--md, .nb-btn-md  { height: 44px; padding: 0 16px; font-size: var(--nb-text-sm); border-radius: 8px; }
+.nb-btn--lg, .nb-btn-lg  { height: 50px; padding: 0 20px; font-size: var(--nb-text-md); border-radius: 10px; }
+.nb-btn--block, .nb-btn-block { display: flex; width: 100%; }
+.nb-btn--compact { height: 32px; padding: 0 10px; font-size: var(--nb-text-xs); border-radius: 6px; }
 
-/* Variants */
-.nb-btn-primary {
+/* ---------- Variants ---------- */
+
+/* Primary — navy, aksi sistem */
+.nb-btn--primary, .nb-btn-primary {
   background: var(--nb-action-primary);
   color: #fff;
   border-color: var(--nb-action-primary);
 }
-.nb-btn-primary:hover {
+.nb-btn--primary:hover, .nb-btn-primary:hover {
   background: var(--nb-action-primary-hover);
   border-color: var(--nb-action-primary-hover);
 }
 
-.nb-btn-commerce {
+/* Commerce — green, aksi transaksi/penjualan */
+.nb-btn--commerce, .nb-btn-commerce {
   background: var(--nb-action-commerce);
   color: #fff;
   border-color: var(--nb-action-commerce);
 }
-.nb-btn-commerce:hover {
+.nb-btn--commerce:hover, .nb-btn-commerce:hover {
   background: var(--nb-action-commerce-hover);
   border-color: var(--nb-action-commerce-hover);
 }
 
-.nb-btn-secondary {
+/* Outline — putih + border */
+.nb-btn--outline, .nb-btn-secondary {
   background: var(--nb-surface);
   color: var(--nb-ink-soft);
   border-color: var(--nb-line-strong);
 }
-.nb-btn-secondary:hover {
+.nb-btn--outline:hover, .nb-btn-secondary:hover {
   background: var(--nb-surface-2);
   border-color: var(--nb-line);
 }
 
-.nb-btn-quiet {
-  background: transparent;
+/* Soft — background ringan, tanpa border */
+.nb-btn--soft, .nb-btn-quiet {
+  background: var(--nb-surface-2);
   color: var(--nb-ink-soft);
   border-color: transparent;
 }
-.nb-btn-quiet:hover {
-  background: var(--nb-surface-2);
+.nb-btn--soft:hover, .nb-btn-quiet:hover {
+  background: var(--nb-canvas);
+  border-color: var(--nb-line);
 }
 
-.nb-btn-danger {
-  background: var(--nb-danger);
-  color: #fff;
-  border-color: var(--nb-danger);
-}
-.nb-btn-danger:hover {
-  background: #991b1b;
-  border-color: #991b1b;
-}
-
-.nb-btn-ghost {
+/* Ghost — transparan, hanya teks */
+.nb-btn--ghost, .nb-btn-ghost {
   background: transparent;
   color: var(--nb-muted);
   border-color: transparent;
 }
-.nb-btn-ghost:hover {
+.nb-btn--ghost:hover, .nb-btn-ghost:hover {
   color: var(--nb-ink-soft);
+  background: var(--nb-surface-2);
 }
 
-/* Disabled */
+/* Raised — elevated CTA */
+.nb-btn--raised {
+  background: var(--nb-action-commerce);
+  color: #fff;
+  border-color: var(--nb-action-commerce);
+  box-shadow: 0 4px 14px rgba(15, 122, 69, .25);
+}
+.nb-btn--raised:hover {
+  background: var(--nb-action-commerce-hover);
+  border-color: var(--nb-action-commerce-hover);
+  box-shadow: 0 6px 20px rgba(15, 122, 69, .3);
+  transform: translateY(-1px);
+}
+.nb-btn--raised:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 8px rgba(15, 122, 69, .2);
+}
+
+/* Danger — destruktif */
+.nb-btn--danger, .nb-btn-danger {
+  background: var(--nb-danger);
+  color: #fff;
+  border-color: var(--nb-danger);
+}
+.nb-btn--danger:hover, .nb-btn-danger:hover {
+  background: #991b1b;
+  border-color: #991b1b;
+}
+
+/* Premium — accent gold */
+.nb-btn--premium {
+  background: var(--nb-action-premium);
+  color: #fff;
+  border-color: var(--nb-action-premium);
+}
+.nb-btn--premium:hover {
+  background: var(--nb-action-premium-hover);
+  border-color: var(--nb-action-premium-hover);
+}
+
+/* ---------- Disabled ---------- */
 .nb-btn:disabled,
-.nb-btn.nb-disabled {
+.nb-btn.nb-disabled,
+.nb-btn--primary:disabled,
+.nb-btn--commerce:disabled,
+.nb-btn--outline:disabled,
+.nb-btn--soft:disabled,
+.nb-btn--raised:disabled,
+.nb-btn--danger:disabled,
+.nb-btn--premium:disabled {
   opacity: .55;
   cursor: not-allowed;
   pointer-events: none;
 }
 
-/* Icon button */
-.nb-btn-icon {
+/* ---------- Icon button ---------- */
+.nb-icon-btn, .nb-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 44px;
   height: 44px;
   padding: 0;
   border-radius: var(--nb-radius-sm);
+  font-family: var(--nb-font-ui);
+  font-weight: 600;
+  font-size: var(--nb-text-sm);
+  line-height: 1;
+  text-decoration: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease, transform 120ms ease;
+  white-space: nowrap;
+  user-select: none;
+  background: transparent;
+  color: var(--nb-muted);
 }
-.nb-btn-icon.nb-btn-sm { width: 36px; height: 36px; }
+.nb-icon-btn:hover, .nb-btn-icon:hover {
+  background: var(--nb-surface-2);
+  color: var(--nb-ink-soft);
+}
+.nb-icon-btn:focus-visible, .nb-btn-icon:focus-visible {
+  outline: 2px solid var(--nb-navy-800);
+  outline-offset: 2px;
+}
+.nb-icon-btn:active, .nb-btn-icon:active {
+  transform: translateY(1px);
+}
+.nb-icon-btn--circle {
+  border-radius: 50%;
+}
+.nb-icon-btn--sm, .nb-btn-icon.nb-btn-sm, .nb-btn-icon.nb-btn--sm {
+  width: 36px;
+  height: 36px;
+}
 
-/* Loading state (pertahankan lebar) */
-.nb-btn-loading {
+/* ---------- Link button (text nav dengan chevron) ---------- */
+.nb-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nb-space-1);
+  font-family: var(--nb-font-ui);
+  font-weight: 500;
+  font-size: var(--nb-text-sm);
+  color: var(--nb-navy-700);
+  text-decoration: none;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  padding: 4px 0;
+  transition: color 120ms ease;
+}
+.nb-link-btn:hover {
+  color: var(--nb-navy-900);
+}
+.nb-link-btn:focus-visible {
+  outline: 2px solid var(--nb-navy-800);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.nb-link-btn i {
+  font-size: .85em;
+  transition: transform 120ms ease;
+}
+.nb-link-btn:hover i {
+  transform: translateX(2px);
+}
+
+/* ---------- Loading state ---------- */
+.nb-btn-loading, .nb-btn.nb-loading {
   position: relative;
   color: transparent !important;
 }
-.nb-btn-loading::after {
+.nb-btn-loading::after, .nb-btn.nb-loading::after {
   content: "";
   position: absolute;
   width: 16px;
@@ -297,9 +412,14 @@
   border-radius: 50%;
   animation: nb-spin 800ms linear infinite;
 }
+.nb-btn-loading.nb-btn--outline::after,
 .nb-btn-loading.nb-btn-secondary::after,
+.nb-btn-loading.nb-btn--soft::after,
 .nb-btn-loading.nb-btn-quiet::after,
-.nb-btn-loading.nb-btn-ghost::after {
+.nb-btn-loading.nb-btn--ghost::after,
+.nb-btn-loading.nb-btn-ghost::after,
+.nb-btn.nb-loading.nb-btn--outline::after,
+.nb-btn.nb-loading.nb-btn-secondary::after {
   border-color: rgba(23, 33, 43, .35);
   border-right-color: transparent;
 }

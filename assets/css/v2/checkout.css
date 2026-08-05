@@ -69,10 +69,4 @@
 .checkout-form .form-text{font-size:.85rem;color:var(--nb-muted);margin-top:6px}
 .checkout-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
 
-/* Buttons (bridge dari foundation) */
-.btn-nb{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 20px;border-radius:var(--nb-radius-md,10px);font-weight:600;font-size:.95rem;border:1px solid transparent;cursor:pointer;white-space:nowrap;background:var(--nb-green-700,#0f7a45);color:#fff}
-.btn-nb:hover{background:var(--nb-green-600,#128044)}
-.btn-outline-nb{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 20px;border-radius:var(--nb-radius-md,10px);font-weight:600;font-size:.95rem;border:1px solid var(--nb-line-strong);cursor:pointer;white-space:nowrap;background:transparent;color:var(--nb-ink-soft)}
-.btn-outline-nb:hover{background:var(--nb-canvas)}
-.btn-light{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 20px;border-radius:var(--nb-radius-md,10px);font-weight:600;font-size:.95rem;border:1px solid var(--nb-line);cursor:pointer;white-space:nowrap;background:var(--nb-canvas);color:var(--nb-ink-soft)}
-.btn-light:hover{background:var(--nb-surface-2)}
+/* Bridge styles removed — using .nb-btn--* from foundation.css */

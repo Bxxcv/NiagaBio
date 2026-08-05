@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         <div class="icon-bubble mx-auto mb-3"><i class="bi bi-shield-lock"></i></div>
         <h2 class="fw-black mb-2">Akses ditolak</h2>
         <p class="text-muted mb-4">Halaman ini khusus admin NiagaBio. Login memakai akun admin master.</p>
-        <a href="dashboard" class="btn btn-nb">Kembali ke Dashboard</a>
+        <a href="dashboard" class="nb-btn nb-btn--primary">Kembali ke Dashboard</a>
       </section>
     `;
   }
@@ -983,12 +983,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (refs.modalBlockBtn) {
       refs.modalBlockBtn.textContent = profile.status === 'blocked' ? 'Unblock' : 'Blokir';
       refs.modalBlockBtn.disabled = isSelf || deleted;
-      refs.modalBlockBtn.className = profile.status === 'blocked' ? 'btn btn-outline-success' : 'btn btn-outline-danger';
+      refs.modalBlockBtn.className = profile.status === 'blocked' ? 'nb-btn nb-btn--commerce' : 'nb-btn nb-btn--danger';
     }
 
     if (refs.modalDeleteBtn) {
       refs.modalDeleteBtn.disabled = isSelf || deleted;
-      refs.modalDeleteBtn.className = 'btn btn-danger';
+      refs.modalDeleteBtn.className = 'nb-btn nb-btn--danger';
     }
 
     if (showModal && userModal) userModal.show();

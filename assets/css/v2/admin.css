@@ -125,16 +125,7 @@
 .admin-modal .modal-body{padding:20px 24px}
 .admin-modal .modal-footer{border-top:1px solid var(--nb-line);padding:16px 24px}
 
-/* Buttons bridge */
-.btn-nb{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border-radius:var(--nb-radius-md,10px);font-weight:600;font-size:.9rem;border:1px solid transparent;cursor:pointer;white-space:nowrap;background:var(--nb-green-700,#0f7a45);color:#fff}
-.btn-nb:hover{background:var(--nb-green-600,#128044)}
-.btn-outline-nb{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border-radius:var(--nb-radius-md,10px);font-weight:600;font-size:.9rem;border:1px solid var(--nb-line-strong);cursor:pointer;white-space:nowrap;background:transparent;color:var(--nb-ink-soft)}
-.btn-outline-nb:hover{background:var(--nb-canvas)}
-.btn-outline-danger{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border-radius:var(--nb-radius-md,10px);font-weight:600;font-size:.9rem;border:1px solid var(--nb-danger,#b42318);cursor:pointer;white-space:nowrap;background:transparent;color:var(--nb-danger)}
-.btn-outline-danger:hover{background:var(--nb-danger-bg,#feeceb)}
-.btn-danger{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border-radius:var(--nb-radius-md,10px);font-weight:600;font-size:.9rem;border:1px solid var(--nb-danger);cursor:pointer;white-space:nowrap;background:var(--nb-danger);color:#fff}
-.btn-danger:hover{background:#991b1b}
-.btn-secondary{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border-radius:var(--nb-radius-md,10px);font-weight:600;font-size:.9rem;border:1px solid var(--nb-line);cursor:pointer;white-space:nowrap;background:var(--nb-surface-2);color:var(--nb-ink-soft)}
+/* Buttons bridge removed — using .nb-btn--* from foundation.css */
 
 /* Form bridge */
 .form-label{display:block;font-size:.9rem;font-weight:600;color:var(--nb-ink-soft);margin-bottom:6px}
