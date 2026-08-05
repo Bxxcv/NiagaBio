@@ -283,7 +283,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
 
-  function updateStoreMeta(profile, premium) {
+  function updateStoreMeta(profile) {
     const title = `${profile.display_name || profile.username || 'Toko'} - NiagaBio`;
     const desc = profile.bio || 'Lihat produk, link penting, dan checkout toko ini di NiagaBio.';
     const image = NB.normalizeImageUrl(profile.avatar_url || `${location.origin}/assets/img/og-niagabio.jpg`, `${location.origin}/assets/img/og-niagabio.jpg`);
@@ -307,10 +307,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const canonical = document.querySelector('link[rel="canonical"]');
     if (canonical) canonical.setAttribute('href', shareUrl);
-
-    if (typeof window.nbApplyPremiumStoreIcon === 'function') {
-      window.nbApplyPremiumStoreIcon(profile, premium);
-    }
   }
 
   function renderShell({ profile, themeName, premium, products, links, socials, gallery }) {
@@ -436,7 +432,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const premium = NB.isPremium(profile);
     const themeName = premium ? safeTheme(profile.theme_name || 'service') : safeTheme(['service', 'minimal'].includes(profile.theme_name) ? profile.theme_name : 'service');
-    updateStoreMeta(profile, premium);
+    updateStoreMeta(profile);
 
     document.body.className = document.body.className
       .split(' ')

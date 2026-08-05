@@ -142,3 +142,9 @@ NiagaBio diarahkan menjadi:
 
 ## Lisensi / penggunaan internal
 Dokumen ini adalah panduan internal project. Sesuaikan dengan kebutuhan repo dan deployment yang sedang aktif.
+
+
+## Push Notifications
+
+Setup notifikasi realtime + push HP ada di `docs/PUSH_NOTIFICATIONS_SETUP.md`.
+

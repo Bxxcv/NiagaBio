@@ -307,3 +307,31 @@ body.sidebar-open .sidebar-overlay {
 .content-wrap {
   composes: nb-content;
 }
+
+
+/* ----------------------------------------------------------
+   PUSH NOTIFICATION PANEL
+   ---------------------------------------------------------- */
+.nb-push-panel {
+  border-color: rgba(18, 128, 68, .22);
+  background: linear-gradient(180deg, #ffffff 0%, #fbfdfb 100%);
+}
+.nb-push-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 44px;
+  color: var(--nb-green-700, #0f7a42);
+  background: rgba(18, 128, 68, .09);
+  border: 1px solid rgba(18, 128, 68, .12);
+  font-size: 1.1rem;
+}
+#pushNotificationStatus[data-tone="success"] { color: var(--nb-green-700, #0f7a42); }
+#pushNotificationStatus[data-tone="warning"] { color: #9a6700; }
+#pushNotificationStatus[data-tone="danger"] { color: #b42318; }
+@media (max-width: 575.98px) {
+  .nb-push-panel .d-flex.flex-wrap.gap-2 > * { width: 100%; }
+  .nb-push-panel .d-flex.flex-wrap.gap-2 .nb-btn { justify-content: center; }
+}

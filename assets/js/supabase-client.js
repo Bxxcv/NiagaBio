@@ -1478,6 +1478,33 @@
   }
 
 
+  async function registerPushSubscription(deviceToken, deviceName = '') {
+    if (!deviceToken) throw new Error('Token perangkat tidak ditemukan.');
+    if (sb) {
+      const { data, error } = await sb.rpc('register_push_subscription', {
+        device_token_input: String(deviceToken),
+        device_name_input: String(deviceName || '').slice(0, 80),
+        user_agent_input: String(navigator.userAgent || '').slice(0, 400)
+      });
+      if (error) throw error;
+      return data;
+    }
+    return true;
+  }
+
+  async function unregisterPushSubscription(deviceToken) {
+    if (!deviceToken) return false;
+    if (sb) {
+      const { data, error } = await sb.rpc('unregister_push_subscription', {
+        device_token_input: String(deviceToken)
+      });
+      if (error) throw error;
+      return data;
+    }
+    return true;
+  }
+
+
   async function resetSalesRecap(userId) {
     if (sb) {
       const { data, error } = await sb.rpc('reset_my_sales_recap');
@@ -1625,6 +1652,8 @@
     listNotifications,
     unreadNotificationsCount,
     markNotificationRead,
-    markAllNotificationsRead
+    markAllNotificationsRead,
+    registerPushSubscription,
+    unregisterPushSubscription
   };
 })();
