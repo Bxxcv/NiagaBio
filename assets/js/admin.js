@@ -927,12 +927,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (refs.userModalTitle) refs.userModalTitle.textContent = profile.display_name || 'User NiagaBio';
     if (refs.userModalSubtitle) refs.userModalSubtitle.textContent = profile.email || '-';
 
+    const detailAvatarUrl = profile.avatar_url;
+    const detailInitials = safe((profile.display_name || profile.email || profile.username || 'U').slice(0, 1)).toUpperCase();
+    const detailAvatarHtml = detailAvatarUrl
+      ? `<img src="${NB.safeImageUrl(detailAvatarUrl, 'assets/img/logo.jpg')}" alt="" class="admin-detail-avatar mb-3">`
+      : `<div class="admin-initials--lg mb-3">${detailInitials}</div>`;
+
     if (refs.userModalBody) {
       refs.userModalBody.innerHTML = `
         <div class="row g-3">
           <div class="col-md-5">
             <div class="admin-detail-card text-center">
-              <img src="${NB.safeImageUrl(profile.avatar_url || 'assets/img/logo.jpg', 'assets/img/logo.jpg')}" alt="" class="admin-detail-avatar mb-3">
+              ${detailAvatarHtml}
               <h3 class="h5 fw-black mb-1">${safe(profile.display_name || 'User NiagaBio')}</h3>
               <p class="text-muted mb-2">${safe(profile.email || '-')}</p>
               <div class="d-flex justify-content-center gap-2 flex-wrap">${planBadge(profile.plan)}${statusBadge(profile.status || 'active')}${roleBadge(profile.role)}</div>
