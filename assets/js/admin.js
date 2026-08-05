@@ -301,11 +301,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       const deleted = profile.status === 'deleted';
       const publicUrl = profile.username ? `u?username=${encodeURIComponent(profile.username)}` : '#';
 
+      const avatarUrl = profile.avatar_url;
+      const initials = safe((profile.display_name || profile.email || profile.username || 'U').slice(0, 1)).toUpperCase();
+      const avatarHtml = avatarUrl
+        ? `<img src="${NB.safeImageUrl(avatarUrl, 'assets/img/logo.jpg')}" alt="" class="admin-user-avatar">`
+        : `<div class="admin-user-initials">${initials}</div>`;
+
       return `
         <tr class="${deleted ? 'table-light opacity-75' : ''}">
           <td>
             <div class="admin-user-cell">
-              <img src="${NB.safeImageUrl(profile.avatar_url || 'assets/img/logo.jpg', 'assets/img/logo.jpg')}" alt="" class="admin-user-avatar">
+              ${avatarHtml}
               <div>
                 <div class="fw-bold">${safe(profile.display_name || 'User NiagaBio')} ${roleBadge(profile.role)}</div>
                 <small class="text-muted">${safe(profile.email || '-')}</small>
