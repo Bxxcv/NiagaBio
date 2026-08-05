@@ -24,6 +24,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   profileWhatsApp.value = profile.whatsapp_number || '';
   avatarPreview.src = NB.normalizeImageUrl(profile.avatar_url || 'assets/img/logo.jpg', 'assets/img/logo.jpg');
 
+  const premiumStoreLogoHint = document.getElementById('premiumStoreLogoHint');
+  if (premiumStoreLogoHint) {
+    premiumStoreLogoHint.innerHTML = NB.isPremium(profile)
+      ? '<i class="bi bi-patch-check-fill text-success me-1"></i>Logo ini juga menjadi ikon tab browser dan halaman checkout toko Premium.'
+      : 'Logo ini muncul di halaman publik. Ikon tab khusus toko tersedia setelah akun Premium aktif.';
+  }
+
   profileAvatar.addEventListener('change', () => {
     if (profileAvatar.files[0]) avatarPreview.src = URL.createObjectURL(profileAvatar.files[0]);
   });

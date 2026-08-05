@@ -181,6 +181,66 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 
+
+/**
+ * Terapkan logo toko sebagai favicon untuk seller Premium aktif.
+ * Akun Free, Premium kedaluwarsa, atau akun tanpa logo tetap memakai ikon NiagaBio.
+ */
+function nbApplyPremiumStoreIcon(profile, premiumOverride) {
+  const defaultIcon = '/assets/img/favicon-32x32.png?v=4';
+  const premium = typeof premiumOverride === 'boolean'
+    ? premiumOverride
+    : Boolean(window.NB?.isPremium?.(profile));
+  const rawAvatar = String(profile?.avatar_url || '').trim();
+  const normalizedAvatar = rawAvatar && window.NB?.normalizeImageUrl
+    ? NB.normalizeImageUrl(rawAvatar, '')
+    : rawAvatar;
+
+  let normalizedPath = rawAvatar
+    .replace(/^https?:\/\/[^/]+/i, '')
+    .replace(/^\.\//, '/')
+    .split('?')[0]
+    .toLowerCase();
+  if (normalizedPath && !normalizedPath.startsWith('/')) normalizedPath = `/${normalizedPath}`;
+  const usesDefaultBrandLogo = [
+    '/assets/img/logo.jpg',
+    '/assets/img/niagabio-logo.svg',
+    '/assets/illustrator/niagabio-logo.jpg',
+    '/assets/illustrator/niagabio-logo.svg',
+    '/favicon.ico'
+  ].includes(normalizedPath);
+
+  const iconUrl = premium && normalizedAvatar && !usesDefaultBrandLogo
+    ? normalizedAvatar
+    : defaultIcon;
+
+  document.querySelectorAll('link[rel~="icon"], link[rel="apple-touch-icon"]').forEach(link => {
+    link.setAttribute('href', iconUrl);
+    link.removeAttribute('type');
+    if (link.getAttribute('rel') !== 'apple-touch-icon') link.removeAttribute('sizes');
+    link.dataset.storeBranding = premium && iconUrl !== defaultIcon ? 'premium' : 'niagabio';
+  });
+
+  // Pastikan browser memiliki satu kandidat favicon terakhir yang tidak membawa
+  // deklarasi MIME/ukuran lama ketika logo seller berupa JPG atau WebP.
+  let dynamicIcon = document.querySelector('link[data-premium-store-icon]');
+  if (!dynamicIcon) {
+    dynamicIcon = document.createElement('link');
+    dynamicIcon.rel = 'icon';
+    dynamicIcon.dataset.premiumStoreIcon = 'true';
+    document.head.appendChild(dynamicIcon);
+  }
+  dynamicIcon.href = iconUrl;
+  dynamicIcon.dataset.storeBranding = premium && iconUrl !== defaultIcon ? 'premium' : 'niagabio';
+
+  return {
+    applied: premium && iconUrl !== defaultIcon,
+    iconUrl
+  };
+}
+
+window.nbApplyPremiumStoreIcon = nbApplyPremiumStoreIcon;
+
 function nbEscape(value) {
   if (window.NB?.escapeHtml) return NB.escapeHtml(value);
   return String(value ?? '').replace(/[&<>"]/g, char => ({

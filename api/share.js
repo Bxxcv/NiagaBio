@@ -103,6 +103,50 @@ function truncate(value, max = 220) {
   return `${text.slice(0, max - 1).trim()}…`;
 }
 
+
+function isPremiumProfile(profile) {
+  if (!profile) return false;
+
+  const status = String(profile.status || 'active').toLowerCase();
+  if (status === 'blocked' || status === 'deleted') return false;
+
+  const role = String(profile.role || '').toLowerCase();
+  const plan = String(profile.plan || '').toLowerCase();
+  if (role !== 'admin' && plan !== 'premium') return false;
+
+  const endDate = profile.plan_end_date;
+  if (!endDate || endDate === 'null' || endDate === 'undefined') return true;
+
+  const timestamp = new Date(endDate).getTime();
+  if (Number.isNaN(timestamp)) return true;
+  return timestamp > Date.now();
+}
+
+function premiumStoreIcon(profile, origin) {
+  if (!isPremiumProfile(profile)) return absoluteUrl(DEFAULT_ICON, origin, DEFAULT_ICON);
+
+  const rawAvatar = String(profile.avatar_url || '').trim();
+  let normalizedPath = rawAvatar
+    .replace(/^https?:\/\/[^/]+/i, '')
+    .replace(/^\.\//, '/')
+    .split('?')[0]
+    .toLowerCase();
+  if (normalizedPath && !normalizedPath.startsWith('/')) normalizedPath = `/${normalizedPath}`;
+  const brandFallbacks = new Set([
+    '/assets/img/logo.jpg',
+    '/assets/img/niagabio-logo.svg',
+    '/assets/illustrator/niagabio-logo.jpg',
+    '/assets/illustrator/niagabio-logo.svg',
+    '/favicon.ico'
+  ]);
+
+  if (!rawAvatar || brandFallbacks.has(normalizedPath)) {
+    return absoluteUrl(DEFAULT_ICON, origin, DEFAULT_ICON);
+  }
+
+  return absoluteUrl(rawAvatar, origin, DEFAULT_ICON);
+}
+
 async function supabaseFetch(path, options = {}) {
   const response = await fetch(`${SUPABASE_URL}${path}`, {
     ...options,
@@ -139,7 +183,7 @@ async function getPublicProfile(username) {
 
   try {
     const query = new URLSearchParams({
-      select: 'user_id,username,display_name,bio,avatar_url,whatsapp_number,theme_name,plan,status,plan_end_date',
+      select: 'user_id,username,display_name,bio,avatar_url,whatsapp_number,theme_name,plan,role,status,plan_end_date',
       username: `eq.${cleanUsername}`,
       status: 'eq.active',
       limit: '1'
@@ -170,13 +214,13 @@ async function getPublicProduct(userId, productId) {
   }
 }
 
-function renderShareHtml({ title, description, image, url, redirectUrl, origin }) {
+function renderShareHtml({ title, description, image, icon, url, redirectUrl, origin }) {
   const safeTitle = escapeHtml(title);
   const safeDescription = escapeHtml(description);
   const safeImage = escapeHtml(image);
   const safeUrl = escapeHtml(url);
   const safeRedirectUrl = escapeHtml(redirectUrl || url);
-  const safeIcon = escapeHtml(absoluteUrl(DEFAULT_ICON, origin, DEFAULT_ICON));
+  const safeIcon = escapeHtml(absoluteUrl(icon || DEFAULT_ICON, origin, DEFAULT_ICON));
 
   return `<!doctype html>
 <html lang="id">
@@ -185,8 +229,9 @@ function renderShareHtml({ title, description, image, url, redirectUrl, origin }
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>${safeTitle}</title>
   <meta name="description" content="${safeDescription}">
-  <link rel="icon" href="${safeIcon}" sizes="32x32" type="image/png">
-  <link rel="shortcut icon" href="${safeIcon}" type="image/png">
+  <link rel="icon" href="${safeIcon}">
+  <link rel="shortcut icon" href="${safeIcon}">
+  <link rel="apple-touch-icon" href="${safeIcon}">
   <meta property="og:site_name" content="${BRAND}">
   <meta property="og:type" content="website">
   <meta property="og:title" content="${safeTitle}">
@@ -259,6 +304,7 @@ module.exports = async function handler(req, res) {
   const storeName = profile.display_name || profile.username || 'Toko';
   const storeUrl = `${origin}/u?username=${encodeURIComponent(profile.username || username)}`;
   const storeImage = absoluteUrl(profile.avatar_url || DEFAULT_IMAGE, origin);
+  const storeIcon = premiumStoreIcon(profile, origin);
   let title = `${storeName} - ${BRAND}`;
   let description = truncate(profile.bio || 'Lihat katalog produk, link penting, dan checkout toko ini di NiagaBio.');
   let image = storeImage;
@@ -280,6 +326,7 @@ module.exports = async function handler(req, res) {
     title,
     description,
     image,
+    icon: storeIcon,
     url: canonicalUrl,
     redirectUrl,
     origin
