@@ -12,7 +12,7 @@ create extension if not exists pg_net;
 
 -- Simpan secret di Vault. Jalankan blok ini sekali.
 select vault.create_secret(
-  'fe23c52806ef419268f30531077d0a54714f0626d6dcf8a09fa02da85fb6eb4f',
+  '316d9f2c4b13ba8f2fd25e3d433dde23314ad2c9d01e4fff53a5504d2607ef8c',
   'niagabio_push_webhook_secret',
   'Secret untuk autentikasi webhook push NiagaBio ke Vercel /api/send-push'
 );
