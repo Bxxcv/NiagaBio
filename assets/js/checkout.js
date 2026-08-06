@@ -59,6 +59,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     const premium = NB.isPremium(profile);
+    if (typeof window.nbApplyPremiumStoreIcon === 'function') {
+      window.nbApplyPremiumStoreIcon(profile, premium);
+    }
     const products = (await NB.list('products', profile.user_id)).filter(item => item.is_active !== false);
     const product = products.find(item => String(item.id) === String(productId)) || products[0];
     const checkout = (await NB.list('checkout_settings', profile.user_id))[0] || {};

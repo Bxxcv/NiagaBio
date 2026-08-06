@@ -69,3 +69,14 @@ Pastikan tidak ada red flag besar seperti:
 - `niagabio-private`: private bucket untuk bukti pembayaran checkout dan bukti upgrade premium.
 
 Bukti bayar baru harus masuk `niagabio-private` dan dibuka lewat signed URL.
+
+
+## Push notification final
+
+Untuk instalasi push notification production versi final, jalankan hanya:
+
+```txt
+22_push_notifications_final.sql
+```
+
+Patch final ini menggantikan bridge lama SQL 21 dan tidak memakai `PUSH_WEBHOOK_SECRET` atau Supabase Vault. Jika SQL 20/21 pernah dijalankan sebelumnya, SQL 22 akan memperbaiki trigger lama secara idempotent.

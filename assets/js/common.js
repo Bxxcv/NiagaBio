@@ -6,10 +6,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   const sidebar = document.querySelector('.sidebar');
   let sidebarOverlay = null;
   if (sidebar) {
-    sidebarOverlay = document.createElement('button');
-    sidebarOverlay.type = 'button';
+    // Overlay hanya sebagai elemen visual/interaksi luar sidebar.
+    // Overlay hanya untuk menutup sidebar saat area luar disentuh.
+    sidebarOverlay = document.createElement('div');
     sidebarOverlay.className = 'sidebar-overlay';
-    sidebarOverlay.setAttribute('aria-label', 'Tutup menu');
+    sidebarOverlay.setAttribute('aria-hidden', 'true');
     document.body.appendChild(sidebarOverlay);
   }
   

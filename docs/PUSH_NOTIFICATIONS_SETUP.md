@@ -1,38 +1,55 @@
-# NiagaBio — Realtime + Push Notifications
+# NiagaBio — Realtime + Push Notifications (FINAL)
 
-> Updated: 2026-08-06 — badge realtime + foreground system popup + SQL 21 webhook bridge.
+Updated: 2026-08-06
+
+## Arsitektur
 
 ```text
-orders INSERT
+Buyer membuat order
+  -> public.create_public_order()
+  -> orders INSERT
   -> notify_order_insert()
   -> notifications INSERT
-      ├─ Supabase Realtime
-      │    -> notification-runtime.js (unread badge)
-      │    -> push-notifications.js (toast + NiaPulse + system popup)
-      │
-      └─ SQL 21 trigger / pg_net
-           -> /api/send-push
-           -> FCM HTTP v1
-           -> firebase-messaging-sw.js
-           -> Android/browser system notification
+       |
+       +--> Supabase Realtime
+       |     -> badge unread realtime
+       |     -> toast
+       |     -> NiaPulse
+       |     -> system notification saat dashboard aktif
+       |
+       +--> pg_net trigger
+             -> POST /api/send-push { notification_id }
+             -> Vercel membaca notification + push_subscriptions
+             -> FCM HTTP v1
+             -> firebase-messaging-sw.js
+             -> system notification saat background
 ```
 
-`common.js` tidak diperlukan untuk menjalankan push notification. Sistem badge memakai `assets/js/notification-runtime.js` sehingga tidak mengubah customisasi `common.js` pengguna.
+## Penting
+
+Versi final **tidak lagi memakai `PUSH_WEBHOOK_SECRET` atau Supabase Vault** untuk bridge webhook.
+
+Webhook hanya mengirim `notification_id`. Endpoint Vercel kemudian mengambil record notifikasi secara server-side menggunakan `SUPABASE_SERVICE_ROLE_KEY`, melakukan idempotency melalui `push_delivery_log`, lalu mengirim FCM ke token perangkat seller.
+
+Ini membuat setup lebih sederhana dan menghindari error yang sebelumnya terjadi karena secret Vercel dan secret Vault tidak sinkron.
 
 ## File penting
 
 - `assets/js/notification-runtime.js` — badge unread realtime di sidebar + topbar.
-- `assets/js/push-notifications.js` — Supabase Realtime, foreground system popup, NiaPulse, FCM token.
+- `assets/js/push-notifications.js` — Supabase Realtime, foreground system popup, NiaPulse, registrasi FCM token.
 - `firebase-messaging-sw.js` — background push + click routing.
 - `assets/js/firebase-config.js` — Firebase Web App config + VAPID public key.
-- `api/send-push.js` — server-side FCM HTTP v1 sender.
-- `supabase/20_push_notifications.sql` — tabel token + RPC + Realtime publication.
-- `supabase/21_push_webhook.sql` — trigger database -> Vercel `/api/send-push`.
+- `api/send-push.js` — server-side FCM HTTP v1 sender + idempotency.
+- `supabase/22_push_notifications_final.sql` — patch final untuk notification trigger, Realtime, push token, delivery log, dan pg_net bridge.
 - `assets/audio/niapulse-order.mp3` — sound order baru untuk foreground.
 
-## Vercel Environment Variables
+`common.js` tidak diperlukan untuk menjalankan push. Custom `common.js` Anda tetap dipertahankan dan overlay mobile bukan button `Tutup menu`.
 
-Set di **Production**:
+## SETUP SINGKAT
+
+### 1. Vercel Environment Variables
+
+Pastikan **Production** memiliki:
 
 ```text
 SUPABASE_URL
@@ -40,47 +57,81 @@ SUPABASE_SERVICE_ROLE_KEY
 FCM_PROJECT_ID
 FCM_CLIENT_EMAIL
 FCM_PRIVATE_KEY
-PUSH_WEBHOOK_SECRET
 ```
 
-`SUPABASE_SERVICE_ROLE_KEY` dan `FCM_PRIVATE_KEY` hanya boleh ada di Vercel server environment. Jangan masukkan ke frontend, GitHub, SQL public file, atau Firebase Web App config.
+Tidak perlu menambahkan `PUSH_WEBHOOK_SECRET` untuk sistem final ini. Jika variable lama masih ada, boleh dibiarkan atau dihapus; kode final tidak menggunakannya.
 
-## Firebase Web App
+`SUPABASE_SERVICE_ROLE_KEY` dan `FCM_PRIVATE_KEY` hanya untuk server Vercel. Jangan taruh di frontend atau `firebase-config.js`.
 
-Isi `assets/js/firebase-config.js` dengan **Web App config publik** dan **Web Push VAPID public key**. Jangan masukkan service-account private key di file ini.
+### 2. Firebase
 
-## Supabase
+File `assets/js/firebase-config.js` harus berisi konfigurasi **Firebase Web App public** dan **Web Push VAPID public key**.
 
-1. Jalankan `supabase/20_push_notifications.sql`.
-2. Pastikan hasil query menunjukkan:
-   - `push_subscriptions_exists = true`
-   - `register_rpc_exists = true`
-   - `notifications_in_realtime = true`
-3. Buka `supabase/21_push_webhook.sql`.
-4. Ganti hanya:
-   ```sql
-   PUSH_WEBHOOK_SECRET_DI_SINI
-   ```
-   dengan nilai yang sama persis dengan Vercel `PUSH_WEBHOOK_SECRET`. SQL 21 menyimpan secret tersebut di Supabase Vault dan hanya membaca nilai terdekripsi ketika trigger berjalan.
-5. Jalankan SQL 21 satu kali. Jika secret sudah pernah dibuat di Vault, jangan buat secret kedua dengan nama berbeda; gunakan nama `niagabio_push_webhook_secret`.
-6. Hasil query terakhir seharusnya menunjukkan:
-   - `notifications_exists = true`
-   - `push_subscriptions_exists = true`
-   - `webhook_trigger_exists = true`
-   - `vault_secret_exists = true`
+Tidak boleh berisi:
 
-## Dashboard Seller
+- service account private key;
+- `FCM_PRIVATE_KEY`;
+- `SUPABASE_SERVICE_ROLE_KEY`.
 
-1. Login ke dashboard.
-2. Tekan **Aktifkan notifikasi**.
-3. Izinkan notifikasi browser/Android.
-4. Tekan **Tes suara** untuk memastikan NiaPulse dapat diputar.
-5. Pastikan status berubah menjadi **Notifikasi perangkat aktif**.
+### 3. Supabase — jalankan SATU SQL saja
 
-Setelah izin aktif:
+Buka Supabase SQL Editor dan jalankan:
 
-- Saat dashboard terbuka: Realtime -> toast -> badge -> NiaPulse -> system notification.
-- Saat dashboard ditutup/background: SQL trigger -> Vercel -> FCM -> service worker -> system notification.
+```text
+supabase/22_push_notifications_final.sql
+```
+
+Tidak perlu menjalankan SQL 20 atau SQL 21 untuk setup baru. SQL final ini mengulangi bagian yang dibutuhkan secara idempotent dan juga memperbaiki trigger lama dari SQL 21.
+
+Hasil terakhir yang diharapkan:
+
+```text
+notifications_exists = true
+push_subscriptions_exists = true
+push_delivery_log_exists = true
+order_notification_trigger_exists = true
+push_webhook_trigger_exists = true
+notifications_in_realtime = true
+```
+
+### 4. Deploy ulang Vercel
+
+Setelah SQL final dijalankan dan env Vercel benar:
+
+```text
+GitHub push / Redeploy Production
+```
+
+### 5. Aktifkan di HP seller
+
+Login sebagai seller -> Dashboard -> **Aktifkan notifikasi** -> Izinkan.
+
+Tekan **Tes suara** untuk mengecek NiaPulse.
+
+## Hasil yang diharapkan
+
+### Dashboard seller terbuka
+
+```text
+Order baru
+-> notifications INSERT
+-> Realtime
+-> popup sistem
+-> toast
+-> NiaPulse
+-> badge +1
+```
+
+### Dashboard seller ditutup / background
+
+```text
+Order baru
+-> notifications INSERT
+-> pg_net
+-> /api/send-push
+-> FCM
+-> system notification Android/browser
+```
 
 ## Badge Notifikasi
 
@@ -89,76 +140,90 @@ Setelah izin aktif:
 - menu sidebar `Notifikasi`;
 - ikon lonceng topbar.
 
-Perubahan unread count dipicu langsung oleh event `niagabio:notification`, `niagabio:notification-read`, dan `niagabio:notifications-cleared`, lalu tetap direfresh saat tab kembali aktif.
+Badge diperbarui melalui event:
 
-## Suara
+- `niagabio:notification`
+- `niagabio:notification-read`
+- `niagabio:notifications-cleared`
 
-NiaPulse adalah sound original NiagaBio. Pada foreground, file ini diputar untuk `order_new` jika setting **Suara aktif**.
+Badge juga refresh saat tab kembali aktif dan melalui polling fallback.
 
-Pada background, web push mengikuti kemampuan browser/Android. Suara sistem tidak dapat dipaksa memakai file MP3 custom melalui Web Notification API.
+## Idempotency
 
-## Tes end-to-end
+`push_delivery_log` mencegah satu `notification_id` diproses berkali-kali secara normal.
+
+Status:
+
+```text
+sending
+sent
+failed
+no_device
+```
+
+Token FCM yang sudah tidak valid akan dinonaktifkan ketika FCM mengembalikan error `UNREGISTERED` atau `SENDER_ID_MISMATCH`.
+
+## Tes 2 HP
 
 ### Skenario A — Dashboard terbuka
 
-1. HP A login sebagai seller.
-2. HP A buka Dashboard.
-3. Pastikan menu `Notifikasi` menampilkan badge saat ada unread.
-4. HP B membuat order publik.
-5. Expected:
-   - toast muncul;
-   - NiaPulse diputar;
-   - getar jika didukung;
-   - system notification muncul;
-   - badge unread bertambah +1;
-   - halaman Notifikasi ter-update tanpa reload manual.
+1. HP A login seller.
+2. Tekan Aktifkan notifikasi.
+3. Pastikan permission = Granted.
+4. HP B membuat order baru.
+5. HP A harus menerima popup sistem, toast, sound NiaPulse, dan badge unread +1.
 
-### Skenario B — Dashboard ditutup
+### Skenario B — Dashboard background
 
 1. HP A sudah mengaktifkan push.
-2. Tutup/minimize dashboard.
-3. HP B membuat order.
-4. Expected:
-   - SQL 21 trigger berjalan;
-   - `/api/send-push` menerima request 200;
-   - FCM mengirim push;
-   - service worker menampilkan popup sistem;
-   - tap notification membuka `/orders`.
+2. Minimize/tutup dashboard.
+3. HP B membuat order baru.
+4. HP A harus menerima push notification dari FCM.
 
-## Troubleshooting
+## Troubleshooting cepat
 
 ### Status Firebase belum siap
 
-Periksa `assets/js/firebase-config.js`, lalu redeploy.
-
-### Badge tidak muncul
-
 Periksa:
 
-- `assets/js/notification-runtime.js` termuat di halaman protected;
-- user mempunyai `notifications` unread;
-- RLS memungkinkan user membaca notifikasi miliknya.
+```text
+assets/js/firebase-config.js
+```
 
-### Dashboard terbuka tetapi tidak ada system popup
+Pastikan Web App config + VAPID public key benar, lalu redeploy.
+
+### Tidak ada badge
+
+Pastikan SQL final sudah dijalankan dan seller memang memiliki row unread pada `public.notifications`.
+
+### Tidak ada popup saat dashboard terbuka
 
 Pastikan:
 
-- izin browser = Granted;
-- push sudah diaktifkan setidaknya satu kali;
-- service worker `/firebase-messaging-sw.js` terdaftar;
-- browser mengizinkan system notifications.
+- permission Notification = Granted;
+- dashboard sudah dimuat ulang setelah permission;
+- service worker terdaftar;
+- Realtime `public.notifications` aktif.
 
-### Dashboard tertutup tetapi tidak ada push
+### Tidak ada push saat background
 
 Periksa:
 
-- `PUSH_WEBHOOK_SECRET` Vercel;
-- SQL 21 sudah dijalankan;
-- `webhook_trigger_exists = true`;
-- Vercel Function Logs `/api/send-push`;
-- FCM service account credential;
-- `push_subscriptions.is_active = true`.
+- 5 env Vercel server sudah benar;
+- `push_subscriptions` memiliki token aktif;
+- SQL `22_push_notifications_final.sql` berhasil;
+- `push_webhook_trigger_exists = true`;
+- Vercel Function Logs pada `/api/send-push`;
+- Firebase service account punya izin mengirim FCM.
 
-### Push terkirim ke device lama
+### Tes manual endpoint
 
-Token perangkat dapat berjumlah lebih dari satu per seller. Token invalid akan dinonaktifkan oleh `/api/send-push` jika FCM mengembalikan error `UNREGISTERED`.
+Endpoint menerima:
+
+```json
+{
+  "notification_id": "UUID-NOTIFIKASI"
+}
+```
+
+Gunakan hanya untuk debugging server-side. Endpoint mengambil isi notifikasi sendiri dari Supabase dan tidak menerima `user_id`, `title`, atau `device_token` dari client sebagai sumber kebenaran.

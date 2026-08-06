@@ -431,6 +431,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     const premium = NB.isPremium(profile);
+    // Premium aktif + avatar/logo custom => favicon mengikuti logo toko.
+    // Free / premium expired / avatar default => kembali ke favicon NiagaBio.
+    if (typeof window.nbApplyPremiumStoreIcon === 'function') {
+      window.nbApplyPremiumStoreIcon(profile, premium);
+    }
     const themeName = premium ? safeTheme(profile.theme_name || 'service') : safeTheme(['service', 'minimal'].includes(profile.theme_name) ? profile.theme_name : 'service');
     updateStoreMeta(profile);
 

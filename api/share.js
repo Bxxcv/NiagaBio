@@ -89,6 +89,42 @@ function absoluteUrl(value, origin, fallback = DEFAULT_IMAGE) {
   }
 }
 
+function isActivePremium(profile) {
+  if (String(profile?.status || '').toLowerCase() !== 'active') return false;
+  if (String(profile?.plan || '').toLowerCase() !== 'premium') return false;
+  if (profile?.plan_end_date) {
+    const end = new Date(profile.plan_end_date).getTime();
+    if (Number.isFinite(end) && end <= Date.now()) return false;
+  }
+  return true;
+}
+
+function isDefaultBrandLogo(value = '') {
+  let path = String(value || '').trim()
+    .replace(/^https?:\/\/[^/]+/i, '')
+    .replace(/^\.\//, '/')
+    .split('?')[0]
+    .toLowerCase();
+  if (path && !path.startsWith('/')) path = `/${path}`;
+  return [
+    '/assets/img/logo.jpg',
+    '/assets/img/niagabio-logo.svg',
+    '/assets/illustrator/niagabio-logo.jpg',
+    '/assets/illustrator/niagabio-logo.svg',
+    '/favicon.ico',
+    '/assets/img/favicon-32x32.png',
+    '/assets/img/favicon-16x16.png'
+  ].includes(path);
+}
+
+function storeFavicon(profile, origin) {
+  const avatar = String(profile?.avatar_url || '').trim();
+  if (!isActivePremium(profile) || !avatar || isDefaultBrandLogo(avatar)) {
+    return absoluteUrl(DEFAULT_ICON, origin, DEFAULT_ICON);
+  }
+  return absoluteUrl(avatar, origin, absoluteUrl(DEFAULT_ICON, origin, DEFAULT_ICON));
+}
+
 function money(value) {
   return new Intl.NumberFormat('id-ID', {
     style: 'currency',
@@ -170,13 +206,13 @@ async function getPublicProduct(userId, productId) {
   }
 }
 
-function renderShareHtml({ title, description, image, url, redirectUrl, origin }) {
+function renderShareHtml({ title, description, image, url, redirectUrl, origin, icon }) {
   const safeTitle = escapeHtml(title);
   const safeDescription = escapeHtml(description);
   const safeImage = escapeHtml(image);
   const safeUrl = escapeHtml(url);
   const safeRedirectUrl = escapeHtml(redirectUrl || url);
-  const safeIcon = escapeHtml(absoluteUrl(DEFAULT_ICON, origin, DEFAULT_ICON));
+  const safeIcon = escapeHtml(icon || absoluteUrl(DEFAULT_ICON, origin, DEFAULT_ICON));
 
   return `<!doctype html>
 <html lang="id">
@@ -187,6 +223,7 @@ function renderShareHtml({ title, description, image, url, redirectUrl, origin }
   <meta name="description" content="${safeDescription}">
   <link rel="icon" href="${safeIcon}" sizes="32x32" type="image/png">
   <link rel="shortcut icon" href="${safeIcon}" type="image/png">
+  <link rel="apple-touch-icon" href="${safeIcon}">
   <meta property="og:site_name" content="${BRAND}">
   <meta property="og:type" content="website">
   <meta property="og:title" content="${safeTitle}">
@@ -237,7 +274,8 @@ module.exports = async function handler(req, res) {
       image: absoluteUrl(DEFAULT_IMAGE, origin),
       url: `${origin}/`,
       redirectUrl: `${origin}/`,
-      origin
+      origin,
+      icon: absoluteUrl(DEFAULT_ICON, origin, DEFAULT_ICON)
     }));
     return;
   }
@@ -251,7 +289,8 @@ module.exports = async function handler(req, res) {
       image: absoluteUrl(DEFAULT_IMAGE, origin),
       url: fallbackUrl,
       redirectUrl: fallbackUrl,
-      origin
+      origin,
+      icon: absoluteUrl(DEFAULT_ICON, origin, DEFAULT_ICON)
     }));
     return;
   }
@@ -282,6 +321,7 @@ module.exports = async function handler(req, res) {
     image,
     url: canonicalUrl,
     redirectUrl,
-    origin
+    origin,
+    icon: storeFavicon(profile, origin)
   }));
 };
