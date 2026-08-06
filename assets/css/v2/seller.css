@@ -335,3 +335,52 @@ body.sidebar-open .sidebar-overlay {
   .nb-push-panel .d-flex.flex-wrap.gap-2 > * { width: 100%; }
   .nb-push-panel .d-flex.flex-wrap.gap-2 .nb-btn { justify-content: center; }
 }
+
+/* ----------------------------------------------------------
+   NOTIFICATION BADGES — realtime unread count
+   ---------------------------------------------------------- */
+.notification-side-link,
+.notification-topbar-link {
+  position: relative;
+}
+.notification-badge {
+  margin-left: auto;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #d92d20;
+  color: #fff;
+  font-size: .7rem;
+  font-weight: 800;
+  line-height: 1;
+  border: 2px solid rgba(5, 40, 79, .96);
+}
+.notification-topbar-link {
+  overflow: visible;
+}
+.notification-topbar-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #d92d20;
+  color: #fff;
+  border: 2px solid #fff;
+  font-size: .62rem;
+  font-weight: 800;
+  line-height: 1;
+}
+@media (max-width: 575.98px) {
+  .notification-badge { min-width: 21px; height: 21px; }
+}
+

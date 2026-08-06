@@ -5,6 +5,8 @@
   const SOUND_KEY = 'niagabio_notification_sound_enabled';
   const PUSH_KEY_PREFIX = 'niagabio_push_enabled_';
   const AUDIO_URL = '/assets/audio/niapulse-order.mp3';
+  const CROSS_TAB_EVENT_KEY = 'niagabio_recent_notification_events_v1';
+
   let messaging = null;
   let pushReady = false;
   let realtimeChannel = null;
@@ -12,9 +14,11 @@
   let handledIds = new Set();
   let audio = null;
   let foregroundListenerBound = false;
+  let serviceWorkerRegistration = null;
 
   const config = () => window.NIAGABIO_FIREBASE_CONFIG || {};
   const isPlaceholder = value => !value || /YOUR_|_HERE/i.test(String(value));
+
   const firebaseConfigured = () => {
     const c = config();
     return Boolean(c.apiKey && c.projectId && c.messagingSenderId && c.appId && c.vapidKey)
@@ -50,11 +54,15 @@
         existing.addEventListener('error', reject, { once: true });
         return;
       }
+
       const script = document.createElement('script');
       script.src = src;
       script.async = true;
       script.dataset.niagaPushSrc = src;
-      script.addEventListener('load', () => { script.dataset.loaded = 'true'; resolve(); }, { once: true });
+      script.addEventListener('load', () => {
+        script.dataset.loaded = 'true';
+        resolve();
+      }, { once: true });
       script.addEventListener('error', () => reject(new Error(`Gagal memuat ${src}`)), { once: true });
       document.head.appendChild(script);
     });
@@ -63,12 +71,13 @@
   async function ensureFirebase() {
     if (pushReady && messaging) return true;
     if (!firebaseConfigured()) return false;
-    await loadScript('/assets/js/firebase-config.js');
+
     await loadScript(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK_VERSION}/firebase-app-compat.js`);
     await loadScript(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK_VERSION}/firebase-messaging-compat.js`);
 
     if (!window.firebase) throw new Error('Firebase SDK belum tersedia.');
     if (!firebase.apps.length) firebase.initializeApp(config());
+
     messaging = firebase.messaging();
     pushReady = true;
     return true;
@@ -101,10 +110,32 @@
   }
 
   function rememberNotification(id) {
-    if (!id) return false;
+    if (!id) return true;
     if (handledIds.has(id)) return false;
+
     handledIds.add(id);
-    if (handledIds.size > 60) handledIds = new Set(Array.from(handledIds).slice(-40));
+    if (handledIds.size > 80) {
+      handledIds = new Set(Array.from(handledIds).slice(-50));
+    }
+
+    // Cross-tab dedupe: seller sering membuka dashboard + pesanan bersamaan.
+    // Hanya satu tab yang boleh memainkan toast/sound untuk event yang sama.
+    try {
+      const now = Date.now();
+      const recent = JSON.parse(localStorage.getItem(CROSS_TAB_EVENT_KEY) || '{}');
+      Object.keys(recent).forEach(key => {
+        if (now - Number(recent[key] || 0) > 120000) delete recent[key];
+      });
+      if (recent[id] && now - Number(recent[id]) < 30000) return false;
+      recent[id] = now;
+      const keys = Object.keys(recent);
+      if (keys.length > 80) {
+        keys.sort((a, b) => Number(recent[a]) - Number(recent[b]));
+        keys.slice(0, keys.length - 80).forEach(key => delete recent[key]);
+      }
+      localStorage.setItem(CROSS_TAB_EVENT_KEY, JSON.stringify(recent));
+    } catch (_) {}
+
     return true;
   }
 
@@ -112,6 +143,44 @@
     const link = String(notification?.link_url || 'orders').trim();
     if (/^https?:\/\//i.test(link)) return link;
     return link.startsWith('/') ? link : `/${link}`;
+  }
+
+  async function showSystemNotification(notification) {
+    if (!notification || !('Notification' in window) || Notification.permission !== 'granted') return;
+
+    const title = String(notification.title || 'Notifikasi baru').slice(0, 120);
+    const body = String(notification.message || '').slice(0, 500);
+    const type = String(notification.type || 'info');
+    const id = String(notification.id || `notification_${Date.now()}`);
+    const link = notificationLink(notification);
+    const options = {
+      body,
+      icon: '/assets/img/icon-192.png',
+      badge: '/assets/img/favicon-32x32.png',
+      tag: `niagabio-${id}`,
+      renotify: false,
+      requireInteraction: type === 'order_new',
+      vibrate: type === 'order_new' ? [120, 70, 120] : [100],
+      data: { link }
+    };
+
+    try {
+      if (!serviceWorkerRegistration && 'serviceWorker' in navigator) {
+        serviceWorkerRegistration = await navigator.serviceWorker.getRegistration('/')
+          || await navigator.serviceWorker.ready;
+      }
+
+      if (serviceWorkerRegistration?.showNotification) {
+        await serviceWorkerRegistration.showNotification(title, options);
+        return;
+      }
+
+      if (typeof Notification === 'function') {
+        new Notification(title, options);
+      }
+    } catch (error) {
+      console.warn('[NiagaBio] System notification gagal:', error.message);
+    }
   }
 
   function showForegroundNotification(notification, source = 'realtime') {
@@ -130,17 +199,24 @@
       if (navigator.vibrate) navigator.vibrate([120, 70, 120]);
     }
 
+    // Popup sistem Android/browser ketika halaman sedang aktif.
+    // Untuk background, FCM service worker menangani popup secara native.
+    void showSystemNotification(notification);
+
     try {
       window.dispatchEvent(new CustomEvent('niagabio:notification', {
         detail: { notification, source }
       }));
     } catch (_) {}
 
-    if (window.NB_REFRESH_NOTIFICATIONS) window.NB_REFRESH_NOTIFICATIONS();
+    if (typeof window.NB_REFRESH_NOTIFICATIONS === 'function') {
+      void window.NB_REFRESH_NOTIFICATIONS();
+    }
   }
 
   async function registerRealtime(user) {
     if (!window.NB?.sb || !user?.id) return;
+
     if (realtimeChannel) {
       try { await NB.sb.removeChannel(realtimeChannel); } catch (_) {}
       realtimeChannel = null;
@@ -160,7 +236,9 @@
       .subscribe(status => {
         if (status === 'SUBSCRIBED') {
           const hint = document.getElementById('pushNotificationHint');
-          if (hint && !pushReady) hint.textContent = 'Realtime aktif saat dashboard terbuka. Aktifkan push agar tetap menerima notifikasi saat dashboard ditutup.';
+          if (hint && !pushReady) {
+            hint.textContent = 'Realtime aktif saat dashboard terbuka. Aktifkan push agar tetap menerima notifikasi saat dashboard ditutup.';
+          }
         }
       });
   }
@@ -170,6 +248,7 @@
       setStatus('Browser ini belum mendukung push notification.', 'danger');
       return false;
     }
+
     if (!firebaseConfigured()) {
       setStatus('Firebase belum dikonfigurasi oleh admin.', 'warning');
       return false;
@@ -178,16 +257,26 @@
     let permission = Notification.permission;
     if (permission === 'default') permission = await Notification.requestPermission();
     if (permission !== 'granted') {
-      setStatus(permission === 'denied' ? 'Notifikasi diblokir browser. Izinkan dari pengaturan situs.' : 'Izin notifikasi belum diberikan.', 'warning');
+      setStatus(
+        permission === 'denied'
+          ? 'Notifikasi diblokir browser. Izinkan dari pengaturan situs.'
+          : 'Izin notifikasi belum diberikan.',
+        'warning'
+      );
       return false;
     }
 
-    await ensureFirebase();
-    const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/' });
+    const ready = await ensureFirebase();
+    if (!ready) throw new Error('Konfigurasi Firebase belum siap.');
+
+    serviceWorkerRegistration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/' });
+    await navigator.serviceWorker.ready;
+
     const token = await messaging.getToken({
       vapidKey: config().vapidKey,
-      serviceWorkerRegistration: registration
+      serviceWorkerRegistration
     });
+
     if (!token) throw new Error('Token push tidak berhasil dibuat.');
 
     await NB.registerPushSubscription(token, navigator.platform || 'Browser');
@@ -217,6 +306,7 @@
   function setupUi(user) {
     const panel = getPanel();
     if (!panel) return;
+
     const enableButton = document.getElementById('enablePushNotifications');
     const testSoundButton = document.getElementById('testNotificationSound');
     const toggleSoundButton = document.getElementById('toggleNotificationSound');
@@ -224,14 +314,15 @@
     updateSoundUi();
 
     toggleSoundButton?.addEventListener('click', () => {
-      localStorage.setItem(SOUND_KEY, String(!soundEnabled()));
+      const next = !soundEnabled();
+      localStorage.setItem(SOUND_KEY, String(next));
       updateSoundUi();
-      if (soundEnabled()) playOrderSound();
+      if (next) playOrderSound();
     });
 
     testSoundButton?.addEventListener('click', () => {
       playOrderSound();
-      nbToast('Suara pesanan NiagaBio diputar.', 'success');
+      if (typeof window.nbToast === 'function') nbToast('Suara pesanan NiagaBio diputar.', 'success');
     });
 
     enableButton?.addEventListener('click', async () => {
@@ -247,17 +338,23 @@
       }
     });
 
-    if ('Notification' in window && Notification.permission === 'granted' && localStorage.getItem(`${PUSH_KEY_PREFIX}${user.id}`) === 'true') {
-      setStatus('Notifikasi browser sudah diizinkan. Tekan aktifkan kembali jika token perangkat perlu diperbarui.', 'success');
+    if (
+      'Notification' in window &&
+      Notification.permission === 'granted' &&
+      localStorage.getItem(`${PUSH_KEY_PREFIX}${user.id}`) === 'true'
+    ) {
+      setStatus('Notifikasi browser sudah diizinkan. Token perangkat akan diperbarui otomatis saat tersedia.', 'success');
       setButton('Notifikasi aktif', true);
     }
   }
 
   async function init() {
     if (!window.NB?.currentUser) return;
+
     const user = await NB.currentUser();
     if (!user) return;
 
+    currentUserId = user.id;
     setupUi(user);
     await registerRealtime(user);
 
@@ -281,12 +378,13 @@
     enable: async () => {
       const user = await NB.currentUser();
       return user ? registerPush(user) : false;
-    }
+    },
+    getCurrentUserId: () => currentUserId
   };
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init, { once: true });
+    document.addEventListener('DOMContentLoaded', () => { void init(); }, { once: true });
   } else {
-    init();
+    void init();
   }
 })();

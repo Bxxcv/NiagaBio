@@ -87,6 +87,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const link = card.dataset.notificationLink || 'notifications';
         try {
           await NB.markNotificationRead(id);
+          window.dispatchEvent(new CustomEvent('niagabio:notification-read', { detail: { id } }));
         } catch (error) {
           console.warn('[NiagaBio] Gagal menandai notifikasi:', error.message);
         }
@@ -99,11 +100,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   markAllBtn?.addEventListener('click', async () => {
     try {
       await NB.markAllNotificationsRead();
+      window.dispatchEvent(new CustomEvent('niagabio:notifications-cleared'));
       nbToast('Semua notifikasi ditandai sudah dibaca.');
       await loadNotifications();
     } catch (error) {
       nbToast(error.message || 'Gagal menandai notifikasi.', 'danger');
     }
+  });
+
+  window.addEventListener('niagabio:notification', () => {
+    void loadNotifications();
   });
 
   refreshBtn?.addEventListener('click', loadNotifications);

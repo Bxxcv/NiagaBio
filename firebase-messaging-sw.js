@@ -31,7 +31,7 @@ if (configured) {
       icon: '/assets/img/icon-192.png',
       badge: '/assets/img/favicon-32x32.png',
       tag,
-      renotify: true,
+      renotify: false,
       requireInteraction: data.type === 'order_new',
       vibrate: [120, 70, 120],
       data: { link }

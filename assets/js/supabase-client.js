@@ -1408,18 +1408,20 @@
   }
 
   async function listNotifications(limit = 50) {
+    const user = await currentUser();
+    if (!user) return [];
+
     if (sb) {
       const { data, error } = await sb
         .from('notifications')
         .select('*')
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(Number(limit || 50));
       if (error) throw error;
       return data || [];
     }
 
-    const user = await currentUser();
-    if (!user) return [];
     return read(LS.notifications, [])
       .filter(item => item.user_id === user.id)
       .sort((a, b) => String(b.created_at || '').localeCompare(a.created_at || ''))
@@ -1427,51 +1429,58 @@
   }
 
   async function unreadNotificationsCount() {
+    const user = await currentUser();
+    if (!user) return 0;
+
     if (sb) {
       const { count, error } = await sb
         .from('notifications')
         .select('id', { count: 'exact', head: true })
+        .eq('user_id', user.id)
         .eq('is_read', false);
       if (error) throw error;
       return count || 0;
     }
 
-    const user = await currentUser();
-    if (!user) return 0;
     return read(LS.notifications, []).filter(item => item.user_id === user.id && !item.is_read).length;
   }
 
   async function markNotificationRead(id) {
     if (!id) return false;
+    const user = await currentUser();
+    if (!user) return false;
 
     if (sb) {
       const { error } = await sb
         .from('notifications')
         .update({ is_read: true, read_at: now() })
-        .eq('id', id);
+        .eq('id', id)
+        .eq('user_id', user.id);
       if (error) throw error;
       return true;
     }
 
     const rows = read(LS.notifications, []);
-    const index = rows.findIndex(item => String(item.id) === String(id));
+    const index = rows.findIndex(item => String(item.id) === String(id) && item.user_id === user.id);
     if (index >= 0) rows[index] = { ...rows[index], is_read: true, read_at: now() };
     write(LS.notifications, rows);
     return true;
   }
 
   async function markAllNotificationsRead() {
+    const user = await currentUser();
+    if (!user) return false;
+
     if (sb) {
       const { error } = await sb
         .from('notifications')
         .update({ is_read: true, read_at: now() })
+        .eq('user_id', user.id)
         .eq('is_read', false);
       if (error) throw error;
       return true;
     }
 
-    const user = await currentUser();
-    if (!user) return false;
     const rows = read(LS.notifications, []).map(item => item.user_id === user.id ? { ...item, is_read: true, read_at: now() } : item);
     write(LS.notifications, rows);
     return true;

@@ -161,7 +161,7 @@
               <div class="nb-push-icon" aria-hidden="true"><i class="bi bi-bell"></i></div>
               <div>
                 <h2 class="nb-h3 mb-1" id="pushNotificationTitle">Notifikasi pesanan</h2>
-                <p class="nb-text-sm nb-text-muted mb-1" id="pushNotificationHint">Aktifkan notifikasi agar pesanan baru bisa masuk ke HP meskipun dashboard sedang tidak dibuka.</p>
+                <p class="nb-text-sm nb-text-muted mb-1" id="pushNotificationHint">Realtime aktif saat dashboard terbuka. Aktifkan push agar HP tetap menerima pop-up sistem saat dashboard ditutup.</p>
                 <div class="nb-text-xs nb-text-muted">Status: <strong id="pushNotificationStatus" data-tone="muted">Belum diaktifkan</strong></div>
               </div>
             </div>
@@ -363,9 +363,12 @@
   <script defer src="assets/js/config.js"></script>
   <script defer src="assets/js/supabase-client.js"></script>
   <script defer src="assets/js/common.js"></script>
-  <script defer src="assets/js/dashboard.js"></script>
+  <script defer src="assets/js/firebase-config.js"></script>
+
+  
+  <script defer src="assets/js/notification-runtime.js"></script>
   <script defer src="assets/js/push-notifications.js"></script>
-  <script defer src="assets/js/firebase-config.js">
-  </script>
+
+  <script defer src="assets/js/dashboard.js"></script>
 </body>
 </html>
