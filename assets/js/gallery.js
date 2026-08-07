@@ -9,13 +9,25 @@ document.addEventListener('DOMContentLoaded', async () => {
   const limit = NB.getLimits(premium ? 'premium' : 'free').gallery;
 
   if (!premium) {
-    galleryGate.classList.remove('d-none');
-    galleryContent.classList.add('d-none');
+    const galleryGate = document.getElementById('galleryGate');
+    const galleryContent = document.getElementById('galleryContent');
+    if (galleryGate) galleryGate.classList.remove('d-none');
+    if (galleryContent) galleryContent.classList.add('d-none');
     return;
   }
 
   async function render() {
     const rows = await NB.list('gallery', user.id);
+    const galleryGrid = document.getElementById('galleryGrid');
+    const galleryForm = document.getElementById('galleryForm');
+    const galleryImage = document.getElementById('galleryImage');
+    const galleryCaption = document.getElementById('galleryCaption');
+
+    if (!galleryGrid || !galleryForm || !galleryImage || !galleryCaption) {
+      console.error('Gallery elements not found');
+      return;
+    }
+
     galleryGrid.innerHTML = rows.map(item => `
       <div class="col-6 col-md-4 col-xl-3">
         <div class="product-card gallery-manage-card">
@@ -28,7 +40,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       </div>
     `).join('') || `<div class="col-12"><div class="empty-state empty-action"><i class="bi bi-images"></i><b>Belum ada gallery</b><span>Upload foto produk, testimoni, atau portfolio supaya toko terlihat lebih meyakinkan.</span></div></div>`;
 
-    document.querySelectorAll('[data-del]').forEach(button => {
+    galleryGrid.querySelectorAll('[data-del]').forEach(button => {
       button.addEventListener('click', async () => {
         if (!confirm('Hapus foto?')) return;
         try {
@@ -56,8 +68,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
-    const button = galleryForm.querySelector('button[type="submit"]');
-    button.disabled = true;
+    const submitButton = galleryForm.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
 
     try {
       const imageUrl = await NB.uploadFile(galleryImage.files[0], 'gallery');
@@ -76,7 +88,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (error) {
       nbToast(error.message || 'Gagal upload gallery.', 'danger');
     } finally {
-      button.disabled = false;
+      submitButton.disabled = false;
     }
   });
 
