@@ -209,6 +209,10 @@
       }));
     } catch (_) {}
 
+    if (typeof window.NB_NOTIFY_CROSS_TAB === 'function') {
+      window.NB_NOTIFY_CROSS_TAB('notification', { detail: { notification, source } });
+    }
+
     if (typeof window.NB_REFRESH_NOTIFICATIONS === 'function') {
       void window.NB_REFRESH_NOTIFICATIONS();
     }
