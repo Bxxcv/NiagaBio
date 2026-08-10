@@ -30,7 +30,7 @@ select
   'active',
   '2099-12-31T00:00:00Z'::timestamptz,
   '',
-  'assets/img/logo.jpg',
+  'assets/img/niagabio-logo.svg',
   '',
   'service'
 from auth.users u

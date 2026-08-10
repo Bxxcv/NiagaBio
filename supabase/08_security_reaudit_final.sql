@@ -231,7 +231,7 @@ begin
   end if;
 
   if not public.is_safe_public_image_url(coalesce(new.avatar_url, ''), 'avatars', new.user_id)
-     and coalesce(new.avatar_url, '') not in ('', 'assets/img/logo.jpg', '/assets/img/logo.jpg') then
+     and coalesce(new.avatar_url, '') not in ('', 'assets/img/niagabio-logo.svg', '/assets/img/niagabio-logo.svg') then
     raise exception 'Avatar URL tidak aman' using errcode = '23514';
   end if;
 

@@ -304,7 +304,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const avatarUrl = profile.avatar_url;
       const initials = safe((profile.display_name || profile.email || profile.username || 'U').slice(0, 1)).toUpperCase();
       const avatarHtml = avatarUrl
-        ? `<img src="${NB.safeImageUrl(avatarUrl, 'assets/img/logo.jpg')}" alt="" class="admin-user-avatar">`
+        ? `<img src="${NB.safeImageUrl(avatarUrl, 'assets/img/niagabio-logo.svg')}" alt="" class="admin-user-avatar">`
         : `<div class="admin-user-initials">${initials}</div>`;
 
       return `
@@ -930,7 +930,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const detailAvatarUrl = profile.avatar_url;
     const detailInitials = safe((profile.display_name || profile.email || profile.username || 'U').slice(0, 1)).toUpperCase();
     const detailAvatarHtml = detailAvatarUrl
-      ? `<img src="${NB.safeImageUrl(detailAvatarUrl, 'assets/img/logo.jpg')}" alt="" class="admin-detail-avatar mb-3">`
+      ? `<img src="${NB.safeImageUrl(detailAvatarUrl, 'assets/img/niagabio-logo.svg')}" alt="" class="admin-detail-avatar mb-3">`
       : `<div class="admin-initials--lg mb-3">${detailInitials}</div>`;
 
     if (refs.userModalBody) {

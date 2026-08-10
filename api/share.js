@@ -107,9 +107,9 @@ function isDefaultBrandLogo(value = '') {
     .toLowerCase();
   if (path && !path.startsWith('/')) path = `/${path}`;
   return [
-    '/assets/img/logo.jpg',
     '/assets/img/niagabio-logo.svg',
-    '/assets/illustrator/niagabio-logo.jpg',
+    '/assets/img/niagabio-logo.svg',
+    '/assets/illustrator/niagabio-niagabio-logo.svg',
     '/assets/illustrator/niagabio-logo.svg',
     '/favicon.ico',
     '/assets/img/favicon-32x32.png',

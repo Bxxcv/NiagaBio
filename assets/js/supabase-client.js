@@ -533,7 +533,7 @@
         username: 'admin',
         display_name: 'Admin NiagaBio',
         bio: 'Admin utama platform.',
-        avatar_url: 'assets/img/logo.jpg',
+        avatar_url: 'assets/img/niagabio-logo.svg',
         whatsapp_number: defaultSettings.admin_whatsapp,
         plan: 'premium',
         role: 'admin',
@@ -550,7 +550,7 @@
         username: 'demo',
         display_name: 'Niaga Store',
         bio: 'Katalog produk pilihan dengan checkout QRIS manual.',
-        avatar_url: 'assets/img/logo.jpg',
+        avatar_url: 'assets/img/niagabio-logo.svg',
         whatsapp_number: defaultSettings.admin_whatsapp,
         plan: 'premium',
         role: 'user',
@@ -584,15 +584,15 @@
     ]);
 
     write(LS.checkout, [
-      { id: 'chk_1', user_id: sellerId, checkout_mode: 'qris_manual', whatsapp_number: '6281234567890', qris_enabled: true, qris_image_url: 'assets/img/logo.jpg', qris_name: 'NIAGA STORE', payment_note: 'Transfer sesuai nominal lalu upload bukti pembayaran.', created_at: now() }
+      { id: 'chk_1', user_id: sellerId, checkout_mode: 'qris_manual', whatsapp_number: '6281234567890', qris_enabled: true, qris_image_url: 'assets/img/niagabio-logo.svg', qris_name: 'NIAGA STORE', payment_note: 'Transfer sesuai nominal lalu upload bukti pembayaran.', created_at: now() }
     ]);
 
     write(LS.premiumRequests, []);
     write(LS.notifications, []);
 
     write(LS.orders, [
-      { id: 'ord_1', seller_id: sellerId, buyer_name: 'Rizky', buyer_phone: '628111111111', product_id: 'prd_1', product_name: 'Hoodie Basic', quantity: 1, total_price: 120000, payment_method: 'qris_manual', payment_status: 'paid', proof_image_url: 'assets/img/logo.jpg', created_at: now(), paid_at: now() },
-      { id: 'ord_2', seller_id: sellerId, buyer_name: 'Dina', buyer_phone: '628222222222', product_id: 'prd_2', product_name: 'Kaos Oversize', quantity: 2, total_price: 170000, payment_method: 'qris_manual', payment_status: 'pending', proof_image_url: 'assets/img/logo.jpg', created_at: now(), paid_at: null }
+      { id: 'ord_1', seller_id: sellerId, buyer_name: 'Rizky', buyer_phone: '628111111111', product_id: 'prd_1', product_name: 'Hoodie Basic', quantity: 1, total_price: 120000, payment_method: 'qris_manual', payment_status: 'paid', proof_image_url: 'assets/img/niagabio-logo.svg', created_at: now(), paid_at: now() },
+      { id: 'ord_2', seller_id: sellerId, buyer_name: 'Dina', buyer_phone: '628222222222', product_id: 'prd_2', product_name: 'Kaos Oversize', quantity: 2, total_price: 170000, payment_method: 'qris_manual', payment_status: 'pending', proof_image_url: 'assets/img/niagabio-logo.svg', created_at: now(), paid_at: null }
     ]);
 
     localStorage.setItem('nb_seeded_v1', '1');
@@ -723,7 +723,7 @@
               username: makeSafeUsername(displayName || cleanEmail.split('@')[0], attempt > 0),
               display_name: displayName,
               bio: '',
-              avatar_url: 'assets/img/logo.jpg',
+              avatar_url: 'assets/img/niagabio-logo.svg',
               whatsapp_number: '',
               theme_name: 'service'
             });
@@ -761,7 +761,7 @@
       username: uniqueUsername(displayName || cleanEmail.split('@')[0]),
       display_name: displayName || 'User NiagaBio',
       bio: '',
-      avatar_url: 'assets/img/logo.jpg',
+      avatar_url: 'assets/img/niagabio-logo.svg',
       whatsapp_number: '',
       plan: 'free',
       role: localFallbackAllowed && cleanEmail === String(cfg.ADMIN_EMAIL || 'admin@niagabio.local').toLowerCase() ? 'admin' : 'user',

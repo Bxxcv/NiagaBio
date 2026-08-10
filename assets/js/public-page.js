@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     username: 'demo',
     display_name: 'Niaga Store',
     bio: 'Contoh halaman toko NiagaBio untuk katalog produk dan order WhatsApp.',
-    avatar_url: 'assets/img/logo.jpg',
+    avatar_url: 'assets/img/niagabio-logo.svg',
     whatsapp_number: '6281234567890',
     plan: 'premium',
     status: 'active',
@@ -318,7 +318,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       <section class="public-shell public-theme-${themeName}" data-theme="${themeName}">
         <div class="public-card public-card-${themeName}">
           <header class="public-hero">
-            <img class="public-avatar" src="${NB.safeImageUrl(profile.avatar_url || 'assets/img/logo.jpg', 'assets/img/logo.jpg')}" alt="${NB.escapeHtml(displayName)}">
+            <img class="public-avatar" src="${NB.safeImageUrl(profile.avatar_url || 'assets/img/niagabio-logo.svg', 'assets/img/niagabio-logo.svg')}" alt="${NB.escapeHtml(displayName)}">
 
             <div class="public-identity">
               <p class="public-kicker">@${NB.escapeHtml(profile.username || 'toko')} · ${NB.escapeHtml(template.kicker)}</p>

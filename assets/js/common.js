@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           username: NB.slugify(user.email.split('@')[0]) || `user-${Date.now()}`,
           display_name: user.email.split('@')[0],
           bio: '',
-          avatar_url: 'assets/img/logo.jpg',
+          avatar_url: 'assets/img/niagabio-logo.svg',
           whatsapp_number: '',
           theme_name: 'service'
         });
@@ -209,9 +209,9 @@ function nbApplyPremiumStoreIcon(profile, premiumOverride) {
     .toLowerCase();
   if (normalizedPath && !normalizedPath.startsWith('/')) normalizedPath = `/${normalizedPath}`;
   const usesDefaultBrandLogo = [
-    '/assets/img/logo.jpg',
     '/assets/img/niagabio-logo.svg',
-    '/assets/illustrator/niagabio-logo.jpg',
+    '/assets/img/niagabio-logo.svg',
+    '/assets/illustrator/niagabio-niagabio-logo.svg',
     '/assets/illustrator/niagabio-logo.svg',
     '/favicon.ico'
   ].includes(normalizedPath);

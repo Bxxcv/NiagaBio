@@ -89,7 +89,7 @@ File logic utama:
 
 #### `assets/img/`
 Semua gambar:
-- `logo.jpg` → logo utama
+- `niagabio-logo.svg` → logo utama
 - `og-niagabio.jpg` → preview sosial media
 - `favicon-*` / `icon-*` → favicon dan PWA icons
 - `placeholder-product.svg` → placeholder gambar produk
