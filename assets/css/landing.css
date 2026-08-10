@@ -98,7 +98,7 @@ p{color:var(--muted)}
 .hero-cta.center{justify-content:center}
 .check-inline{display:flex;flex-wrap:wrap;gap:10px 24px;margin-top:28px;font-size:.9rem;color:var(--muted)}
 .check-inline li{color:var(--muted)}
-.check-inline i,.check-grid i{color:#fff;margin-right:4px}
+.check-inline i,.check-grid i{margin-right:4px}
 .check-inline.light li{color:rgba(255,255,255,.9)}
 .hero-art img{width:100%;max-width:560px;margin:0 auto;filter:drop-shadow(0 30px 40px rgba(16,185,129,.2))}
 .wave-bottom{position:absolute;bottom:-1px;left:0;width:100%;height:80px}
@@ -182,6 +182,7 @@ p{color:var(--muted)}
 .testi blockquote{margin-top:14px;flex:1;color:#1f2937;font-size:.95rem}
 .testi figcaption{margin-top:22px;display:flex;align-items:center;gap:12px}
 .avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;display:grid;place-items:center;font-weight:700;font-size:.85rem}
+.avatar img{border-radius: 50%;}
 .testi small{display:block;color:var(--muted);font-size:.78rem}
 
 /* Comparison */
