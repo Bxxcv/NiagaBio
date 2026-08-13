@@ -71,3 +71,35 @@
 
 /* Badge bridge */
 .badge-soft{display:inline-flex;align-items:center;padding:4px 10px;font-size:.8rem;font-weight:600;color:var(--nb-muted);background:var(--nb-canvas);border:1px solid var(--nb-line);border-radius:999px}
+/* ============================================================
+   MOBILE RESPONSIVE (small phones)
+   Applies to privacy, terms, refund, contacts, 404, maintenance
+   ============================================================ */
+@media (max-width: 479px) {
+  .legal-nav{padding:12px 14px;gap:10px}
+  .legal-brand span{font-size:1rem}
+  .legal-nav .nb-btn-sm{padding:8px 12px;font-size:.8rem;white-space:nowrap}
+  .legal-shell{padding:28px 16px}
+  .legal-shell h1{font-size:1.35rem}
+  .legal-shell h2{font-size:1.05rem}
+  .legal-shell p,.legal-shell ul li,.legal-muted{font-size:.9rem}
+  .legal-muted{margin-bottom:24px}
+  .legal-shell section{margin-bottom:24px}
+
+  .contacts-container{padding:28px 16px}
+  .contacts-header{margin-bottom:28px}
+  .contacts-header h1{font-size:1.5rem}
+  .contacts-header p{font-size:.95rem}
+  .contacts-grid{gap:14px}
+  .contact-card{padding:20px}
+  .contact-card h3{font-size:1rem}
+
+  .maintenance-hero{padding:60px 16px 32px}
+  .maintenance-hero h1{font-size:1.5rem}
+  .maintenance-hero p{font-size:.95rem}
+  .error-hero{padding:60px 16px 32px}
+  .error-code{font-size:3.5rem}
+
+  .legal-footer{padding:16px 12px;font-size:.8rem}
+  .legal-footer a{margin:0 5px;display:inline-block}
+}
