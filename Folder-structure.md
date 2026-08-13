@@ -196,7 +196,7 @@ Catatan:
 - `admin.html`
 
 ### Support
-- `https://chat-bot-niaga-bio-six.vercel.app`
+- `https://chat-niaga-bio.vercel.app`
 
 ---
 
@@ -269,7 +269,7 @@ Tugas:
 
 ### 6) Chatbot
 Flow:
-- `https://chat-bot-niaga-bio-six.vercel.app`
+- `https://chat-niaga-bio.vercel.app`
 
 Tugas:
 - bantu user awam

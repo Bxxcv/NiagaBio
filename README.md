@@ -39,7 +39,7 @@ Project ini dirancang agar:
 - `dashboard.html`, `profile.html`, `products.html`, `orders.html`, `themes.html`, dll → dashboard seller
 - `u.html` → halaman publik toko/user
 - `checkout.html` → checkout publik
-- `https://chat-bot-niaga-bio-six.vercel.app` → bantuan/chat
+- `https://chat-niaga-bio.vercel.app` → bantuan/chat
 - `assets/` → CSS, JS, image, icon
 - `supabase/` → SQL schema, RLS, security, audit, patch
 - `docs/` → dokumentasi internal
