@@ -902,6 +902,20 @@ document.addEventListener('DOMContentLoaded', async () => {
       const qrisFile = refs.premiumQrisFile?.files?.[0];
       if (qrisFile) premiumQrisUrl = await NB.uploadFile(qrisFile, 'premium-qris');
 
+      if (premiumQrisUrl) {
+        let allowedQrisUrl = false;
+        try {
+          const parsed = new URL(premiumQrisUrl);
+          allowedQrisUrl = /(^|\.)supabase\.co$/i.test(parsed.hostname)
+            && parsed.pathname.includes('/storage/v1/object/public/niagabio/premium-qris/');
+        } catch (error) {
+          allowedQrisUrl = false;
+        }
+        if (!allowedQrisUrl) {
+          throw new Error('QRIS harus berasal dari Storage NiagaBio folder premium-qris. Upload file QRIS atau gunakan URL storage yang valid.');
+        }
+      }
+
       await NB.saveSettings({
         maintenance_mode: refs.maintenanceMode?.checked,
         maintenance_message: refs.maintenanceMessage?.value.trim(),
