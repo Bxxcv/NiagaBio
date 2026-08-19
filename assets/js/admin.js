@@ -68,7 +68,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     passwordResetRequests: [],
     settings: {},
     selectedUserId: null,
-    loading: false
+    loading: false,
+    dataErrors: {}
   };
 
   const userModal = refs.userModal && window.bootstrap
@@ -100,7 +101,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function platformPremiumRevenue() {
-    return state.premiumRequests.filter(isApprovedRequest).length * premiumPrice();
+    return state.premiumRequests
+      .filter(isApprovedRequest)
+      .reduce((sum, request) => {
+        const amount = Number(request.approved_amount || request.amount || 0);
+        return sum + (Number.isFinite(amount) && amount > 0 ? amount : premiumPrice());
+      }, 0);
   }
 
   function downloadCsv(filename, rows) {
@@ -175,8 +181,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function showAccessDenied() {
-    if (!refs.contentWrap) return;
-    refs.contentWrap.innerHTML = `
+    const target = refs.contentWrap || document.querySelector('.admin-content') || document.querySelector('.admin-main');
+    if (!target) return;
+    target.innerHTML = `
       <section class="card-nb p-4 p-md-5 text-center admin-denied-card">
         <div class="icon-bubble mx-auto mb-3"><i class="bi bi-shield-lock"></i></div>
         <h2 class="fw-black mb-2">Akses ditolak</h2>
@@ -200,12 +207,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       return await NB.all(table);
     } catch (error) {
+      state.dataErrors = state.dataErrors || {};
+      state.dataErrors[table] = error.message || `Gagal load ${table}`;
       console.warn(`[NiagaBio] Gagal load ${table}:`, error.message);
       return [];
     }
   }
 
   async function loadData() {
+    state.dataErrors = {};
     const [profiles, orders, products, premiumRequests, passwordResetRequests] = await Promise.all([
       NB.all('profiles'),
       NB.all('orders'),
@@ -247,7 +257,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       ? '<span class="badge text-bg-success"><i class="bi bi-qr-code me-1"></i>QRIS Upgrade ON</span>'
       : '<span class="badge text-bg-warning"><i class="bi bi-qr-code me-1"></i>QRIS Upgrade kosong</span>';
 
-    refs.systemBadges.innerHTML = `${maintenance}${register}${price}${qris}`;
+    const errorTables = Object.keys(state.dataErrors || {});
+    const dataError = errorTables.length
+      ? `<span class="badge text-bg-danger" title="${safe(errorTables.map(table => `${table}: ${state.dataErrors[table]}`).join(' | '))}"><i class="bi bi-exclamation-triangle me-1"></i>Data gagal dimuat</span>`
+      : '';
+    refs.systemBadges.innerHTML = `${maintenance}${register}${price}${qris}${dataError}`;
   }
 
   function renderMetrics() {
@@ -579,7 +593,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const rejected = state.premiumRequests.filter(request => String(request.status || '').toLowerCase() === 'rejected');
     const sevenDays = Date.now() + 7 * 24 * 60 * 60 * 1000;
     const expiring = state.profiles.filter(profile => {
-      if (profile.plan !== 'premium' || !profile.plan_end_date) return false;
+      if (profile.status !== 'active' || profile.plan !== 'premium' || !profile.plan_end_date) return false;
       const time = new Date(profile.plan_end_date).getTime();
       return Number.isFinite(time) && time <= sevenDays && time >= Date.now();
     });
@@ -591,7 +605,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (refs.platformLatestPremium) {
       const latestPremium = state.profiles
-        .filter(profile => profile.plan === 'premium' && profile.status !== 'deleted')
+        .filter(profile => profile.plan === 'premium' && profile.status === 'active')
         .sort((a, b) => String(b.plan_end_date || b.updated_at || '').localeCompare(String(a.plan_end_date || a.updated_at || '')))
         .slice(0, 6);
       refs.platformLatestPremium.innerHTML = latestPremium.map(profile => `

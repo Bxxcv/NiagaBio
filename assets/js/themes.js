@@ -196,7 +196,11 @@ document.addEventListener('DOMContentLoaded', async () => {
           currentTheme = profile?.theme_name || 'service';
           render();
 
-          if (currentTheme !== themeId) {
+          // Verifikasi jalur public store, bukan hanya profile admin.
+          const publicProfile = await NB.getProfileByUsername(profile?.username || '');
+          const publicTheme = publicProfile?.theme_name || 'service';
+
+          if (currentTheme !== themeId || publicTheme !== themeId) {
             nbToast(`Tema belum berubah. Status akun terbaca: ${planHint()}. Coba logout/login ulang atau cek plan user di Admin Master.`, 'warning');
             return;
           }
