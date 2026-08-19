@@ -192,23 +192,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
           card.disabled = true;
           const updatedProfile = await NB.setProfileTheme(themeId);
-          profile = updatedProfile || await NB.getProfile(user.id);
+          profile = await NB.getProfile(user.id);
           currentTheme = profile?.theme_name || 'service';
-          render();
 
-          // Verifikasi jalur public store, bukan hanya profile admin.
-          const publicProfile = await NB.getProfileByUsername(profile?.username || '');
-          const publicTheme = publicProfile?.theme_name || 'service';
-
-          if (currentTheme !== themeId || publicTheme !== themeId) {
-            nbToast(`Tema belum berubah. Status akun terbaca: ${planHint()}. Coba logout/login ulang atau cek plan user di Admin Master.`, 'warning');
-            return;
+          if (currentTheme !== themeId) {
+            throw new Error(`Tema belum tersimpan. Database masih membaca "${currentTheme}".`);
           }
 
+          render();
           nbToast(`Tema ${selected.name} berhasil dipilih.`);
         } catch (error) {
           card.disabled = false;
-          nbToast(error.message || 'Gagal memilih tema.', 'danger');
+          console.error('[NiagaBio] Gagal menyimpan tema:', error);
+          nbToast(error?.message || 'Gagal memilih tema.', 'danger');
+        } finally {
+          card.disabled = false;
         }
       });
     });
