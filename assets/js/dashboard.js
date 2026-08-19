@@ -157,6 +157,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       title: 'Toko kamu siap dibagikan',
       desc: 'Semua langkah dasar sudah lengkap. Cek halaman toko, lalu bagikan ke calon pembeli.',
       href: publicUrl,
+      label: 'Cek toko'
     };
     setText('nextStepTitle', nextStep.title);
     setText('nextStepDesc', nextStep.desc);
