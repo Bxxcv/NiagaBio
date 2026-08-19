@@ -36,7 +36,14 @@
 .maintenance-hero p{color:var(--nb-muted);font-size:1.05rem;max-width:480px;margin:0 auto 24px;line-height:1.6}
 
 /* 404 page */
-.error-hero{text-align:center;padding:80px 20px 40px}
+.error-hero{
+  text-align:center;
+  padding:80px 20px 40px;
+  background: #F0F0F0;
+}
+.error-hero img{
+  width: 50%;
+}
 @media(min-width:768px){.error-hero{padding:120px 20px 60px}}
 .error-code{font-family:var(--nb-font-display);font-size:5rem;font-weight:800;color:var(--nb-navy-900,#083465);line-height:1;margin-bottom:8px;letter-spacing:-2px}
 .error-hero h1{font-family:var(--nb-font-display);font-size:1.4rem;font-weight:700;color:var(--nb-ink);margin-bottom:12px}

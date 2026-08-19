@@ -72,13 +72,67 @@ p{color:var(--muted)}
 .nav-links a{font-weight:500;color:var(--muted);font-size:.95rem;transition:color .15s}
 .nav-links a:hover{color:var(--primary)}
 .nav-cta{display:flex;gap:10px;align-items:center}
-.nav-toggle{display:none;background:none;border:0;flex-direction:column;gap:5px;cursor:pointer;padding:8px}
-.nav-toggle span{width:22px;height:2px;background:var(--text);border-radius:2px;transition:.2s}
+
+/* Navbar Toggle dengan animasi ikon bi-list <-> bi-x-lg */
+.nav-toggle{
+  display:none;
+  position:relative;
+  width:42px;
+  height:42px;
+  align-items:center;
+  justify-content:center;
+  background:none;
+  border:0;
+  cursor:pointer;
+  padding:8px;
+  border-radius:10px;
+}
+.nav-toggle:hover{
+  background:rgba(16,185,129,.08);
+}
+.nav-icon{
+  position:relative;
+  width:24px;
+  height:24px;
+  display:block;
+}
+
+.nav-icon i{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  font-size:1.5rem;
+  color:var(--text);
+  transition:opacity .25s ease, transform .3s ease;
+}
+
+.nav-icon .bi-list{
+  opacity:1;
+  transform:rotate(0deg) scale(1);
+}
+
+.nav-icon .bi-x-lg{
+  opacity:0;
+  transform:rotate(-90deg) scale(.6);
+}
+
+.nav-toggle.open .nav-icon .bi-list{
+  opacity:0;
+  transform:rotate(90deg) scale(.6);
+}
+
+.nav-toggle.open .nav-icon .bi-x-lg{
+  opacity:1;
+  transform:rotate(0deg) scale(1);
+}
+
 .nav-mobile{display:none;flex-direction:column;gap:6px;padding:16px 20px;border-top:1px solid var(--border);background:#fff}
 .nav-mobile.open{display:flex}
 .nav-mobile a{padding:10px 12px;color:var(--text);font-weight:500;border-radius:10px}
 .nav-mobile a:hover{background:var(--surface)}
 .nav-mobile .btn{margin-top:6px}
+
 @media (max-width:960px){
   .nav-links,.nav-cta{display:none}
   .nav-toggle{display:flex}
@@ -200,14 +254,60 @@ p{color:var(--muted)}
 
 /* FAQ */
 .faq{margin-top:40px;display:grid;gap:12px}
-.faq details{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:6px 20px;box-shadow:var(--shadow-card);transition:.2s}
-.faq details[open]{border-color:rgba(16,185,129,.5)}
-.faq summary{list-style:none;cursor:pointer;padding:14px 0;font-weight:600;font-size:1rem;display:flex;justify-content:space-between;align-items:center;gap:16px}
-.faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:'+';font-size:1.4rem;color:var(--primary);font-weight:400;transition:.2s}
-.faq details[open] summary::after{transform:rotate(45deg)}
-.faq details p{padding-bottom:16px;font-size:.92rem}
 
+.faq details{
+  display:grid;
+  grid-template-rows:auto 0fr;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow-card);
+  overflow:hidden;
+  transition:grid-template-rows .3s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+.faq details[open]{
+  grid-template-rows:auto 1fr;
+  border-color:rgba(16,185,129,.5);
+}
+
+.faq summary{
+  grid-row:1;
+  list-style:none;
+  cursor:pointer;
+  padding:14px 20px;
+  font-weight:600;
+  font-size:1rem;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  margin:0;
+}
+
+.faq summary::-webkit-details-marker{display:none}
+
+.faq summary::after{
+  content:'+';
+  font-size:1.4rem;
+  color:var(--primary);
+  font-weight:400;
+  transition:transform .3s ease;
+}
+
+.faq details[open] summary::after{transform:rotate(45deg)}
+
+.faq details > *:not(summary){
+  grid-row:2;
+  overflow:hidden;
+  margin:0;
+  min-height:0;
+}
+
+.faq details p{
+  padding:0 20px 16px;
+  font-size:.92rem;
+}
 /* CTA */
 .cta{position:relative;overflow:hidden;padding:100px 0;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;text-align:center}
 .cta-blob{position:absolute;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,.15);filter:blur(80px);pointer-events:none}
@@ -240,8 +340,12 @@ p{color:var(--muted)}
 .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.16,.8,.24,1),transform .7s cubic-bezier(.16,.8,.24,1)}
 .reveal.in{opacity:1;transform:translateY(0)}
 .reveal-stagger.in{transition-delay:calc(var(--reveal-i, 0) * 90ms)}
-@media (prefers-reduced-motion:reduce){
-  .reveal{opacity:1;transform:none;transition:none}
+@media (prefers-reduced-motion: reduce){
+  .nav-mobile,
+  .nav-icon i,
+  .faq details{
+    transition:none !important;
+  }
 }
 
 /* ============ FLOATING QUICK MENU (FAB) ============ */
