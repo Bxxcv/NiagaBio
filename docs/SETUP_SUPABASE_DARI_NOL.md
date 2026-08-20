@@ -1,43 +1,32 @@
 # Setup Supabase NiagaBio dari Nol
 
-Panduan ini untuk membuat database NiagaBio baru. Untuk database production yang sudah berisi data, jangan jalankan ulang schema utama dari awal.
+Dokumen ini hanya untuk **fresh Supabase project**. Untuk production yang sudah berisi data, jangan mulai dari schema awal.
 
-## 1. Buat project Supabase
+## 1. Buat project
 
-Buka Supabase Dashboard, buat project baru, lalu masuk ke SQL Editor.
+Buat project Supabase baru lalu buka SQL Editor.
 
-## 2. Auth Email setting
+## 2. Auth
 
-Masuk ke:
+Aktifkan Email provider sesuai kebutuhan testing/production.
 
-```txt
-Authentication > Providers > Email
+## 3. Jalankan schema awal
+
+```text
+supabase/01_schema_clean_run_this.sql
 ```
 
-Untuk testing awal:
+Buat user admin pertama lewat Supabase Auth lalu gunakan:
 
-```txt
-Email provider: ON
-Confirm email: OFF
-Secure email change: OFF
+```text
+supabase/02_bootstrap_admin_after_signup.sql
 ```
 
-Untuk production, pengaturan email bisa diperketat lagi setelah flow testing selesai.
+## 4. Patch lanjutan
 
-## 3. Jalankan SQL
+Jalankan hanya patch yang dibutuhkan, sesuai dependency dan header SQL. Repo saat ini memiliki:
 
-Baca `supabase/README.md` untuk urutan terbaru.
-
-Ringkasnya untuk database baru:
-
-1. Jalankan `supabase/01_schema_clean_run_this.sql`.
-2. Buat user admin pertama di Auth.
-3. Jalankan `supabase/02_bootstrap_admin_after_signup.sql` setelah menyesuaikan email admin jika diperlukan.
-4. Jalankan patch lanjutan secara urut sampai patch terbaru.
-
-Patch lanjutan yang penting:
-
-```txt
+```text
 03_fix_theme_setter.sql
 04_upgrade_requests_admin_tools.sql
 05_reset_sales_recap.sql
@@ -46,62 +35,42 @@ Patch lanjutan yang penting:
 08_security_reaudit_final.sql
 11_password_reset_requests.sql
 12_security_final_rls_storage_audit.sql
+13_admin_theme_consistency_fixes.sql
 13_checkout_order_flow_fix.sql
+14_readonly_security_regression_audit.sql
 15_order_proof_antispam_hardening.sql
 16_private_proof_storage.sql
 18_rate_limit_audit_log_hardening.sql
+19_production_readiness_audit.sql
+20_push_notifications.sql
+22_push_notifications_final.sql
 ```
 
-`14_readonly_security_regression_audit.sql` hanya untuk audit/read-only.
+Ada dua file bernomor `13` karena keduanya berasal dari feature/patch line berbeda. Jangan menganggap `13` satu file tunggal.
 
-## 4. Storage bucket
+## 5. Storage
 
-NiagaBio memakai dua bucket:
+- `niagabio` — public assets
+- `niagabio-private` — private proof/payment files
 
-| Bucket | Status | Fungsi |
-| --- | --- | --- |
-| `niagabio` | Public | Avatar, produk, gallery, QRIS, asset publik |
-| `niagabio-private` | Private | Bukti pembayaran checkout dan bukti upgrade premium |
+## 6. Frontend config
 
-SQL 16 membuat bucket private dan policy-nya.
+Edit `assets/js/config.js` menggunakan anon/publishable key.
 
-## 5. Edit config frontend
+**Jangan pernah memasukkan `service_role` key ke frontend.**
 
-Buka:
+## 7. Deploy
 
-```txt
-assets/js/config.js
+Deploy project ke Vercel dengan `vercel.json` dari repo.
+
+## 8. Smoke test
+
+```text
+Register → Login → Profile → Product → Theme → Public Store → Checkout → Order → Admin/Premium
 ```
 
-Isi `SUPABASE_URL` dan `SUPABASE_ANON_KEY` dari Supabase project.
+Untuk regression security, gunakan:
 
-```js
-window.NIAGABIO_CONFIG = {
-  SUPABASE_URL: "https://project-kamu.supabase.co",
-  SUPABASE_ANON_KEY: "anon_or_publishable_key_kamu",
-  ADMIN_EMAIL: "",
-  BRAND_NAME: "NiagaBio",
-  PREMIUM_PRICE: 80000,
-  DEMO_MODE: false
-};
+```text
+supabase/14_readonly_security_regression_audit.sql
 ```
-
-Jangan isi `service_role` key di frontend.
-
-## 6. Deploy ke Vercel
-
-Upload project ke GitHub, lalu import ke Vercel. Pastikan `vercel.json` ikut terdeploy supaya clean URL, security headers, cache headers, dan route `/s/...` berjalan.
-
-## 7. Test wajib
-
-- Register user baru.
-- Login seller.
-- Isi profil toko.
-- Tambah produk.
-- Upload gambar produk.
-- Atur QRIS.
-- Buka toko publik.
-- Checkout dan upload bukti bayar.
-- Pastikan order masuk dashboard seller.
-- Login admin dan approve/reject premium.
-- Cek audit log.

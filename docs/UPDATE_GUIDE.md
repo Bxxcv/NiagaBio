@@ -1,71 +1,73 @@
-# Update Guide NiagaBio
+# Update Guide — NiagaBio
 
-Panduan ini dipakai setiap kali mengganti file supaya update tidak merusak login, checkout, RLS, atau dashboard.
+Gunakan panduan ini untuk perubahan source tanpa merusak flow existing.
 
-## Urutan update aman
+## Wajib sebelum edit
 
-1. Download/backup ZIP project yang sedang jalan.
-2. Baca daftar file berubah dari patch.
-3. Replace file sesuai path yang sama.
-4. Kalau patch membawa file SQL baru, jalankan SQL itu di Supabase SQL Editor.
-5. Deploy ulang ke Vercel.
-6. Test flow utama.
+1. Baca `PRD.md` dan `SkilAi.md`.
+2. Baca `Folder-structure.md`.
+3. Tentukan file owner fitur.
+4. Cek dependency HTML → JS → CSS → Supabase bila relevan.
+5. Jangan ubah file lain yang tidak dibutuhkan.
 
-## Jangan dilakukan
+## Urutan debugging
 
-- Jangan run ulang `supabase/01_schema_clean_run_this.sql` di database production yang sudah berisi data.
-- Jangan masukkan `service_role` key ke `assets/js/config.js`.
-- Jangan ubah `role`, `plan`, `status`, `plan_end_date` dari frontend.
-- Jangan mematikan RLS untuk debugging production.
-- Jangan mengaktifkan `DEMO_MODE` di domain production.
-
-## Checklist setelah deploy
-
-### Seller
-
-- Login berhasil.
-- Dashboard terbuka.
-- Profil toko bisa disimpan.
-- Produk bisa ditambah/edit/hapus.
-- Upload gambar produk berhasil.
-- Link/social/gallery tetap tampil.
-- QRIS setting bisa disimpan.
-
-### Pembeli
-
-- Toko publik `/u?username=...` tampil.
-- Share toko/produk `/s/...` tampil dan redirect benar.
-- Checkout wajib upload bukti bayar.
-- Order masuk dashboard seller.
-
-### Admin
-
-- Admin page terbuka hanya untuk admin.
-- Approve/reject premium berjalan.
-- Bukti premium private bisa dibuka.
-- Block/unblock user berjalan.
-- Maintenance/register setting berjalan.
-- Audit log tercatat.
-
-### Security quick check
-
-Jalankan query audit read-only jika ragu:
-
-```txt
-supabase/14_readonly_security_regression_audit.sql
+```text
+Reproduce
+→ HTML/DOM
+→ CSS/JS asset loading
+→ event/data flow
+→ Network
+→ Supabase/RLS
+→ patch akar masalah
+→ regression test
 ```
 
-Red flag yang wajib dicek:
+Untuk masalah visual, selalu cek asset CSS/JS yang benar-benar loaded sebelum menyimpulkan masalah database.
 
-- `RLS_DISABLED`
-- `ORDER_DATA_RISK`
-- policy update/delete public tanpa `is_admin()` atau owner check
-- storage proof public untuk upload baru
+## Aturan Supabase
 
-## Cara rollback
+- Jangan run `01_schema_clean_run_this.sql` ulang di production.
+- Jangan disable RLS.
+- Jangan gunakan service-role key di frontend.
+- Patch baru harus dibaca sebelum dijalankan.
+- Audit read-only dapat dipakai untuk verifikasi.
 
-Kalau setelah deploy ada bug fatal:
+## Setelah perubahan
 
-1. Revert deployment di Vercel ke versi sebelumnya.
-2. Jangan langsung rollback SQL kecuali tahu dampaknya.
-3. Kirim error console, screenshot, dan file patch terakhir untuk dianalisis.
+### Frontend
+- syntax JS valid
+- tidak ada asset path yang rusak
+- halaman target terbuka
+- flow utama terkait tetap berjalan
+
+### Seller
+- login
+- profile
+- products
+- links/social/gallery
+- theme
+- checkout settings
+- orders
+
+### Public
+- public store tampil
+- theme class diterapkan
+- product/link tampil
+- checkout dapat dibuka
+
+### Admin
+- access control
+- premium review
+- user management
+- settings
+- audit log
+
+## Rollback
+
+Jika bug fatal:
+
+1. rollback deployment Vercel ke deployment sehat
+2. jangan rollback SQL secara membabi buta
+3. simpan error, screenshot, dan patch terakhir
+4. analisis root cause sebelum patch berikutnya

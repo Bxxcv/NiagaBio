@@ -1,150 +1,79 @@
 # NiagaBio
 
-NiagaBio adalah web app **link-in-bio + katalog produk + checkout manual + dashboard seller** untuk UMKM, seller online, dan creator yang ingin punya satu link rapi untuk jualan.
+NiagaBio adalah web app **link-in-bio + toko/katalog + checkout manual + dashboard seller + admin tools** untuk UMKM, seller online, creator, dan pengguna HP-first.
 
-## Ringkasan
-NiagaBio membantu user untuk:
-- membuat halaman profil/toko publik
-- menampilkan produk dan katalog
-- mengarahkan pembeli ke checkout / pembayaran manual
-- mengelola data toko dari dashboard
-- mengatur tampilan agar sesuai branding
-
-Project ini dirancang agar:
-- ringan
-- mobile-first
-- mudah dipakai dari HP
-- tidak terasa seperti website template generik
-
-## Tech stack
+## Stack
 - HTML
 - CSS vanilla
 - JavaScript vanilla
 - Supabase
 - Vercel
 
-## Deploy
-- Production: `https://niaga-bio.vercel.app`
-- Repository: `https://github.com/Bxxcv/NiagaBio`
+Project ini **bukan** React/Next/Vue.
 
-## Catatan penting
-- Project ini **bukan** React / Next.js / Vue app.
-- Project ini **bukan** backend monolith custom.
-- Logika data utama ada di Supabase.
-- Routing publik dan serverless helper mengikuti konfigurasi Vercel.
+## Source of truth project
 
-## Struktur umum
-- `index.html` → landing page
-- `login.html`, `register.html`, `reset-password.html` → auth
-- `dashboard.html`, `profile.html`, `products.html`, `orders.html`, `themes.html`, dll → dashboard seller
-- `u.html` → halaman publik toko/user
-- `checkout.html` → checkout publik
-- `https://chat-niaga-bio.vercel.app` → bantuan/chat
-- `assets/` → CSS, JS, image, icon
-- `supabase/` → SQL schema, RLS, security, audit, patch
-- `docs/` → dokumentasi internal
-- `api/` → serverless function untuk fitur tertentu
+Untuk AI/developer baru, baca berurutan:
 
-## Alur user
-### User baru
-1. buka landing page
-2. daftar akun
-3. isi profil toko
-4. tambah produk
-5. atur link / tema / checkout
-6. bagikan link publik toko
+1. `PRD.md` — product requirements, flow, invariants, dan status terkini
+2. `SkilAi.md` — aturan kerja AI + debugging protocol + bug ledger
+3. `README.md` — overview singkat
+4. `Folder-structure.md` — peta file dan ownership
+5. `docs/` — panduan khusus
+6. `supabase/` — database/RLS/security bila relevan
 
-### Pembeli
-1. buka link toko publik
-2. lihat profil dan produk
-3. pilih produk
-4. lanjut checkout
-5. ikuti instruksi pembayaran
+Patch notes di `docs/patch-notes/` adalah **riwayat**, bukan source of truth.
 
-### Seller
-1. login
-2. buka dashboard
-3. update profil
-4. kelola produk
-5. cek order
-6. ubah tema dan halaman publik
+## Struktur utama
 
-## Konsep produk
-Nilai utama NiagaBio adalah:
-> “Satu link untuk tampil rapi, jualan lebih jelas, dan bikin pembeli lebih mudah order.”
+```text
+NiagaBio/
+├── PRD.md
+├── SkilAi.md
+├── README.md
+├── Folder-structure.md
+├── *.html
+├── assets/
+│   ├── css/
+│   ├── js/
+│   ├── img/
+│   └── ...
+├── api/
+├── supabase/
+└── docs/
+```
 
-## Prinsip desain
-- jelas dalam 5 detik
-- tidak membingungkan user awam
-- tampilan profesional
-- tidak terlalu ramai
-- tidak terlalu kaku
-- tetap nyaman di HP
+## Production
 
-## File penting untuk developer/AI
-Kalau mau memahami project dengan cepat, baca:
-- `READMEFORAI.md`
-- `docs/PROJECT_STRUCTURE.md`
-- `docs/DESAIN.md`
-- `supabase/README.md`
+- Vercel: `https://niaga-bio.vercel.app`
+- GitHub: `https://github.com/Bxxcv/NiagaBio`
 
-## Pengembangan lokal
-Project ini bisa dikerjakan dari:
-- Acode
-- SPCK Editor
-- Termux
+## Alur utama
 
-Hal yang paling sering diedit:
-- HTML halaman
-- CSS landing / main
-- JS interaksi
-- SQL Supabase
+```text
+Seller:
+Register/Login → Profile → Product/Link/Social/Gallery → Theme → Checkout → Public Store
 
-## Aturan aman saat update
-- jangan ubah routing tanpa cek semua link
-- jangan ubah Supabase schema tanpa cek RLS
-- jangan hapus file lama yang masih dipakai halaman lain
-- jangan mengubah nama file page tanpa update referensi di JS / rewrite
+Buyer:
+Public Store → Product → Checkout → Payment/Proof → Seller review
 
-## Troubleshooting singkat
-### Halaman 404
-Biasanya karena:
-- file HTML belum ada
-- rewrite belum benar
-- path salah
-- file berada di folder yang salah
+Premium:
+Request → Admin review → Approve/Reject → Plan/feature access
+```
 
-### Halaman publik blank
-Biasanya karena:
-- data user di Supabase belum ada
-- RLS terlalu ketat
-- username tidak cocok
-- JS gagal mengambil data profil
+## Prinsip penting
 
-### Login/register gagal
-Biasanya karena:
-- config Supabase salah
-- auth redirect belum diset
-- key/env belum cocok dengan production
+- Mobile-first.
+- Sederhana untuk seller awam.
+- Jangan merusak logic existing.
+- Cari akar masalah sebelum patch.
+- Jangan menyentuh database untuk bug yang sebenarnya hanya HTML/CSS/JS.
+- Jangan expose service-role key.
+- Jangan disable RLS di production.
 
-### Tampilan tidak update
-Biasanya karena:
-- cache browser
-- build/deploy belum refresh
-- file yang diedit bukan file yang dipakai halaman
+## Status saat ini
 
-## Tujuan jangka panjang
-NiagaBio diarahkan menjadi:
-- landing yang jelas
-- halaman publik toko yang enak dilihat
-- dashboard seller yang simple
-- solusi jualan yang gampang dipakai seller awam
-
-## Lisensi / penggunaan internal
-Dokumen ini adalah panduan internal project. Sesuaikan dengan kebutuhan repo dan deployment yang sedang aktif.
-
-
-## Push Notifications
-
-Setup notifikasi realtime + push HP ada di `docs/PUSH_NOTIFICATIONS_SETUP.md`.
-
+- Core seller/public/admin flow aktif.
+- Theme persistence sudah diverifikasi melalui Supabase RPC.
+- Akar masalah rendering tema yang pernah terjadi: `u.html` tidak memuat `assets/css/main.css`.
+- **Task aktif berikutnya:** rapikan tampilan tema toko. Logic tema tidak diubah kecuali diperlukan.
