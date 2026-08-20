@@ -87,10 +87,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const publicUrlText = $('publicUrlText');
     const openPublicPage = $('openPublicPage');
     const openPublicPageHero = $('openPublicPageHero');
+    const sidebarPublicPreview = $('sidebarPublicPreview');
     if (publicUrlInput) publicUrlInput.value = publicUrl;
     if (publicUrlText) publicUrlText.textContent = publicUrl;
     if (openPublicPage) openPublicPage.href = publicUrl;
     if (openPublicPageHero) openPublicPageHero.href = publicUrl;
+    if (sidebarPublicPreview) sidebarPublicPreview.href = publicUrl;
 
     setText('planName', premium ? 'Premium' : 'Free');
     setText('planDesc', premium ? 'Semua fitur seller aktif.' : 'Fitur dasar untuk mulai jualan.');

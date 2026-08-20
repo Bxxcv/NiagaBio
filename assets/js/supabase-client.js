@@ -985,22 +985,9 @@
     const cleanTheme = String(themeId || 'service').trim().toLowerCase();
 
     if (sb) {
-      const { data: sessionData, error: sessionError } = await sb.auth.getSession();
-      if (sessionError) throw sessionError;
-      const sessionUser = sessionData?.session?.user || null;
-      if (!sessionUser?.id) throw new Error('Sesi login tidak aktif. Silakan login ulang.');
-
       const { data, error } = await sb.rpc('set_profile_theme', { new_theme: cleanTheme });
       if (error) throw error;
-
-      const row = Array.isArray(data) ? data[0] : data;
-      if (!row?.user_id || row.user_id !== sessionUser.id) {
-        throw new Error('Tema tidak tersimpan ke profil login saat ini. Silakan login ulang.');
-      }
-      if (String(row.theme_name || '').toLowerCase() !== cleanTheme) {
-        throw new Error('Database tidak mengembalikan tema yang baru dipilih.');
-      }
-      return row;
+      return data;
     }
 
     const user = await currentUser();
