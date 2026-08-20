@@ -1,17 +1,15 @@
 /* ============================================================
    NIAGABIO — PUBLIC STORE (u.html)
-   Baseline structural system + "service" theme baseline.
+   Baseline structural system isolated to the "service" theme.
    Built on tokens from assets/css/v2/foundation.css (--nb-*).
    Scope: only classes emitted by assets/js/public-page.js.
-   Other themes (minimal, fashion, gadget, food, beauty, dark,
-   luxury, neon, portfolio) still read from assets/css/main.css
-   until migrated individually — nothing here overrides them.
+   All rules are scoped to .public-theme-service so other themes keep using assets/css/main.css unchanged.
    ============================================================ */
 
 /* ----------------------------------------------------------
    0. Public-scoped token aliases (thin layer over --nb-*)
    ---------------------------------------------------------- */
-.public-shell {
+.public-shell.public-theme-service {
   /* Per-seller accent, overridden by theme layer (§13) */
   --public-accent: var(--nb-green-700);
   --public-accent-soft: color-mix(in srgb, var(--public-accent) 12%, #fff);
@@ -32,7 +30,7 @@
 /* ----------------------------------------------------------
    1. Base / reset scoped
    ---------------------------------------------------------- */
-.public-page {
+.public-page.public-theme-service {
   min-height: 100vh;
   padding: 0;
   background: var(--nb-canvas);
@@ -40,7 +38,7 @@
   font-family: var(--nb-font-ui);
 }
 
-.public-shell {
+.public-shell.public-theme-service {
   position: relative;
   min-height: 100vh;
   padding: var(--nb-space-8) var(--nb-space-4);
@@ -53,7 +51,7 @@
 /* ----------------------------------------------------------
    2. Structural container
    ---------------------------------------------------------- */
-.public-card {
+.public-theme-service .public-card {
   position: relative;
   z-index: 1;
   width: min(100%, 700px);
@@ -65,7 +63,7 @@
   box-shadow: var(--nb-shadow-2);
 }
 
-.public-hero {
+.public-theme-service .public-hero {
   position: relative;
   padding: var(--nb-space-8) var(--nb-space-6);
   text-align: center;
@@ -75,23 +73,23 @@
     linear-gradient(135deg, var(--public-accent), var(--public-accent-strong));
 }
 
-.public-body {
+.public-theme-service .public-body {
   padding: var(--nb-space-6);
   color: var(--public-ink);
 }
 
-.public-section {
+.public-theme-service .public-section {
   margin-top: var(--nb-space-6);
 }
 
-.public-section:first-child {
+.public-theme-service .public-section:first-child {
   margin-top: 0;
 }
 
 /* ----------------------------------------------------------
    3. Identity block
    ---------------------------------------------------------- */
-.public-avatar {
+.public-theme-service .public-avatar {
   width: 96px;
   height: 96px;
   border-radius: var(--nb-radius-lg);
@@ -101,14 +99,14 @@
   box-shadow: 0 18px 38px rgba(0, 0, 0, .18);
 }
 
-.public-identity {
+.public-theme-service .public-identity {
   position: relative;
   z-index: 1;
   max-width: 440px;
   margin: var(--nb-space-4) auto 0;
 }
 
-.public-kicker {
+.public-theme-service .public-kicker {
   margin: 0 0 4px;
   font-family: var(--nb-font-ui);
   font-size: var(--nb-text-xs);
@@ -118,7 +116,7 @@
   opacity: .8;
 }
 
-.public-identity h1 {
+.public-theme-service .public-identity h1 {
   margin: 0;
   font-family: var(--nb-font-display);
   font-size: var(--nb-display);
@@ -132,7 +130,7 @@
   flex-wrap: wrap;
 }
 
-.public-identity p:not(.public-kicker) {
+.public-theme-service .public-identity p:not(.public-kicker) {
   margin: var(--nb-space-3) auto 0;
   max-width: 390px;
   font-family: var(--nb-font-ui);
@@ -141,7 +139,7 @@
   line-height: 1.6;
 }
 
-.public-verified {
+.public-theme-service .public-verified {
   width: 34px;
   height: 34px;
   display: inline-grid;
@@ -154,7 +152,7 @@
   flex: 0 0 auto;
 }
 
-.public-trust-badge {
+.public-theme-service .public-trust-badge {
   width: max-content;
   max-width: 100%;
   margin: var(--nb-space-3) auto 0;
@@ -172,14 +170,14 @@
   backdrop-filter: blur(10px);
 }
 
-.public-trust-badge.is-free {
+.public-theme-service .public-trust-badge.is-free {
   background: rgba(255, 255, 255, .12);
 }
 
 /* ----------------------------------------------------------
    4. Actions row (socials + share)
    ---------------------------------------------------------- */
-.public-socials {
+.public-theme-service .public-socials {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -187,7 +185,7 @@
   margin-top: var(--nb-space-4);
 }
 
-.public-social {
+.public-theme-service .public-social {
   width: 44px;
   height: 44px;
   display: inline-grid;
@@ -199,13 +197,13 @@
   transition: transform 120ms ease;
 }
 
-.public-social:hover,
-.public-social:focus-visible {
+.public-theme-service .public-social:hover,
+.public-theme-service .public-social:focus-visible {
   transform: translateY(-2px);
   color: var(--public-accent);
 }
 
-.public-store-share {
+.public-theme-service .public-store-share {
   border: 0;
   cursor: pointer;
 }
@@ -213,7 +211,7 @@
 /* ----------------------------------------------------------
    5. Section pattern (reusable)
    ---------------------------------------------------------- */
-.public-section-head {
+.public-theme-service .public-section-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -221,7 +219,7 @@
   margin-bottom: var(--nb-space-4);
 }
 
-.public-section-head h2 {
+.public-theme-service .public-section-head h2 {
   margin: 0;
   font-family: var(--nb-font-display);
   font-size: var(--nb-title-sm);
@@ -230,7 +228,7 @@
   color: var(--public-ink);
 }
 
-.public-section-head span {
+.public-theme-service .public-section-head span {
   border-radius: var(--nb-radius-round);
   padding: .35rem .65rem;
   background: var(--public-accent-soft);
@@ -243,12 +241,12 @@
 /* ----------------------------------------------------------
    6. Link list
    ---------------------------------------------------------- */
-.public-links {
+.public-theme-service .public-links {
   display: grid;
   gap: var(--nb-space-3);
 }
 
-.public-link {
+.public-theme-service .public-link {
   display: grid;
   grid-template-columns: 40px 1fr 24px;
   align-items: center;
@@ -265,18 +263,18 @@
   transition: transform 120ms ease, box-shadow 120ms ease;
 }
 
-.public-link:hover {
+.public-theme-service .public-link:hover {
   transform: translateY(-2px);
   color: var(--public-ink);
   box-shadow: 0 14px 30px rgba(15, 35, 28, .10);
 }
 
-.public-link:focus-visible {
+.public-theme-service .public-link:focus-visible {
   outline: 2px solid var(--public-accent);
   outline-offset: 2px;
 }
 
-.public-link span {
+.public-theme-service .public-link span {
   width: 40px;
   height: 40px;
   border-radius: var(--nb-radius-lg);
@@ -286,20 +284,20 @@
   color: var(--public-accent);
 }
 
-.public-link strong {
+.public-theme-service .public-link strong {
   font-family: var(--nb-font-ui);
   font-size: var(--nb-text-sm);
   font-weight: 700;
 }
 
-.public-link-arrow {
+.public-theme-service .public-link-arrow {
   color: var(--public-muted);
 }
 
 /* ----------------------------------------------------------
    7. Search
    ---------------------------------------------------------- */
-.public-search-wrap {
+.public-theme-service .public-search-wrap {
   display: flex;
   align-items: center;
   gap: .7rem;
@@ -311,7 +309,7 @@
   color: var(--public-muted);
 }
 
-.public-search-wrap input {
+.public-theme-service .public-search-wrap input {
   width: 100%;
   border: 0;
   outline: 0;
@@ -321,37 +319,37 @@
   font-size: var(--nb-text-sm);
 }
 
-.public-search-wrap input:focus-visible {
+.public-theme-service .public-search-wrap input:focus-visible {
   outline: none;
 }
 
-.public-search-wrap:focus-within {
+.public-theme-service .public-search-wrap:focus-within {
   border-color: var(--public-accent);
 }
 
 /* ----------------------------------------------------------
    8. Product grid + card
    ---------------------------------------------------------- */
-.public-products-grid {
+.public-theme-service .public-products-grid {
   display: grid;
   grid-template-columns: 1fr; /* < 360px: 1 column */
   gap: var(--nb-space-3);
 }
 
 @media (min-width: 360px) {
-  .public-products-grid {
+  .public-theme-service .public-products-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (min-width: 768px) {
-  .public-products-grid {
+  .public-theme-service .public-products-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--nb-space-4);
   }
 }
 
-.public-product-card {
+.public-theme-service .public-product-card {
   border: 1px solid var(--public-line);
   border-radius: var(--nb-radius-lg);
   overflow: hidden;
@@ -359,28 +357,28 @@
   box-shadow: var(--nb-shadow-1);
 }
 
-.public-product-card.is-featured {
+.public-theme-service .public-product-card.is-featured {
   border-color: color-mix(in srgb, var(--public-accent) 35%, #fff);
 }
 
-.public-product-card.is-highlighted {
+.public-theme-service .public-product-card.is-highlighted {
   outline: 2px solid var(--public-accent);
   outline-offset: 2px;
 }
 
-.public-product-media {
+.public-theme-service .public-product-media {
   position: relative;
   aspect-ratio: 1 / .82;
   background: linear-gradient(135deg, var(--nb-surface-2), #fff);
 }
 
-.public-product-media img {
+.public-theme-service .public-product-media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.public-product-category {
+.public-theme-service .public-product-category {
   position: absolute;
   left: 10px;
   top: 10px;
@@ -393,7 +391,7 @@
   box-shadow: 0 8px 18px rgba(0, 0, 0, .10);
 }
 
-.public-featured-badge {
+.public-theme-service .public-featured-badge {
   position: absolute;
   right: 10px;
   top: 10px;
@@ -408,11 +406,11 @@
   box-shadow: 0 10px 24px rgba(0, 0, 0, .14);
 }
 
-.public-product-body {
+.public-theme-service .public-product-body {
   padding: var(--nb-space-3);
 }
 
-.public-product-body h3 {
+.public-theme-service .public-product-body h3 {
   margin: 0;
   font-family: var(--nb-font-ui);
   font-size: var(--nb-text-md);
@@ -422,7 +420,7 @@
   color: var(--public-ink);
 }
 
-.public-product-body p {
+.public-theme-service .public-product-body p {
   margin: 6px 0 var(--nb-space-3);
   color: var(--public-muted);
   font-size: var(--nb-text-xs);
@@ -435,23 +433,23 @@
   min-height: calc(1.45 * var(--nb-text-xs) * 2);
 }
 
-.public-product-foot {
+.public-theme-service .public-product-foot {
   display: grid;
   gap: var(--nb-space-3);
 }
 
-.public-product-foot strong {
+.public-theme-service .public-product-foot strong {
   color: var(--public-accent);
   font-size: var(--nb-text-md);
   font-weight: 700;
 }
 
-.public-product-actions {
+.public-theme-service .public-product-actions {
   display: flex;
   gap: .5rem;
 }
 
-.public-buy-btn {
+.public-theme-service .public-buy-btn {
   flex: 1;
   display: inline-flex;
   align-items: center;
@@ -469,13 +467,13 @@
   cursor: pointer;
 }
 
-.public-buy-btn:focus-visible,
-.public-share-btn:focus-visible {
+.public-theme-service .public-buy-btn:focus-visible,
+.public-theme-service .public-share-btn:focus-visible {
   outline: 2px solid var(--public-accent);
   outline-offset: 2px;
 }
 
-.public-share-btn {
+.public-theme-service .public-share-btn {
   width: 44px;
   height: 44px;
   flex: 0 0 auto;
@@ -491,7 +489,7 @@
 /* ----------------------------------------------------------
    9. Gallery strip
    ---------------------------------------------------------- */
-.public-gallery-strip {
+.public-theme-service .public-gallery-strip {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: minmax(132px, 180px);
@@ -501,7 +499,7 @@
   scroll-snap-type: x mandatory;
 }
 
-.public-gallery-card {
+.public-theme-service .public-gallery-card {
   margin: 0;
   scroll-snap-align: start;
   border-radius: var(--nb-radius-lg);
@@ -511,7 +509,7 @@
   box-shadow: var(--nb-shadow-1);
 }
 
-.public-gallery-card img {
+.public-theme-service .public-gallery-card img {
   width: 100%;
   height: 150px;
   object-fit: cover;
@@ -519,7 +517,7 @@
   display: block;
 }
 
-.public-gallery-card figcaption {
+.public-theme-service .public-gallery-card figcaption {
   padding: var(--nb-space-3);
   font-size: var(--nb-text-xs);
   font-weight: 600;
@@ -529,7 +527,7 @@
 /* ----------------------------------------------------------
    10. Footer
    ---------------------------------------------------------- */
-.public-footer {
+.public-theme-service .public-footer {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -543,14 +541,14 @@
   font-weight: 600;
 }
 
-.public-footer .public-powered {
+.public-theme-service .public-footer .public-powered {
   color: var(--public-accent);
 }
 
 /* ----------------------------------------------------------
    11. Floating CTA
    ---------------------------------------------------------- */
-.public-floating-wa {
+.public-theme-service .public-floating-wa {
   position: fixed;
   right: max(18px, env(safe-area-inset-right));
   bottom: max(18px, env(safe-area-inset-bottom));
@@ -568,8 +566,8 @@
   transition: transform 120ms ease;
 }
 
-.public-floating-wa:hover,
-.public-floating-wa:focus-visible {
+.public-theme-service .public-floating-wa:hover,
+.public-theme-service .public-floating-wa:focus-visible {
   color: #fff;
   transform: translateY(-2px);
 }
@@ -604,15 +602,15 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .public-link,
-  .public-social,
-  .public-floating-wa,
-  .public-buy-btn {
+  .public-theme-service .public-link,
+  .public-theme-service .public-social,
+  .public-theme-service .public-floating-wa,
+  .public-theme-service .public-buy-btn {
     transition: none;
   }
-  .public-link:hover,
-  .public-social:hover,
-  .public-floating-wa:hover {
+  .public-theme-service .public-link:hover,
+  .public-theme-service .public-social:hover,
+  .public-theme-service .public-floating-wa:hover {
     transform: none;
   }
 }
@@ -628,13 +626,13 @@
    14. Service visual refinement
    Presentation-only overrides. DOM, JS and data flow unchanged.
    ============================================================ */
-.public-page {
+.public-page.public-theme-service {
   background: var(--nb-canvas);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-.public-shell {
+.public-shell.public-theme-service {
   isolation: isolate;
   display: flex;
   justify-content: center;
@@ -642,8 +640,8 @@
   padding: clamp(16px, 3vw, 40px) clamp(12px, 3vw, 28px) 42px;
 }
 
-.public-shell::before,
-.public-shell::after {
+.public-shell.public-theme-service::before,
+.public-shell.public-theme-service::after {
   content: "";
   position: absolute;
   z-index: -1;
@@ -652,7 +650,7 @@
   filter: blur(2px);
 }
 
-.public-shell::before {
+.public-shell.public-theme-service::before {
   width: min(52vw, 420px);
   height: min(52vw, 420px);
   top: -120px;
@@ -660,7 +658,7 @@
   background: color-mix(in srgb, var(--public-accent) 16%, transparent);
 }
 
-.public-shell::after {
+.public-shell.public-theme-service::after {
   width: min(42vw, 320px);
   height: min(42vw, 320px);
   bottom: -130px;
@@ -668,7 +666,7 @@
   background: color-mix(in srgb, var(--public-accent) 10%, transparent);
 }
 
-.public-card {
+.public-theme-service .public-card {
   width: min(100%, 760px);
   border-color: color-mix(in srgb, var(--public-accent) 9%, var(--public-line));
   box-shadow:
@@ -676,72 +674,72 @@
     0 30px 80px color-mix(in srgb, var(--public-accent) 10%, transparent);
 }
 
-.public-hero {
+.public-theme-service .public-hero {
   padding: clamp(28px, 6vw, 48px) clamp(20px, 5vw, 44px) 30px;
 }
 
-.public-avatar {
+.public-theme-service .public-avatar {
   width: clamp(84px, 22vw, 104px);
   height: clamp(84px, 22vw, 104px);
   border-radius: 28px;
 }
 
-.public-kicker {
+.public-theme-service .public-kicker {
   opacity: .78;
   font-size: 11px;
   letter-spacing: .09em;
 }
 
-.public-identity h1 {
+.public-theme-service .public-identity h1 {
   max-width: 100%;
   font-weight: 800;
 }
 
-.public-identity p:not(.public-kicker) {
+.public-theme-service .public-identity p:not(.public-kicker) {
   max-width: 500px;
   font-size: clamp(13px, 2.4vw, 15px);
 }
 
-.public-socials {
+.public-theme-service .public-socials {
   margin-top: 20px;
 }
 
-.public-social {
+.public-theme-service .public-social {
   border: 1px solid rgba(255,255,255,.55);
   box-shadow: 0 8px 20px rgba(0,0,0,.12);
 }
 
-.public-body {
+.public-theme-service .public-body {
   padding: clamp(18px, 4vw, 32px);
   background:
     linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(255,255,255,.96) 100%);
 }
 
-.public-section {
+.public-theme-service .public-section {
   padding-top: 2px;
 }
 
-.public-section + .public-section {
+.public-theme-service .public-section + .public-section {
   margin-top: clamp(24px, 4vw, 32px);
 }
 
-.public-section-head {
+.public-theme-service .public-section-head {
   align-items: flex-end;
   margin-bottom: 14px;
 }
 
-.public-section-head h2 {
+.public-theme-service .public-section-head h2 {
   font-size: clamp(16px, 3.5vw, 20px);
   letter-spacing: -.025em;
 }
 
-.public-section-head span {
+.public-theme-service .public-section-head span {
   padding: .32rem .58rem;
   font-size: 10px;
   letter-spacing: .01em;
 }
 
-.public-link {
+.public-theme-service .public-link {
   min-height: 64px;
   padding: 10px 12px;
   border-color: color-mix(in srgb, var(--public-accent) 12%, var(--public-line));
@@ -750,95 +748,95 @@
     #fff 72%);
 }
 
-.public-link span {
+.public-theme-service .public-link span {
   width: 42px;
   height: 42px;
   border: 1px solid color-mix(in srgb, var(--public-accent) 10%, transparent);
   box-shadow: 0 5px 14px rgba(15,23,42,.06);
 }
 
-.public-link:hover,
-.public-link:focus-visible {
+.public-theme-service .public-link:hover,
+.public-theme-service .public-link:focus-visible {
   transform: translateY(-1px);
   box-shadow: 0 10px 22px color-mix(in srgb, var(--public-accent) 10%, transparent);
 }
 
-.public-search-wrap {
+.public-theme-service .public-search-wrap {
   min-height: 48px;
   margin-bottom: 14px;
   background: #fff;
   box-shadow: 0 6px 18px rgba(15,23,42,.04);
 }
 
-.public-products-grid {
+.public-theme-service .public-products-grid {
   align-items: stretch;
 }
 
-.public-product-card {
+.public-theme-service .public-product-card {
   display: flex;
   flex-direction: column;
   min-width: 0;
   transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
 }
 
-.public-product-card:hover {
+.public-theme-service .public-product-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 14px 30px rgba(15,23,42,.08);
   border-color: color-mix(in srgb, var(--public-accent) 20%, var(--public-line));
 }
 
-.public-product-media {
+.public-theme-service .public-product-media {
   aspect-ratio: 1 / .88;
 }
 
-.public-product-body {
+.public-theme-service .public-product-body {
   display: flex;
   flex: 1;
   flex-direction: column;
   padding: 14px;
 }
 
-.public-product-body p {
+.public-theme-service .public-product-body p {
   flex: 1;
 }
 
-.public-product-foot {
+.public-theme-service .public-product-foot {
   margin-top: auto;
 }
 
-.public-buy-btn,
-.public-share-btn {
+.public-theme-service .public-buy-btn,
+.public-theme-service .public-share-btn {
   transition: transform 140ms ease, box-shadow 140ms ease, background-color 140ms ease;
 }
 
-.public-buy-btn:hover {
+.public-theme-service .public-buy-btn:hover {
   transform: translateY(-1px);
 }
 
-.public-share-btn:hover {
+.public-theme-service .public-share-btn:hover {
   background: var(--public-accent-soft);
   color: var(--public-accent);
 }
 
-.public-gallery-strip {
+.public-theme-service .public-gallery-strip {
   scrollbar-width: thin;
   scrollbar-color: color-mix(in srgb, var(--public-accent) 35%, transparent) transparent;
 }
 
-.public-gallery-card {
+.public-theme-service .public-gallery-card {
   transition: transform 160ms ease, box-shadow 160ms ease;
 }
 
-.public-gallery-card:hover {
+.public-theme-service .public-gallery-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 24px rgba(15,23,42,.08);
 }
 
-.public-footer {
+.public-theme-service .public-footer {
   padding-bottom: 4px;
 }
 
-.public-floating-wa {
+.public-theme-service .public-floating-wa {
   width: 56px;
   height: 56px;
   border-width: 3px;
@@ -846,64 +844,69 @@
 }
 
 @media (max-width: 575.98px) {
-  .public-card {
+  .public-theme-service .public-card {
     border-radius: 24px;
   }
 
-  .public-hero {
+  .public-theme-service .public-hero {
     border-radius: 24px 24px 0 0;
   }
 
-  .public-body {
+  .public-theme-service .public-body {
     padding: 18px 14px 20px;
   }
 
-  .public-section-head {
+  .public-theme-service .public-section-head {
     align-items: center;
   }
 
-  .public-section-head span {
+  .public-theme-service .public-section-head span {
     max-width: 46%;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  .public-product-card {
+  .public-theme-service .public-product-card {
     border-radius: 14px;
   }
 
-  .public-product-body h3 {
+  .public-theme-service .public-product-body h3 {
     font-size: 14px;
   }
 
-  .public-product-body p {
+  .public-theme-service .public-product-body p {
     font-size: 11px;
   }
 }
 
 @media (min-width: 992px) {
-  .public-shell {
+  .public-theme-service .public-products-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--nb-space-4);
+  }
+
+  .public-shell.public-theme-service {
     padding-top: 52px;
     padding-bottom: 60px;
   }
 
-  .public-card {
-    width: min(100%, 820px);
+  .public-theme-service .public-card {
+    width: min(100%, 1180px);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .public-product-card,
-  .public-gallery-card,
-  .public-buy-btn,
-  .public-share-btn {
+  .public-theme-service .public-product-card,
+  .public-theme-service .public-gallery-card,
+  .public-theme-service .public-buy-btn,
+  .public-theme-service .public-share-btn {
     transition: none;
   }
 
-  .public-product-card:hover,
-  .public-gallery-card:hover,
-  .public-buy-btn:hover,
-  .public-share-btn:hover {
+  .public-theme-service .public-product-card:hover,
+  .public-theme-service .public-gallery-card:hover,
+  .public-theme-service .public-buy-btn:hover,
+  .public-theme-service .public-share-btn:hover {
     transform: none;
   }
 }
