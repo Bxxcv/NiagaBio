@@ -1,15 +1,24 @@
+/* NIAGABIO — PUBLIC STORE SERVICE THEME ONLY
+   This stylesheet is intentionally scoped to .public-theme-service.
+   Other themes remain owned by assets/css/main.css until migrated individually. */
 /* ============================================================
    NIAGABIO — PUBLIC STORE (u.html)
-   Baseline structural system isolated to the "service" theme.
+   Baseline structural system + "service" theme baseline.
    Built on tokens from assets/css/v2/foundation.css (--nb-*).
    Scope: only classes emitted by assets/js/public-page.js.
-   All rules are scoped to .public-theme-service so other themes keep using assets/css/main.css unchanged.
+   Other themes (minimal, fashion, gadget, food, beauty, dark,
+   luxury, neon, portfolio) still read from assets/css/main.css
+   until migrated individually — nothing here overrides them.
    ============================================================ */
+
+
 
 /* ----------------------------------------------------------
    0. Public-scoped token aliases (thin layer over --nb-*)
    ---------------------------------------------------------- */
-.public-shell.public-theme-service {
+
+
+.public-theme-service .public-shell {
   /* Per-seller accent, overridden by theme layer (§13) */
   --public-accent: var(--nb-green-700);
   --public-accent-soft: color-mix(in srgb, var(--public-accent) 12%, #fff);
@@ -27,10 +36,14 @@
   --public-radius-section: 20px;
 }
 
+
+
 /* ----------------------------------------------------------
    1. Base / reset scoped
    ---------------------------------------------------------- */
-.public-page.public-theme-service {
+
+
+.public-theme-service .public-page {
   min-height: 100vh;
   padding: 0;
   background: var(--nb-canvas);
@@ -38,7 +51,9 @@
   font-family: var(--nb-font-ui);
 }
 
-.public-shell.public-theme-service {
+
+
+.public-theme-service .public-shell {
   position: relative;
   min-height: 100vh;
   padding: var(--nb-space-8) var(--nb-space-4);
@@ -48,9 +63,13 @@
     linear-gradient(145deg, var(--nb-green-50) 0%, #fff 58%, var(--nb-green-50) 100%);
 }
 
+
+
 /* ----------------------------------------------------------
    2. Structural container
    ---------------------------------------------------------- */
+
+
 .public-theme-service .public-card {
   position: relative;
   z-index: 1;
@@ -63,6 +82,8 @@
   box-shadow: var(--nb-shadow-2);
 }
 
+
+
 .public-theme-service .public-hero {
   position: relative;
   padding: var(--nb-space-8) var(--nb-space-6);
@@ -73,22 +94,32 @@
     linear-gradient(135deg, var(--public-accent), var(--public-accent-strong));
 }
 
+
+
 .public-theme-service .public-body {
   padding: var(--nb-space-6);
   color: var(--public-ink);
 }
 
+
+
 .public-theme-service .public-section {
   margin-top: var(--nb-space-6);
 }
+
+
 
 .public-theme-service .public-section:first-child {
   margin-top: 0;
 }
 
+
+
 /* ----------------------------------------------------------
    3. Identity block
    ---------------------------------------------------------- */
+
+
 .public-theme-service .public-avatar {
   width: 96px;
   height: 96px;
@@ -99,12 +130,16 @@
   box-shadow: 0 18px 38px rgba(0, 0, 0, .18);
 }
 
+
+
 .public-theme-service .public-identity {
   position: relative;
   z-index: 1;
   max-width: 440px;
   margin: var(--nb-space-4) auto 0;
 }
+
+
 
 .public-theme-service .public-kicker {
   margin: 0 0 4px;
@@ -115,6 +150,8 @@
   text-transform: uppercase;
   opacity: .8;
 }
+
+
 
 .public-theme-service .public-identity h1 {
   margin: 0;
@@ -130,6 +167,8 @@
   flex-wrap: wrap;
 }
 
+
+
 .public-theme-service .public-identity p:not(.public-kicker) {
   margin: var(--nb-space-3) auto 0;
   max-width: 390px;
@@ -138,6 +177,8 @@
   color: rgba(255, 255, 255, .82);
   line-height: 1.6;
 }
+
+
 
 .public-theme-service .public-verified {
   width: 34px;
@@ -151,6 +192,8 @@
   font-size: 1rem;
   flex: 0 0 auto;
 }
+
+
 
 .public-theme-service .public-trust-badge {
   width: max-content;
@@ -170,13 +213,19 @@
   backdrop-filter: blur(10px);
 }
 
+
+
 .public-theme-service .public-trust-badge.is-free {
   background: rgba(255, 255, 255, .12);
 }
 
+
+
 /* ----------------------------------------------------------
    4. Actions row (socials + share)
    ---------------------------------------------------------- */
+
+
 .public-theme-service .public-socials {
   display: flex;
   justify-content: center;
@@ -184,6 +233,8 @@
   gap: .55rem;
   margin-top: var(--nb-space-4);
 }
+
+
 
 .public-theme-service .public-social {
   width: 44px;
@@ -197,20 +248,28 @@
   transition: transform 120ms ease;
 }
 
+
+
 .public-theme-service .public-social:hover,
 .public-theme-service .public-social:focus-visible {
   transform: translateY(-2px);
   color: var(--public-accent);
 }
 
+
+
 .public-theme-service .public-store-share {
   border: 0;
   cursor: pointer;
 }
 
+
+
 /* ----------------------------------------------------------
    5. Section pattern (reusable)
    ---------------------------------------------------------- */
+
+
 .public-theme-service .public-section-head {
   display: flex;
   align-items: center;
@@ -218,6 +277,8 @@
   gap: 1rem;
   margin-bottom: var(--nb-space-4);
 }
+
+
 
 .public-theme-service .public-section-head h2 {
   margin: 0;
@@ -227,6 +288,8 @@
   letter-spacing: -.02em;
   color: var(--public-ink);
 }
+
+
 
 .public-theme-service .public-section-head span {
   border-radius: var(--nb-radius-round);
@@ -238,13 +301,19 @@
   white-space: nowrap;
 }
 
+
+
 /* ----------------------------------------------------------
    6. Link list
    ---------------------------------------------------------- */
+
+
 .public-theme-service .public-links {
   display: grid;
   gap: var(--nb-space-3);
 }
+
+
 
 .public-theme-service .public-link {
   display: grid;
@@ -263,16 +332,22 @@
   transition: transform 120ms ease, box-shadow 120ms ease;
 }
 
+
+
 .public-theme-service .public-link:hover {
   transform: translateY(-2px);
   color: var(--public-ink);
   box-shadow: 0 14px 30px rgba(15, 35, 28, .10);
 }
 
+
+
 .public-theme-service .public-link:focus-visible {
   outline: 2px solid var(--public-accent);
   outline-offset: 2px;
 }
+
+
 
 .public-theme-service .public-link span {
   width: 40px;
@@ -284,19 +359,27 @@
   color: var(--public-accent);
 }
 
+
+
 .public-theme-service .public-link strong {
   font-family: var(--nb-font-ui);
   font-size: var(--nb-text-sm);
   font-weight: 700;
 }
 
+
+
 .public-theme-service .public-link-arrow {
   color: var(--public-muted);
 }
 
+
+
 /* ----------------------------------------------------------
    7. Search
    ---------------------------------------------------------- */
+
+
 .public-theme-service .public-search-wrap {
   display: flex;
   align-items: center;
@@ -309,6 +392,8 @@
   color: var(--public-muted);
 }
 
+
+
 .public-theme-service .public-search-wrap input {
   width: 100%;
   border: 0;
@@ -319,35 +404,49 @@
   font-size: var(--nb-text-sm);
 }
 
+
+
 .public-theme-service .public-search-wrap input:focus-visible {
   outline: none;
 }
+
+
 
 .public-theme-service .public-search-wrap:focus-within {
   border-color: var(--public-accent);
 }
 
+
+
 /* ----------------------------------------------------------
    8. Product grid + card
    ---------------------------------------------------------- */
+
+
 .public-theme-service .public-products-grid {
   display: grid;
   grid-template-columns: 1fr; /* < 360px: 1 column */
   gap: var(--nb-space-3);
 }
 
-@media (min-width: 360px) {
+
+
+@media (min-width: 360px)  {
   .public-theme-service .public-products-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (min-width: 768px) {
+
+
+@media (min-width: 768px)  {
   .public-theme-service .public-products-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--nb-space-4);
   }
 }
+
+
 
 .public-theme-service .public-product-card {
   border: 1px solid var(--public-line);
@@ -357,14 +456,20 @@
   box-shadow: var(--nb-shadow-1);
 }
 
+
+
 .public-theme-service .public-product-card.is-featured {
   border-color: color-mix(in srgb, var(--public-accent) 35%, #fff);
 }
+
+
 
 .public-theme-service .public-product-card.is-highlighted {
   outline: 2px solid var(--public-accent);
   outline-offset: 2px;
 }
+
+
 
 .public-theme-service .public-product-media {
   position: relative;
@@ -372,11 +477,15 @@
   background: linear-gradient(135deg, var(--nb-surface-2), #fff);
 }
 
+
+
 .public-theme-service .public-product-media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+
+
 
 .public-theme-service .public-product-category {
   position: absolute;
@@ -390,6 +499,8 @@
   font-weight: 700;
   box-shadow: 0 8px 18px rgba(0, 0, 0, .10);
 }
+
+
 
 .public-theme-service .public-featured-badge {
   position: absolute;
@@ -406,9 +517,13 @@
   box-shadow: 0 10px 24px rgba(0, 0, 0, .14);
 }
 
+
+
 .public-theme-service .public-product-body {
   padding: var(--nb-space-3);
 }
+
+
 
 .public-theme-service .public-product-body h3 {
   margin: 0;
@@ -419,6 +534,8 @@
   letter-spacing: -.01em;
   color: var(--public-ink);
 }
+
+
 
 .public-theme-service .public-product-body p {
   margin: 6px 0 var(--nb-space-3);
@@ -433,10 +550,14 @@
   min-height: calc(1.45 * var(--nb-text-xs) * 2);
 }
 
+
+
 .public-theme-service .public-product-foot {
   display: grid;
   gap: var(--nb-space-3);
 }
+
+
 
 .public-theme-service .public-product-foot strong {
   color: var(--public-accent);
@@ -444,10 +565,14 @@
   font-weight: 700;
 }
 
+
+
 .public-theme-service .public-product-actions {
   display: flex;
   gap: .5rem;
 }
+
+
 
 .public-theme-service .public-buy-btn {
   flex: 1;
@@ -467,11 +592,15 @@
   cursor: pointer;
 }
 
+
+
 .public-theme-service .public-buy-btn:focus-visible,
 .public-theme-service .public-share-btn:focus-visible {
   outline: 2px solid var(--public-accent);
   outline-offset: 2px;
 }
+
+
 
 .public-theme-service .public-share-btn {
   width: 44px;
@@ -486,9 +615,13 @@
   cursor: pointer;
 }
 
+
+
 /* ----------------------------------------------------------
    9. Gallery strip
    ---------------------------------------------------------- */
+
+
 .public-theme-service .public-gallery-strip {
   display: grid;
   grid-auto-flow: column;
@@ -498,6 +631,8 @@
   padding: 2px 2px 10px;
   scroll-snap-type: x mandatory;
 }
+
+
 
 .public-theme-service .public-gallery-card {
   margin: 0;
@@ -509,6 +644,8 @@
   box-shadow: var(--nb-shadow-1);
 }
 
+
+
 .public-theme-service .public-gallery-card img {
   width: 100%;
   height: 150px;
@@ -517,6 +654,8 @@
   display: block;
 }
 
+
+
 .public-theme-service .public-gallery-card figcaption {
   padding: var(--nb-space-3);
   font-size: var(--nb-text-xs);
@@ -524,9 +663,13 @@
   color: var(--public-ink-soft);
 }
 
+
+
 /* ----------------------------------------------------------
    10. Footer
    ---------------------------------------------------------- */
+
+
 .public-theme-service .public-footer {
   display: flex;
   flex-wrap: wrap;
@@ -541,13 +684,19 @@
   font-weight: 600;
 }
 
+
+
 .public-theme-service .public-footer .public-powered {
   color: var(--public-accent);
 }
 
+
+
 /* ----------------------------------------------------------
    11. Floating CTA
    ---------------------------------------------------------- */
+
+
 .public-theme-service .public-floating-wa {
   position: fixed;
   right: max(18px, env(safe-area-inset-right));
@@ -566,20 +715,28 @@
   transition: transform 120ms ease;
 }
 
+
+
 .public-theme-service .public-floating-wa:hover,
 .public-theme-service .public-floating-wa:focus-visible {
   color: #fff;
   transform: translateY(-2px);
 }
 
+
+
 /* ----------------------------------------------------------
    12. States
    ---------------------------------------------------------- */
 
+
+
 /* Loading / empty (root only shows plain text via JS; style the
    container so it doesn't look broken while JS hasn't rendered yet
    or when a store/product genuinely has nothing to show). */
-.empty-state {
+
+
+.public-theme-service .empty-state {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -592,7 +749,9 @@
   background: var(--nb-canvas);
 }
 
-#productsBox .empty-state {
+
+
+.public-theme-service #productsBox .empty-state {
   grid-column: 1 / -1;
   min-height: 0;
   padding: var(--nb-space-8) var(--nb-space-4);
@@ -601,313 +760,30 @@
   background: var(--public-surface);
 }
 
-@media (prefers-reduced-motion: reduce) {
+
+
+@media (prefers-reduced-motion: reduce)  {
   .public-theme-service .public-link,
-  .public-theme-service .public-social,
-  .public-theme-service .public-floating-wa,
-  .public-theme-service .public-buy-btn {
+.public-theme-service .public-social,
+.public-theme-service .public-floating-wa,
+.public-theme-service .public-buy-btn {
     transition: none;
   }
   .public-theme-service .public-link:hover,
-  .public-theme-service .public-social:hover,
-  .public-theme-service .public-floating-wa:hover {
+.public-theme-service .public-social:hover,
+.public-theme-service .public-floating-wa:hover {
     transform: none;
   }
 }
+
+
 
 /* ----------------------------------------------------------
    13. Theme layer — service (baseline theme)
    ---------------------------------------------------------- */
+
+
 .public-theme-service {
   --public-accent: var(--nb-green-700);
-}
-
-/* ============================================================
-   14. Service visual refinement
-   Presentation-only overrides. DOM, JS and data flow unchanged.
-   ============================================================ */
-.public-page.public-theme-service {
-  background: var(--nb-canvas);
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
-
-.public-shell.public-theme-service {
-  isolation: isolate;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: clamp(16px, 3vw, 40px) clamp(12px, 3vw, 28px) 42px;
-}
-
-.public-shell.public-theme-service::before,
-.public-shell.public-theme-service::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  pointer-events: none;
-  border-radius: 50%;
-  filter: blur(2px);
-}
-
-.public-shell.public-theme-service::before {
-  width: min(52vw, 420px);
-  height: min(52vw, 420px);
-  top: -120px;
-  right: -110px;
-  background: color-mix(in srgb, var(--public-accent) 16%, transparent);
-}
-
-.public-shell.public-theme-service::after {
-  width: min(42vw, 320px);
-  height: min(42vw, 320px);
-  bottom: -130px;
-  left: -120px;
-  background: color-mix(in srgb, var(--public-accent) 10%, transparent);
-}
-
-.public-theme-service .public-card {
-  width: min(100%, 760px);
-  border-color: color-mix(in srgb, var(--public-accent) 9%, var(--public-line));
-  box-shadow:
-    0 12px 26px rgba(15, 23, 42, .05),
-    0 30px 80px color-mix(in srgb, var(--public-accent) 10%, transparent);
-}
-
-.public-theme-service .public-hero {
-  padding: clamp(28px, 6vw, 48px) clamp(20px, 5vw, 44px) 30px;
-}
-
-.public-theme-service .public-avatar {
-  width: clamp(84px, 22vw, 104px);
-  height: clamp(84px, 22vw, 104px);
-  border-radius: 28px;
-}
-
-.public-theme-service .public-kicker {
-  opacity: .78;
-  font-size: 11px;
-  letter-spacing: .09em;
-}
-
-.public-theme-service .public-identity h1 {
-  max-width: 100%;
-  font-weight: 800;
-}
-
-.public-theme-service .public-identity p:not(.public-kicker) {
-  max-width: 500px;
-  font-size: clamp(13px, 2.4vw, 15px);
-}
-
-.public-theme-service .public-socials {
-  margin-top: 20px;
-}
-
-.public-theme-service .public-social {
-  border: 1px solid rgba(255,255,255,.55);
-  box-shadow: 0 8px 20px rgba(0,0,0,.12);
-}
-
-.public-theme-service .public-body {
-  padding: clamp(18px, 4vw, 32px);
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(255,255,255,.96) 100%);
-}
-
-.public-theme-service .public-section {
-  padding-top: 2px;
-}
-
-.public-theme-service .public-section + .public-section {
-  margin-top: clamp(24px, 4vw, 32px);
-}
-
-.public-theme-service .public-section-head {
-  align-items: flex-end;
-  margin-bottom: 14px;
-}
-
-.public-theme-service .public-section-head h2 {
-  font-size: clamp(16px, 3.5vw, 20px);
-  letter-spacing: -.025em;
-}
-
-.public-theme-service .public-section-head span {
-  padding: .32rem .58rem;
-  font-size: 10px;
-  letter-spacing: .01em;
-}
-
-.public-theme-service .public-link {
-  min-height: 64px;
-  padding: 10px 12px;
-  border-color: color-mix(in srgb, var(--public-accent) 12%, var(--public-line));
-  background: linear-gradient(135deg,
-    color-mix(in srgb, var(--public-accent) 7%, #fff),
-    #fff 72%);
-}
-
-.public-theme-service .public-link span {
-  width: 42px;
-  height: 42px;
-  border: 1px solid color-mix(in srgb, var(--public-accent) 10%, transparent);
-  box-shadow: 0 5px 14px rgba(15,23,42,.06);
-}
-
-.public-theme-service .public-link:hover,
-.public-theme-service .public-link:focus-visible {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 22px color-mix(in srgb, var(--public-accent) 10%, transparent);
-}
-
-.public-theme-service .public-search-wrap {
-  min-height: 48px;
-  margin-bottom: 14px;
-  background: #fff;
-  box-shadow: 0 6px 18px rgba(15,23,42,.04);
-}
-
-.public-theme-service .public-products-grid {
-  align-items: stretch;
-}
-
-.public-theme-service .public-product-card {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
-}
-
-.public-theme-service .public-product-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 30px rgba(15,23,42,.08);
-  border-color: color-mix(in srgb, var(--public-accent) 20%, var(--public-line));
-}
-
-.public-theme-service .public-product-media {
-  aspect-ratio: 1 / .88;
-}
-
-.public-theme-service .public-product-body {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  padding: 14px;
-}
-
-.public-theme-service .public-product-body p {
-  flex: 1;
-}
-
-.public-theme-service .public-product-foot {
-  margin-top: auto;
-}
-
-.public-theme-service .public-buy-btn,
-.public-theme-service .public-share-btn {
-  transition: transform 140ms ease, box-shadow 140ms ease, background-color 140ms ease;
-}
-
-.public-theme-service .public-buy-btn:hover {
-  transform: translateY(-1px);
-}
-
-.public-theme-service .public-share-btn:hover {
-  background: var(--public-accent-soft);
-  color: var(--public-accent);
-}
-
-.public-theme-service .public-gallery-strip {
-  scrollbar-width: thin;
-  scrollbar-color: color-mix(in srgb, var(--public-accent) 35%, transparent) transparent;
-}
-
-.public-theme-service .public-gallery-card {
-  transition: transform 160ms ease, box-shadow 160ms ease;
-}
-
-.public-theme-service .public-gallery-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 24px rgba(15,23,42,.08);
-}
-
-.public-theme-service .public-footer {
-  padding-bottom: 4px;
-}
-
-.public-theme-service .public-floating-wa {
-  width: 56px;
-  height: 56px;
-  border-width: 3px;
-  box-shadow: 0 14px 34px rgba(15,23,42,.22);
-}
-
-@media (max-width: 575.98px) {
-  .public-theme-service .public-card {
-    border-radius: 24px;
-  }
-
-  .public-theme-service .public-hero {
-    border-radius: 24px 24px 0 0;
-  }
-
-  .public-theme-service .public-body {
-    padding: 18px 14px 20px;
-  }
-
-  .public-theme-service .public-section-head {
-    align-items: center;
-  }
-
-  .public-theme-service .public-section-head span {
-    max-width: 46%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .public-theme-service .public-product-card {
-    border-radius: 14px;
-  }
-
-  .public-theme-service .public-product-body h3 {
-    font-size: 14px;
-  }
-
-  .public-theme-service .public-product-body p {
-    font-size: 11px;
-  }
-}
-
-@media (min-width: 992px) {
-  .public-theme-service .public-products-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: var(--nb-space-4);
-  }
-
-  .public-shell.public-theme-service {
-    padding-top: 52px;
-    padding-bottom: 60px;
-  }
-
-  .public-theme-service .public-card {
-    width: min(100%, 1180px);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .public-theme-service .public-product-card,
-  .public-theme-service .public-gallery-card,
-  .public-theme-service .public-buy-btn,
-  .public-theme-service .public-share-btn {
-    transition: none;
-  }
-
-  .public-theme-service .public-product-card:hover,
-  .public-theme-service .public-gallery-card:hover,
-  .public-theme-service .public-buy-btn:hover,
-  .public-theme-service .public-share-btn:hover {
-    transform: none;
-  }
 }
 
