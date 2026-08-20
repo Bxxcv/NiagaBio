@@ -1,606 +1,485 @@
-/* NIAGABIO — PUBLIC STORE SERVICE THEME ONLY
-   This stylesheet is intentionally scoped to .public-theme-service.
-   Other themes remain owned by assets/css/main.css until migrated individually. */
 /* ============================================================
-   NIAGABIO — PUBLIC STORE (u.html)
-   Baseline structural system + "service" theme baseline.
-   Built on tokens from assets/css/v2/foundation.css (--nb-*).
-   Scope: only classes emitted by assets/js/public-page.js.
-   Other themes (minimal, fashion, gadget, food, beauty, dark,
-   luxury, neon, portfolio) still read from assets/css/main.css
-   until migrated individually — nothing here overrides them.
+   NIAGABIO — PUBLIC STORE / SERVICE RESPONSIVE LAYER
+   ------------------------------------------------------------
+   Ownership : assets/css/v2/store.css
+   Scope     : service theme only
+   Source    : foundation.css (--nb-* tokens)
+
+   IMPORTANT
+   - This file MUST NOT provide generic .public-* selectors.
+   - Other themes keep their visual system in main.css until
+     they are migrated intentionally.
+   - Layout is intentionally different at mobile/tablet/desktop.
+   - JS, Supabase, routing and generated DOM are untouched.
    ============================================================ */
 
-
-
-/* ----------------------------------------------------------
-   0. Public-scoped token aliases (thin layer over --nb-*)
-   ---------------------------------------------------------- */
-
-
-.public-theme-service .public-shell {
-  /* Per-seller accent, overridden by theme layer (§13) */
-  --public-accent: var(--nb-green-700);
-  --public-accent-soft: color-mix(in srgb, var(--public-accent) 12%, #fff);
+/* ------------------------------------------------------------
+   0. SERVICE THEME TOKENS
+   ------------------------------------------------------------ */
+.public-theme-service {
+  --public-accent: var(--nb-green-700, #0f9f68);
+  --public-accent-soft: color-mix(in srgb, var(--public-accent) 10%, #fff);
   --public-accent-strong: color-mix(in srgb, var(--public-accent) 78%, #000 22%);
+  --public-surface: var(--nb-surface, #fff);
+  --public-surface-2: var(--nb-surface-2, #f8fafc);
+  --public-ink: var(--nb-ink, #0f172a);
+  --public-ink-soft: var(--nb-ink-soft, #334155);
+  --public-muted: var(--nb-muted, #64748b);
+  --public-line: var(--nb-line, #e2e8f0);
+  --public-radius-card: 28px;
+  --public-radius-section: 16px;
+  --public-shadow-card: 0 24px 70px rgba(15, 23, 42, .10);
+  --public-shadow-soft: 0 10px 30px rgba(15, 23, 42, .07);
 
-  --public-surface: var(--nb-surface);
-  --public-ink: var(--nb-ink);
-  --public-ink-soft: var(--nb-ink-soft);
-  --public-muted: var(--nb-muted);
-  --public-line: var(--nb-line);
-
-  /* Radius sizes larger than foundation.css's scale (4/6/10/14/999) —
-     intentional literal exception, documented in the design plan. */
-  --public-radius-card: 30px;
-  --public-radius-section: 20px;
-}
-
-
-
-/* ----------------------------------------------------------
-   1. Base / reset scoped
-   ---------------------------------------------------------- */
-
-
-.public-theme-service .public-page {
+  width: 100%;
   min-height: 100vh;
-  padding: 0;
-  background: var(--nb-canvas);
-  color: var(--nb-ink);
-  font-family: var(--nb-font-ui);
-}
-
-
-
-.public-theme-service .public-shell {
-  position: relative;
-  min-height: 100vh;
-  padding: var(--nb-space-8) var(--nb-space-4);
-  overflow: hidden;
+  padding: clamp(20px, 4vw, 56px);
+  overflow-x: hidden;
+  color: var(--public-ink);
   background:
-    radial-gradient(circle at 18% 12%, var(--public-accent-soft), transparent 32%),
-    linear-gradient(145deg, var(--nb-green-50) 0%, #fff 58%, var(--nb-green-50) 100%);
+    radial-gradient(circle at 12% 10%, rgba(15, 159, 104, .10), transparent 28%),
+    radial-gradient(circle at 88% 14%, rgba(15, 159, 104, .08), transparent 26%),
+    linear-gradient(145deg, #f1fbf6 0%, #ffffff 58%, #eefaf4 100%);
+  font-family: var(--nb-font-ui, Inter, system-ui, sans-serif);
 }
 
-
-
-/* ----------------------------------------------------------
-   2. Structural container
-   ---------------------------------------------------------- */
-
-
+/* ------------------------------------------------------------
+   1. MOBILE-FIRST CARD / HERO / BODY
+   ------------------------------------------------------------ */
 .public-theme-service .public-card {
   position: relative;
   z-index: 1;
   width: min(100%, 700px);
   margin: 0 auto;
-  border: 1px solid var(--nb-line);
-  border-radius: var(--public-radius-card);
   overflow: hidden;
+  border: 1px solid rgba(15, 23, 42, .08);
+  border-radius: var(--public-radius-card);
   background: var(--public-surface);
-  box-shadow: var(--nb-shadow-2);
+  box-shadow: var(--public-shadow-card);
 }
-
-
 
 .public-theme-service .public-hero {
   position: relative;
-  padding: var(--nb-space-8) var(--nb-space-6);
+  min-height: 0;
+  padding: clamp(28px, 7vw, 48px) clamp(20px, 6vw, 36px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   color: #fff;
   background:
-    radial-gradient(circle at 16% 18%, rgba(255, 255, 255, .32), transparent 26%),
-    linear-gradient(135deg, var(--public-accent), var(--public-accent-strong));
+    radial-gradient(circle at 18% 16%, rgba(255,255,255,.23), transparent 26%),
+    linear-gradient(135deg, #047857 0%, #0f9f68 58%, #0f766e 100%);
 }
-
-
 
 .public-theme-service .public-body {
-  padding: var(--nb-space-6);
-  color: var(--public-ink);
+  min-width: 0;
+  padding: clamp(22px, 5vw, 36px);
+  background: var(--public-surface);
 }
-
-
 
 .public-theme-service .public-section {
-  margin-top: var(--nb-space-6);
+  margin-top: 28px;
 }
-
-
 
 .public-theme-service .public-section:first-child {
   margin-top: 0;
 }
 
-
-
-/* ----------------------------------------------------------
-   3. Identity block
-   ---------------------------------------------------------- */
-
-
+/* ------------------------------------------------------------
+   2. IDENTITY
+   ------------------------------------------------------------ */
 .public-theme-service .public-avatar {
-  width: 96px;
-  height: 96px;
-  border-radius: var(--nb-radius-lg);
+  width: clamp(82px, 22vw, 104px);
+  height: clamp(82px, 22vw, 104px);
+  border: 5px solid rgba(255,255,255,.90);
+  border-radius: 24px;
   object-fit: cover;
   background: #fff;
-  border: 5px solid rgba(255, 255, 255, .82);
-  box-shadow: 0 18px 38px rgba(0, 0, 0, .18);
+  box-shadow: 0 18px 40px rgba(0,0,0,.18);
 }
-
-
 
 .public-theme-service .public-identity {
+  width: min(100%, 560px);
+  margin: 18px auto 0;
   position: relative;
   z-index: 1;
-  max-width: 440px;
-  margin: var(--nb-space-4) auto 0;
 }
-
-
 
 .public-theme-service .public-kicker {
-  margin: 0 0 4px;
-  font-family: var(--nb-font-ui);
-  font-size: var(--nb-text-xs);
+  margin: 0 0 6px;
+  font-size: var(--nb-text-xs, .75rem);
   font-weight: 700;
-  letter-spacing: .06em;
+  letter-spacing: .08em;
   text-transform: uppercase;
-  opacity: .8;
+  opacity: .82;
 }
-
-
 
 .public-theme-service .public-identity h1 {
-  margin: 0;
-  font-family: var(--nb-font-display);
-  font-size: var(--nb-display);
-  line-height: 1.05;
-  font-weight: 700;
-  letter-spacing: -.03em;
   display: inline-flex;
   align-items: center;
-  gap: .5rem;
   justify-content: center;
   flex-wrap: wrap;
+  gap: .45rem;
+  max-width: 100%;
+  margin: 0;
+  color: #fff;
+  font-family: var(--nb-font-display, var(--nb-font-ui, Inter, sans-serif));
+  font-size: clamp(2rem, 8vw, 4.25rem);
+  line-height: 1.02;
+  font-weight: 800;
+  letter-spacing: -.045em;
 }
-
-
 
 .public-theme-service .public-identity p:not(.public-kicker) {
-  margin: var(--nb-space-3) auto 0;
-  max-width: 390px;
-  font-family: var(--nb-font-ui);
-  font-size: var(--nb-text-sm);
-  color: rgba(255, 255, 255, .82);
+  max-width: 520px;
+  margin: 12px auto 0;
+  color: rgba(255,255,255,.84);
+  font-size: var(--nb-text-sm, .875rem);
   line-height: 1.6;
 }
-
-
 
 .public-theme-service .public-verified {
   width: 34px;
   height: 34px;
   display: inline-grid;
   place-items: center;
-  border-radius: var(--nb-radius-round);
-  background: rgba(255, 255, 255, .92);
-  color: var(--public-accent);
-  box-shadow: 0 12px 26px rgba(0, 0, 0, .14);
-  font-size: 1rem;
   flex: 0 0 auto;
+  border-radius: 999px;
+  background: rgba(255,255,255,.94);
+  color: var(--public-accent);
+  box-shadow: 0 10px 22px rgba(0,0,0,.14);
+  font-size: .95rem;
 }
-
-
 
 .public-theme-service .public-trust-badge {
   width: max-content;
   max-width: 100%;
-  margin: var(--nb-space-3) auto 0;
+  margin: 14px auto 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: .45rem;
-  border: 1px solid rgba(255, 255, 255, .28);
-  border-radius: var(--nb-radius-round);
-  padding: .5rem .78rem;
-  background: rgba(255, 255, 255, .16);
+  gap: .4rem;
+  padding: .55rem .82rem;
+  border: 1px solid rgba(255,255,255,.28);
+  border-radius: 999px;
+  background: rgba(255,255,255,.14);
   color: #fff;
-  font-size: var(--nb-text-xs);
+  font-size: var(--nb-text-xs, .75rem);
   font-weight: 700;
   backdrop-filter: blur(10px);
 }
 
-
-
 .public-theme-service .public-trust-badge.is-free {
-  background: rgba(255, 255, 255, .12);
+  background: rgba(255,255,255,.10);
 }
 
-
-
-/* ----------------------------------------------------------
-   4. Actions row (socials + share)
-   ---------------------------------------------------------- */
-
-
+/* ------------------------------------------------------------
+   3. SOCIAL / SHARE
+   ------------------------------------------------------------ */
 .public-theme-service .public-socials {
+  margin-top: 20px;
   display: flex;
-  justify-content: center;
   flex-wrap: wrap;
-  gap: .55rem;
-  margin-top: var(--nb-space-4);
+  justify-content: center;
+  gap: 9px;
 }
-
-
 
 .public-theme-service .public-social {
   width: 44px;
   height: 44px;
   display: inline-grid;
   place-items: center;
-  border-radius: var(--nb-radius-round);
+  border: 0;
+  border-radius: 999px;
   background: #fff;
   color: var(--public-accent);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, .13);
-  transition: transform 120ms ease;
+  box-shadow: 0 10px 24px rgba(0,0,0,.12);
+  transition: transform 140ms ease, box-shadow 140ms ease;
 }
-
-
 
 .public-theme-service .public-social:hover,
 .public-theme-service .public-social:focus-visible {
-  transform: translateY(-2px);
   color: var(--public-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(0,0,0,.16);
 }
 
-
-
 .public-theme-service .public-store-share {
-  border: 0;
   cursor: pointer;
 }
 
-
-
-/* ----------------------------------------------------------
-   5. Section pattern (reusable)
-   ---------------------------------------------------------- */
-
-
+/* ------------------------------------------------------------
+   4. SECTION HEAD
+   ------------------------------------------------------------ */
 .public-theme-service .public-section-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: var(--nb-space-4);
+  gap: 12px;
+  margin-bottom: 14px;
 }
-
-
 
 .public-theme-service .public-section-head h2 {
+  min-width: 0;
   margin: 0;
-  font-family: var(--nb-font-display);
-  font-size: var(--nb-title-sm);
-  font-weight: 700;
-  letter-spacing: -.02em;
   color: var(--public-ink);
+  font-family: var(--nb-font-display, var(--nb-font-ui, Inter, sans-serif));
+  font-size: var(--nb-title-sm, 1.1rem);
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -.02em;
 }
 
-
-
 .public-theme-service .public-section-head span {
-  border-radius: var(--nb-radius-round);
-  padding: .35rem .65rem;
+  flex: 0 0 auto;
+  padding: .34rem .62rem;
+  border-radius: 999px;
   background: var(--public-accent-soft);
   color: var(--public-accent);
-  font-size: var(--nb-text-xs);
+  font-size: var(--nb-text-xs, .75rem);
   font-weight: 700;
   white-space: nowrap;
 }
 
-
-
-/* ----------------------------------------------------------
-   6. Link list
-   ---------------------------------------------------------- */
-
-
+/* ------------------------------------------------------------
+   5. LINK LIST
+   ------------------------------------------------------------ */
 .public-theme-service .public-links {
   display: grid;
-  gap: var(--nb-space-3);
+  gap: 10px;
 }
-
-
 
 .public-theme-service .public-link {
   display: grid;
-  grid-template-columns: 40px 1fr 24px;
+  grid-template-columns: 40px minmax(0, 1fr) 24px;
   align-items: center;
-  gap: .75rem;
-  margin: 0;
+  gap: 12px;
+  min-height: 58px;
   width: 100%;
-  padding: .85rem .9rem;
+  padding: 8px 12px 8px 8px;
+  border: 1px solid color-mix(in srgb, var(--public-accent) 13%, var(--public-line));
   border-radius: var(--public-radius-section);
-  background: var(--public-accent-soft);
-  border: 1px solid color-mix(in srgb, var(--public-accent) 13%, transparent);
+  background: linear-gradient(180deg, #fff, var(--public-accent-soft));
   color: var(--public-ink);
   text-align: left;
   text-decoration: none;
-  transition: transform 120ms ease, box-shadow 120ms ease;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, .035);
+  transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
 }
 
-
-
-.public-theme-service .public-link:hover {
-  transform: translateY(-2px);
-  color: var(--public-ink);
-  box-shadow: 0 14px 30px rgba(15, 35, 28, .10);
-}
-
-
-
+.public-theme-service .public-link:hover,
 .public-theme-service .public-link:focus-visible {
-  outline: 2px solid var(--public-accent);
-  outline-offset: 2px;
+  color: var(--public-ink);
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--public-accent) 28%, var(--public-line));
+  box-shadow: var(--public-shadow-soft);
 }
-
-
 
 .public-theme-service .public-link span {
   width: 40px;
   height: 40px;
-  border-radius: var(--nb-radius-lg);
   display: grid;
   place-items: center;
+  border-radius: 12px;
   background: #fff;
   color: var(--public-accent);
+  box-shadow: inset 0 0 0 1px rgba(15,23,42,.06);
 }
-
-
 
 .public-theme-service .public-link strong {
-  font-family: var(--nb-font-ui);
-  font-size: var(--nb-text-sm);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--nb-font-ui, Inter, system-ui, sans-serif);
+  font-size: var(--nb-text-sm, .875rem);
   font-weight: 700;
 }
-
-
 
 .public-theme-service .public-link-arrow {
   color: var(--public-muted);
 }
 
-
-
-/* ----------------------------------------------------------
-   7. Search
-   ---------------------------------------------------------- */
-
-
+/* ------------------------------------------------------------
+   6. SEARCH
+   ------------------------------------------------------------ */
 .public-theme-service .public-search-wrap {
+  min-width: 0;
   display: flex;
   align-items: center;
-  gap: .7rem;
-  margin-bottom: var(--nb-space-4);
-  padding: .8rem .95rem;
+  gap: .65rem;
+  padding: .78rem .9rem;
+  margin-bottom: 14px;
   border: 1px solid var(--public-line);
   border-radius: var(--public-radius-section);
   background: var(--public-surface);
   color: var(--public-muted);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.75);
 }
 
-
-
 .public-theme-service .public-search-wrap input {
+  min-width: 0;
   width: 100%;
   border: 0;
   outline: 0;
   background: transparent;
   color: var(--public-ink);
-  font-family: var(--nb-font-ui);
-  font-size: var(--nb-text-sm);
+  font-family: var(--nb-font-ui, Inter, system-ui, sans-serif);
+  font-size: var(--nb-text-sm, .875rem);
 }
-
-
-
-.public-theme-service .public-search-wrap input:focus-visible {
-  outline: none;
-}
-
-
 
 .public-theme-service .public-search-wrap:focus-within {
-  border-color: var(--public-accent);
+  border-color: color-mix(in srgb, var(--public-accent) 45%, var(--public-line));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--public-accent) 10%, transparent);
 }
 
-
-
-/* ----------------------------------------------------------
-   8. Product grid + card
-   ---------------------------------------------------------- */
-
-
+/* ------------------------------------------------------------
+   7. PRODUCTS
+   ------------------------------------------------------------ */
 .public-theme-service .public-products-grid {
   display: grid;
-  grid-template-columns: 1fr; /* < 360px: 1 column */
-  gap: var(--nb-space-3);
+  grid-template-columns: 1fr;
+  gap: 12px;
 }
-
-
-
-@media (min-width: 360px)  {
-  .public-theme-service .public-products-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-
-
-@media (min-width: 768px)  {
-  .public-theme-service .public-products-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--nb-space-4);
-  }
-}
-
-
 
 .public-theme-service .public-product-card {
-  border: 1px solid var(--public-line);
-  border-radius: var(--nb-radius-lg);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
+  border: 1px solid var(--public-line);
+  border-radius: 18px;
   background: var(--public-surface);
-  box-shadow: var(--nb-shadow-1);
+  box-shadow: 0 8px 24px rgba(15,23,42,.06);
+  transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
 }
 
-
-
-.public-theme-service .public-product-card.is-featured {
-  border-color: color-mix(in srgb, var(--public-accent) 35%, #fff);
+.public-theme-service .public-product-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--public-accent) 24%, var(--public-line));
+  box-shadow: 0 14px 30px rgba(15,23,42,.09);
 }
-
-
 
 .public-theme-service .public-product-card.is-highlighted {
-  outline: 2px solid var(--public-accent);
-  outline-offset: 2px;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--public-accent) 18%, transparent), 0 14px 30px rgba(15,23,42,.08);
 }
-
-
 
 .public-theme-service .public-product-media {
   position: relative;
-  aspect-ratio: 1 / .82;
-  background: linear-gradient(135deg, var(--nb-surface-2), #fff);
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: var(--public-surface-2);
 }
 
-
-
 .public-theme-service .public-product-media img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-
-
+.public-theme-service .public-featured-badge,
 .public-theme-service .public-product-category {
   position: absolute;
-  left: 10px;
-  top: 10px;
-  border-radius: var(--nb-radius-round);
-  padding: .28rem .55rem;
-  background: rgba(255, 255, 255, .92);
-  color: var(--public-accent);
-  font-size: .68rem;
-  font-weight: 700;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, .10);
-}
-
-
-
-.public-theme-service .public-featured-badge {
-  position: absolute;
-  right: 10px;
   top: 10px;
   z-index: 2;
-  width: 34px;
-  height: 34px;
+  border-radius: 999px;
+  font-size: .7rem;
+  font-weight: 800;
+}
+
+.public-theme-service .public-featured-badge {
+  right: 10px;
+  width: 32px;
+  height: 32px;
   display: grid;
   place-items: center;
-  border-radius: var(--nb-radius-round);
   background: #fff;
   color: var(--public-accent);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, .14);
+  box-shadow: 0 8px 20px rgba(15,23,42,.12);
 }
 
-
+.public-theme-service .public-product-category {
+  left: 10px;
+  padding: .34rem .56rem;
+  background: rgba(255,255,255,.94);
+  color: var(--public-accent);
+  box-shadow: 0 8px 18px rgba(15,23,42,.09);
+}
 
 .public-theme-service .public-product-body {
-  padding: var(--nb-space-3);
+  min-width: 0;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
 }
-
-
 
 .public-theme-service .public-product-body h3 {
   margin: 0;
-  font-family: var(--nb-font-ui);
-  font-size: var(--nb-text-md);
-  line-height: 1.25;
-  font-weight: 600;
-  letter-spacing: -.01em;
   color: var(--public-ink);
+  font-family: var(--nb-font-ui, Inter, system-ui, sans-serif);
+  font-size: var(--nb-text-md, 1rem);
+  line-height: 1.28;
+  font-weight: 800;
 }
 
-
-
 .public-theme-service .public-product-body p {
-  margin: 6px 0 var(--nb-space-3);
+  margin: 0;
   color: var(--public-muted);
-  font-size: var(--nb-text-xs);
+  font-size: var(--nb-text-xs, .75rem);
   line-height: 1.45;
-  /* Keep description on mobile instead of hiding it — clamp to 2 lines. */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  min-height: calc(1.45 * var(--nb-text-xs) * 2);
 }
-
-
 
 .public-theme-service .public-product-foot {
-  display: grid;
-  gap: var(--nb-space-3);
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 4px;
 }
-
-
 
 .public-theme-service .public-product-foot strong {
   color: var(--public-accent);
-  font-size: var(--nb-text-md);
-  font-weight: 700;
+  font-size: var(--nb-text-md, 1rem);
+  font-weight: 800;
 }
-
-
 
 .public-theme-service .public-product-actions {
   display: flex;
-  gap: .5rem;
+  gap: 8px;
 }
 
-
-
 .public-theme-service .public-buy-btn {
+  min-width: 0;
   flex: 1;
+  min-height: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: .5rem;
+  gap: .45rem;
+  padding: .7rem .8rem;
   border: 0;
-  border-radius: var(--nb-radius-lg);
-  padding: .72rem .85rem;
-  min-height: 44px;
-  background: linear-gradient(135deg, var(--public-accent), var(--public-accent-strong));
+  border-radius: 12px;
+  background: var(--public-accent);
   color: #fff;
-  font-family: var(--nb-font-ui);
-  font-weight: 700;
-  box-shadow: 0 12px 26px color-mix(in srgb, var(--public-accent) 22%, transparent);
+  font-family: var(--nb-font-ui, Inter, system-ui, sans-serif);
+  font-weight: 800;
   cursor: pointer;
+  box-shadow: 0 10px 22px color-mix(in srgb, var(--public-accent) 20%, transparent);
 }
 
-
-
-.public-theme-service .public-buy-btn:focus-visible,
-.public-theme-service .public-share-btn:focus-visible {
-  outline: 2px solid var(--public-accent);
-  outline-offset: 2px;
+.public-theme-service .public-buy-btn:hover {
+  background: var(--public-accent-strong);
 }
-
-
 
 .public-theme-service .public-share-btn {
   width: 44px;
@@ -609,181 +488,260 @@
   display: inline-grid;
   place-items: center;
   border: 1px solid var(--public-line);
-  border-radius: var(--nb-radius-lg);
+  border-radius: 12px;
   background: var(--public-surface);
   color: var(--public-ink-soft);
   cursor: pointer;
 }
 
+.public-theme-service .public-buy-btn:focus-visible,
+.public-theme-service .public-share-btn:focus-visible {
+  outline: 2px solid var(--public-accent);
+  outline-offset: 2px;
+}
 
-
-/* ----------------------------------------------------------
-   9. Gallery strip
-   ---------------------------------------------------------- */
-
-
+/* ------------------------------------------------------------
+   8. GALLERY
+   ------------------------------------------------------------ */
 .public-theme-service .public-gallery-strip {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: minmax(132px, 180px);
-  gap: var(--nb-space-3);
+  grid-auto-columns: minmax(144px, 200px);
+  gap: 12px;
   overflow-x: auto;
   padding: 2px 2px 10px;
-  scroll-snap-type: x mandatory;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
 }
-
-
 
 .public-theme-service .public-gallery-card {
+  min-width: 0;
   margin: 0;
-  scroll-snap-align: start;
-  border-radius: var(--nb-radius-lg);
-  border: 1px solid var(--public-line);
   overflow: hidden;
+  border: 1px solid var(--public-line);
+  border-radius: 16px;
   background: var(--public-surface);
-  box-shadow: var(--nb-shadow-1);
+  box-shadow: var(--nb-shadow-1, 0 6px 18px rgba(15,23,42,.06));
+  scroll-snap-align: start;
 }
-
-
 
 .public-theme-service .public-gallery-card img {
-  width: 100%;
-  height: 150px;
-  object-fit: cover;
-  background: var(--nb-surface-2);
   display: block;
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  background: var(--public-surface-2);
 }
-
-
 
 .public-theme-service .public-gallery-card figcaption {
-  padding: var(--nb-space-3);
-  font-size: var(--nb-text-xs);
-  font-weight: 600;
+  padding: 10px 12px;
   color: var(--public-ink-soft);
+  font-size: var(--nb-text-xs, .75rem);
+  line-height: 1.35;
+  font-weight: 700;
 }
 
-
-
-/* ----------------------------------------------------------
-   10. Footer
-   ---------------------------------------------------------- */
-
-
+/* ------------------------------------------------------------
+   9. FOOTER + FLOATING CTA
+   ------------------------------------------------------------ */
 .public-theme-service .public-footer {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: var(--nb-space-6);
-  padding-top: var(--nb-space-4);
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin-top: 28px;
+  padding-top: 18px;
   border-top: 1px solid var(--public-line);
   color: var(--public-muted);
-  font-size: var(--nb-text-xs);
+  font-size: var(--nb-text-xs, .75rem);
   font-weight: 600;
+  text-align: center;
 }
-
-
 
 .public-theme-service .public-footer .public-powered {
   color: var(--public-accent);
 }
-
-
-
-/* ----------------------------------------------------------
-   11. Floating CTA
-   ---------------------------------------------------------- */
-
 
 .public-theme-service .public-floating-wa {
   position: fixed;
   right: max(18px, env(safe-area-inset-right));
   bottom: max(18px, env(safe-area-inset-bottom));
   z-index: 30;
-  width: 58px;
-  height: 58px;
+  width: 56px;
+  height: 56px;
   display: grid;
   place-items: center;
-  border-radius: var(--nb-radius-round);
+  border: 3px solid #fff;
+  border-radius: 999px;
   background: #111827;
   color: #fff;
-  border: 4px solid #fff;
-  box-shadow: 0 18px 44px rgba(15, 23, 42, .24);
-  font-size: 1.35rem;
-  transition: transform 120ms ease;
+  box-shadow: 0 18px 42px rgba(15,23,42,.22);
+  font-size: 1.25rem;
 }
 
-
-
-.public-theme-service .public-floating-wa:hover,
-.public-theme-service .public-floating-wa:focus-visible {
-  color: #fff;
-  transform: translateY(-2px);
-}
-
-
-
-/* ----------------------------------------------------------
-   12. States
-   ---------------------------------------------------------- */
-
-
-
-/* Loading / empty (root only shows plain text via JS; style the
-   container so it doesn't look broken while JS hasn't rendered yet
-   or when a store/product genuinely has nothing to show). */
-
-
+/* ------------------------------------------------------------
+   10. STATES / ACCESSIBILITY
+   ------------------------------------------------------------ */
 .public-theme-service .empty-state {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 40vh;
-  padding: var(--nb-space-6);
+  padding: 24px;
+  color: var(--nb-muted, #64748b);
+  background: transparent;
   text-align: center;
-  font-family: var(--nb-font-ui);
-  font-size: var(--nb-text-sm);
-  color: var(--nb-muted);
-  background: var(--nb-canvas);
+  font-family: var(--nb-font-ui, Inter, system-ui, sans-serif);
 }
-
-
 
 .public-theme-service #productsBox .empty-state {
   grid-column: 1 / -1;
-  min-height: 0;
-  padding: var(--nb-space-8) var(--nb-space-4);
+  min-height: 180px;
+  padding: 24px;
   border: 1px dashed var(--public-line);
-  border-radius: var(--nb-radius-lg);
+  border-radius: 16px;
   background: var(--public-surface);
 }
 
+.public-theme-service a:focus-visible,
+.public-theme-service button:focus-visible,
+.public-theme-service input:focus-visible {
+  outline: 2px solid var(--public-accent);
+  outline-offset: 3px;
+}
 
+/* ------------------------------------------------------------
+   11. MOBILE TUNING
+   ------------------------------------------------------------ */
+@media (max-width: 359px) {
+  .public-theme-service {
+    padding: 12px;
+  }
 
-@media (prefers-reduced-motion: reduce)  {
+  .public-theme-service .public-card {
+    border-radius: 22px;
+  }
+
+  .public-theme-service .public-body {
+    padding: 18px;
+  }
+
+  .public-theme-service .public-products-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 360px) and (max-width: 767px) {
+  .public-theme-service .public-products-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ------------------------------------------------------------
+   12. TABLET
+   ------------------------------------------------------------ */
+@media (min-width: 768px) and (max-width: 991px) {
+  .public-theme-service {
+    padding: 28px;
+  }
+
+  .public-theme-service .public-card {
+    width: min(100%, 920px);
+  }
+
+  .public-theme-service .public-hero {
+    padding: 54px 42px;
+  }
+
+  .public-theme-service .public-body {
+    padding: 34px;
+  }
+
+  .public-theme-service .public-products-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ------------------------------------------------------------
+   13. DESKTOP — INTENTIONALLY DIFFERENT FROM MOBILE
+   ------------------------------------------------------------ */
+@media (min-width: 992px) {
+  .public-theme-service {
+    padding: clamp(36px, 4vw, 64px);
+  }
+
+  .public-theme-service .public-card {
+    width: min(100%, 1200px);
+    display: grid;
+    grid-template-columns: minmax(350px, .78fr) minmax(0, 1.22fr);
+    align-items: stretch;
+    border-radius: 30px;
+  }
+
+  .public-theme-service .public-hero {
+    min-height: 720px;
+    align-items: center;
+    justify-content: center;
+    padding: 58px 44px;
+    text-align: center;
+  }
+
+  .public-theme-service .public-avatar {
+    width: 112px;
+    height: 112px;
+  }
+
+  .public-theme-service .public-identity {
+    max-width: 470px;
+  }
+
+  .public-theme-service .public-identity h1 {
+    font-size: clamp(3rem, 4.5vw, 4.6rem);
+  }
+
+  .public-theme-service .public-body {
+    min-width: 0;
+    padding: 42px;
+  }
+
+  .public-theme-service .public-products-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .public-theme-service .public-product-media {
+    aspect-ratio: 1 / 1.08;
+  }
+
+  .public-theme-service .public-gallery-strip {
+    grid-auto-columns: minmax(180px, 220px);
+  }
+}
+
+@media (min-width: 1200px) {
+  .public-theme-service .public-card {
+    grid-template-columns: minmax(390px, .78fr) minmax(0, 1.22fr);
+  }
+
+  .public-theme-service .public-products-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* ------------------------------------------------------------
+   14. REDUCED MOTION
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .public-theme-service .public-social,
   .public-theme-service .public-link,
-.public-theme-service .public-social,
-.public-theme-service .public-floating-wa,
-.public-theme-service .public-buy-btn {
+  .public-theme-service .public-product-card {
     transition: none;
   }
+
+  .public-theme-service .public-social:hover,
   .public-theme-service .public-link:hover,
-.public-theme-service .public-social:hover,
-.public-theme-service .public-floating-wa:hover {
+  .public-theme-service .public-product-card:hover {
     transform: none;
   }
 }
-
-
-
-/* ----------------------------------------------------------
-   13. Theme layer — service (baseline theme)
-   ---------------------------------------------------------- */
-
-
-.public-theme-service {
-  --public-accent: var(--nb-green-700);
-}
-
