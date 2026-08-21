@@ -1,73 +1,71 @@
-# Update Guide — NiagaBio
+# Update Guide NiagaBio
 
-Gunakan panduan ini untuk perubahan source tanpa merusak flow existing.
+Panduan ini dipakai setiap kali mengganti file supaya update tidak merusak login, checkout, RLS, atau dashboard.
 
-## Wajib sebelum edit
+## Urutan update aman
 
-1. Baca `PRD.md` dan `SkilAi.md`.
-2. Baca `Folder-structure.md`.
-3. Tentukan file owner fitur.
-4. Cek dependency HTML → JS → CSS → Supabase bila relevan.
-5. Jangan ubah file lain yang tidak dibutuhkan.
+1. Download/backup ZIP project yang sedang jalan.
+2. Baca daftar file berubah dari patch.
+3. Replace file sesuai path yang sama.
+4. Kalau patch membawa file SQL baru, jalankan SQL itu di Supabase SQL Editor.
+5. Deploy ulang ke Vercel.
+6. Test flow utama.
 
-## Urutan debugging
+## Jangan dilakukan
 
-```text
-Reproduce
-→ HTML/DOM
-→ CSS/JS asset loading
-→ event/data flow
-→ Network
-→ Supabase/RLS
-→ patch akar masalah
-→ regression test
-```
+- Jangan run ulang `supabase/01_schema_clean_run_this.sql` di database production yang sudah berisi data.
+- Jangan masukkan `service_role` key ke `assets/js/config.js`.
+- Jangan ubah `role`, `plan`, `status`, `plan_end_date` dari frontend.
+- Jangan mematikan RLS untuk debugging production.
+- Jangan mengaktifkan `DEMO_MODE` di domain production.
 
-Untuk masalah visual, selalu cek asset CSS/JS yang benar-benar loaded sebelum menyimpulkan masalah database.
-
-## Aturan Supabase
-
-- Jangan run `01_schema_clean_run_this.sql` ulang di production.
-- Jangan disable RLS.
-- Jangan gunakan service-role key di frontend.
-- Patch baru harus dibaca sebelum dijalankan.
-- Audit read-only dapat dipakai untuk verifikasi.
-
-## Setelah perubahan
-
-### Frontend
-- syntax JS valid
-- tidak ada asset path yang rusak
-- halaman target terbuka
-- flow utama terkait tetap berjalan
+## Checklist setelah deploy
 
 ### Seller
-- login
-- profile
-- products
-- links/social/gallery
-- theme
-- checkout settings
-- orders
 
-### Public
-- public store tampil
-- theme class diterapkan
-- product/link tampil
-- checkout dapat dibuka
+- Login berhasil.
+- Dashboard terbuka.
+- Profil toko bisa disimpan.
+- Produk bisa ditambah/edit/hapus.
+- Upload gambar produk berhasil.
+- Link/social/gallery tetap tampil.
+- QRIS setting bisa disimpan.
+
+### Pembeli
+
+- Toko publik `/u?username=...` tampil.
+- Share toko/produk `/s/...` tampil dan redirect benar.
+- Checkout wajib upload bukti bayar.
+- Order masuk dashboard seller.
 
 ### Admin
-- access control
-- premium review
-- user management
-- settings
-- audit log
 
-## Rollback
+- Admin page terbuka hanya untuk admin.
+- Approve/reject premium berjalan.
+- Bukti premium private bisa dibuka.
+- Block/unblock user berjalan.
+- Maintenance/register setting berjalan.
+- Audit log tercatat.
 
-Jika bug fatal:
+### Security quick check
 
-1. rollback deployment Vercel ke deployment sehat
-2. jangan rollback SQL secara membabi buta
-3. simpan error, screenshot, dan patch terakhir
-4. analisis root cause sebelum patch berikutnya
+Jalankan query audit read-only jika ragu:
+
+```txt
+supabase/14_readonly_security_regression_audit.sql
+```
+
+Red flag yang wajib dicek:
+
+- `RLS_DISABLED`
+- `ORDER_DATA_RISK`
+- policy update/delete public tanpa `is_admin()` atau owner check
+- storage proof public untuk upload baru
+
+## Cara rollback
+
+Kalau setelah deploy ada bug fatal:
+
+1. Revert deployment di Vercel ke versi sebelumnya.
+2. Jangan langsung rollback SQL kecuali tahu dampaknya.
+3. Kirim error console, screenshot, dan file patch terakhir untuk dianalisis.

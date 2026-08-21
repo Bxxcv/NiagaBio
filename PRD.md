@@ -161,21 +161,3 @@ Task aktif berikutnya setelah dokumentasi:
 Fokus pada visual, konsistensi, hierarchy, spacing, typography, card/link/product treatment, responsive mobile-first, dan perbedaan karakter antar tema.
 
 Jangan mengubah logic tema, RPC, auth, RLS, atau schema kecuali dibutuhkan dan dibuktikan perlu.
-
-## 10. Implementasi CSS toko terkini
-
-Per 2026-08-20, `assets/css/v2/store.css` diposisikan sebagai **responsive store layer untuk tema `service`**, bukan pengganti `main.css` untuk semua tema.
-
-`u.html` memuat stylesheet dengan urutan:
-`main.css → foundation.css → store.css`.
-
-Aturan penting: `store.css` tidak boleh membuat selector `.public-*` global yang dapat menimpa 9 tema lama. Tema lain tetap memakai `main.css` sampai dimigrasikan secara sengaja.
-
-Responsive service:
-- `<360px`: single-column product grid dan padding dipadatkan.
-- `360–767px`: 2-column product grid bila cukup.
-- `768–991px`: 3-column product grid, shell lebih lebar.
-- `≥992px`: desktop layout dua kolom hero + body dan 3-column product grid.
-- `≥1200px`: desktop lebar dan 4-column product grid.
-
-Perubahan CSS tidak boleh mengubah business logic, RPC, auth, routing, atau checkout flow.
