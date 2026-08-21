@@ -1477,3 +1477,62 @@ html, body.public-page {
 @media (min-width: 1200px) {
   .public-theme-portfolio { --public-grid-cols: 4; }
 }
+
+
+/* ----------------------------------------------------------
+   Contrast fix — dark/tech/premium link sections
+   Keep link text/icons readable on dark and accent-tinted themes.
+   ---------------------------------------------------------- */
+.public-theme-gadget .public-link,
+.public-theme-dark .public-link,
+.public-theme-luxury .public-link,
+.public-theme-neon .public-link {
+  background: color-mix(in srgb, var(--public-surface) 88%, #fff 12%);
+  color: var(--public-ink);
+  border-color: var(--public-line);
+}
+
+.public-theme-gadget .public-link strong,
+.public-theme-dark .public-link strong,
+.public-theme-luxury .public-link strong,
+.public-theme-neon .public-link strong {
+  color: var(--public-ink);
+}
+
+.public-theme-gadget .public-link span,
+.public-theme-dark .public-link span,
+.public-theme-luxury .public-link span,
+.public-theme-neon .public-link span {
+  background: color-mix(in srgb, var(--public-surface) 76%, #fff 24%);
+  color: var(--public-accent);
+  border: 1px solid var(--public-line);
+}
+
+.public-theme-gadget .public-link span i,
+.public-theme-dark .public-link span i,
+.public-theme-luxury .public-link span i,
+.public-theme-neon .public-link span i {
+  color: var(--public-accent);
+}
+
+.public-theme-gadget .public-link-arrow,
+.public-theme-dark .public-link-arrow,
+.public-theme-luxury .public-link-arrow,
+.public-theme-neon .public-link-arrow {
+  color: var(--public-ink-soft);
+}
+
+.public-theme-gadget .public-section-head h2,
+.public-theme-dark .public-section-head h2,
+.public-theme-luxury .public-section-head h2,
+.public-theme-neon .public-section-head h2 {
+  color: var(--public-ink);
+}
+
+.public-theme-gadget .public-section-head span,
+.public-theme-dark .public-section-head span,
+.public-theme-luxury .public-section-head span,
+.public-theme-neon .public-section-head span {
+  background: color-mix(in srgb, var(--public-accent) 16%, transparent);
+  color: var(--public-accent);
+}

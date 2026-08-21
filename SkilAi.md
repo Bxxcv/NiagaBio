@@ -101,6 +101,14 @@ UI dan validasi database harus memiliki kontrak yang sama. Jangan menawarkan URL
 ### Security warning — BELUM DIANGGAP SELESAI
 Audit Supabase pernah menunjukkan beberapa warning terkait execute privilege `SECURITY DEFINER`. Jangan menandai semuanya selesai hanya karena SQL 13 berhasil dijalankan. Verifikasi dengan audit read-only dan function definition aktual sebelum mengklaim fixed.
 
+
+### PUBLIC STORE — LINK SECTION CONTRAST (FIX TERBARU)
+**Gejala:** pada tema `gadget` (Tech Dashboard), `dark` (Black Drop), `luxury` (Gold Signature), dan `neon` (Neon Creator), teks/keterangan link dan beberapa ikon pada `public-link-section` terlalu menyatu dengan background.
+
+**Akar masalah:** base `.public-link` memakai `--public-accent-soft` sebagai background dan mewarisi warna teks tema; pada tema gelap/aksen terang kombinasi tersebut menghasilkan kontras rendah. Icon wrapper juga menggunakan background putih dengan accent yang sangat terang.
+
+**Fix:** `assets/css/v2/store.css` menambahkan override khusus empat tema untuk background link, warna teks, icon wrapper/icon, arrow, dan section heading. Tidak mengubah JS, DOM contract, auth, RPC, atau database.
+
 ## 6. ATURAN DATABASE
 
 - Production database: jangan run `01_schema_clean_run_this.sql` ulang.
