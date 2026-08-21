@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   };
   let allOrders = [];
   let filteredOrders = [];
+  let sellerProfile = null;
 
   function badge(status) {
     if (status === 'paid') return '<span class="badge text-bg-success">selesai</span>';
@@ -124,6 +125,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             <a class="nb-btn nb-btn-commerce nb-btn-sm ${order.buyer_phone ? '' : 'disabled'}" href="${NB.safeHref(buyerWaUrl(order))}" target="_blank" rel="noopener" title="WhatsApp pembeli"><i class="bi bi-whatsapp"></i></a>
             <button class="nb-btn nb-btn-commerce nb-btn-sm" data-paid="${NB.escapeHtml(order.id)}" ${order.payment_status === 'paid' ? 'disabled' : ''}>Selesai</button>
             <button class="nb-btn nb-btn-danger nb-btn-sm" data-cancel="${NB.escapeHtml(order.id)}" ${order.payment_status === 'cancelled' ? 'disabled' : ''}>Batal</button>
+            <button class="nb-btn nb-btn-ghost nb-btn-sm" data-print-note="${NB.escapeHtml(order.id)}" title="Cetak nota"><i class="bi bi-printer"></i></button>
           </div>
         </td>
       </tr>
@@ -151,9 +153,150 @@ document.addEventListener('DOMContentLoaded', async () => {
           <a class="nb-btn nb-btn-commerce nb-btn-sm ${order.buyer_phone ? '' : 'disabled'}" href="${NB.safeHref(buyerWaUrl(order))}" target="_blank" rel="noopener"><i class="bi bi-whatsapp me-1"></i>WA</a>
           <button class="nb-btn nb-btn-commerce nb-btn-sm" data-paid="${NB.escapeHtml(order.id)}" ${order.payment_status === 'paid' ? 'disabled' : ''}>Selesai</button>
           <button class="nb-btn nb-btn-danger nb-btn-sm" data-cancel="${NB.escapeHtml(order.id)}" ${order.payment_status === 'cancelled' ? 'disabled' : ''}>Batal</button>
+          <button class="nb-btn nb-btn-ghost nb-btn-sm" data-print-note="${NB.escapeHtml(order.id)}"><i class="bi bi-printer me-1"></i>Nota</button>
         </div>
       </article>
     `;
+  }
+
+  function paymentMethodLabel(value) {
+    const labels = {
+      whatsapp: 'WhatsApp',
+      qris_manual: 'QRIS Manual',
+      qris_whatsapp: 'QRIS + WhatsApp'
+    };
+    return labels[value] || value || '-';
+  }
+
+  function orderStatusLabel(value) {
+    const labels = { paid: 'Selesai', pending: 'Menunggu', cancelled: 'Dibatalkan' };
+    return labels[value] || value || '-';
+  }
+
+  function printSummary() {
+    try {
+      const { paid, pending, cancelled, totalOmset, pendingNominal, averageOrder, productRecap } = computeSummary(filteredOrders);
+      const sellerName = sellerProfile?.display_name || 'Toko NiagaBio';
+      const safe = value => NB.escapeHtml(value ?? '-');
+      const period = $('dateFilter')?.selectedOptions?.[0]?.textContent || 'Semua';
+      const topProducts = productRecap.slice(0, 5);
+      const popup = window.open('', '_blank', 'width=720,height=820');
+      if (!popup) {
+        nbToast('Popup diblokir browser. Izinkan popup untuk mencetak ringkasan.', 'warning');
+        return;
+      }
+
+      popup.document.open();
+      popup.document.write(`<!doctype html>
+<html lang="id">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ringkasan Penjualan</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f3f5f4;color:#111827;font:14px/1.5 Inter,Arial,sans-serif}.report{width:min(100%,680px);margin:24px auto;background:#fff;padding:28px;border:1px solid #e5e7eb;border-radius:16px}.head{border-bottom:1px solid #e5e7eb;padding-bottom:16px}.head h1{margin:0;font-size:22px}.head p{margin:4px 0 0;color:#64748b}.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:18px 0}.kpi{padding:14px;border:1px solid #e5e7eb;border-radius:12px}.kpi small{display:block;color:#64748b;margin-bottom:3px}.kpi b{font-size:18px}.title{font-weight:800;margin:20px 0 10px}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:9px 6px;border-bottom:1px solid #e5e7eb;text-align:left}.table th:last-child,.table td:last-child{text-align:right}.foot{margin-top:20px;color:#64748b;font-size:11px;text-align:center}.actions{text-align:center;margin:0 auto 18px}button{border:0;border-radius:9px;padding:9px 14px;background:#111827;color:#fff;font-weight:700}@media print{body{background:#fff}.report{width:100%;margin:0;border:0;border-radius:0;padding:0}.actions{display:none}}
+</style></head>
+<body>
+<div class="actions"><button onclick="window.print()">Cetak Ringkasan</button></div>
+<main class="report">
+  <header class="head"><h1>Ringkasan Penjualan</h1><p>${safe(sellerName)} · Periode ${safe(period)} · ${safe(new Date().toLocaleDateString('id-ID'))}</p></header>
+  <section class="kpis">
+    <div class="kpi"><small>Omset Selesai</small><b>${safe(NB.money(totalOmset))}</b></div>
+    <div class="kpi"><small>Pesanan Selesai</small><b>${paid.length}</b></div>
+    <div class="kpi"><small>Menunggu</small><b>${pending.length} · ${safe(NB.money(pendingNominal))}</b></div>
+    <div class="kpi"><small>Dibatalkan</small><b>${cancelled.length}</b></div>
+    <div class="kpi"><small>Rata-rata Order</small><b>${safe(NB.money(averageOrder))}</b></div>
+    <div class="kpi"><small>Total Pesanan</small><b>${filteredOrders.length}</b></div>
+  </section>
+  <div class="title">Top 5 Produk Berdasarkan Omset</div>
+  <table class="table"><thead><tr><th>Produk</th><th>Selesai</th><th>Qty</th><th>Omset</th></tr></thead><tbody>
+    ${topProducts.map(item => `<tr><td>${safe(item.product)}</td><td>${item.orders}</td><td>${item.qty}</td><td>${safe(NB.money(item.revenue))}</td></tr>`).join('') || '<tr><td colspan="4">Belum ada pesanan selesai.</td></tr>'}
+  </tbody></table>
+  <footer class="foot">Ringkasan dibuat dari pesanan yang sedang aktif pada filter halaman. Detail transaksi tetap tersedia di daftar Pesanan Masuk.</footer>
+</main></body></html>`);
+      popup.document.close();
+      popup.focus();
+      setTimeout(() => popup.print(), 300);
+    } catch (error) {
+      nbToast(error.message || 'Gagal menyiapkan ringkasan.', 'danger');
+    }
+  }
+
+  async function printNote(order) {
+    if (!order) return;
+
+    try {
+      if (!sellerProfile) {
+        try { sellerProfile = await NB.getProfile(user.id); } catch (_) { sellerProfile = null; }
+      }
+
+      const popup = window.open('', '_blank', 'width=480,height=760');
+      if (!popup) {
+        nbToast('Popup diblokir browser. Izinkan popup untuk mencetak nota.', 'warning');
+        return;
+      }
+
+      const sellerName = sellerProfile?.display_name || 'Toko NiagaBio';
+      const sellerUsername = sellerProfile?.username ? `@${sellerProfile.username}` : '';
+      const safe = value => NB.escapeHtml(value ?? '-');
+      const total = NB.money(order.total_price);
+      const qty = Number(order.quantity || 1);
+      const unitPrice = Number(order.total_price || 0) / Math.max(qty, 1);
+      const status = orderStatusLabel(order.payment_status);
+
+      popup.document.open();
+      popup.document.write(`<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nota ${safe(order.id)}</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#f3f5f4;color:#111827;font:14px/1.5 Inter,Arial,sans-serif}
+  .receipt{width:min(100%,420px);margin:24px auto;background:#fff;padding:28px;border:1px solid #e5e7eb;border-radius:16px}
+  .brand{text-align:center;padding-bottom:18px;border-bottom:1px dashed #cbd5e1}
+  .brand h1{margin:0;font-size:22px;letter-spacing:-.02em}
+  .brand p{margin:3px 0 0;color:#64748b;font-size:12px}
+  .title{margin:20px 0 12px;font-weight:800;font-size:16px}
+  .row{display:flex;justify-content:space-between;gap:18px;padding:7px 0}
+  .row span:first-child{color:#64748b}
+  .row span:last-child{text-align:right;font-weight:600;overflow-wrap:anywhere}
+  .items{margin:10px 0 16px;padding:12px 0;border-top:1px solid #e5e7eb;border-bottom:1px solid #e5e7eb}
+  .total{display:flex;justify-content:space-between;gap:18px;margin-top:14px;padding-top:14px;border-top:2px solid #111827;font-size:17px;font-weight:900}
+  .status{display:inline-block;margin-top:12px;padding:5px 10px;border-radius:999px;background:#ecfdf3;color:#047857;font-weight:800;font-size:12px}
+  .status.pending{background:#fffbeb;color:#a16207}.status.cancelled{background:#f1f5f9;color:#475569}
+  .foot{margin-top:22px;padding-top:14px;border-top:1px dashed #cbd5e1;text-align:center;color:#64748b;font-size:11px}
+  .actions{display:flex;justify-content:center;gap:8px;margin:0 auto 18px}
+  button{border:0;border-radius:9px;padding:9px 14px;background:#111827;color:#fff;font-weight:700;cursor:pointer}
+  @media print{body{background:#fff}.receipt{width:100%;margin:0;border:0;border-radius:0;padding:0}.actions{display:none}}
+</style>
+</head>
+<body>
+<div class="actions"><button onclick="window.print()">Cetak Nota</button><button onclick="window.close()">Tutup</button></div>
+<main class="receipt">
+  <header class="brand">
+    <h1>${safe(sellerName)}</h1>
+    <p>${safe(sellerUsername || 'NiagaBio')}</p>
+  </header>
+  <div class="title">Nota Pembelian</div>
+  <div class="row"><span>No. Pesanan</span><span>${safe(String(order.id).slice(0, 8).toUpperCase())}</span></div>
+  <div class="row"><span>Tanggal</span><span>${safe(formatDate(order.created_at))}</span></div>
+  <div class="row"><span>Pembeli</span><span>${safe(order.buyer_name)}</span></div>
+  <div class="row"><span>WhatsApp</span><span>${safe(order.buyer_phone)}</span></div>
+  <div class="items">
+    <div class="row"><span>${safe(order.product_name)}</span><span>${qty} × ${safe(NB.money(unitPrice))}</span></div>
+    <div class="row"><span>Metode Pembayaran</span><span>${safe(paymentMethodLabel(order.payment_method))}</span></div>
+  </div>
+  <div class="total"><span>Total</span><span>${safe(total)}</span></div>
+  <div class="status ${order.payment_status === 'pending' ? 'pending' : order.payment_status === 'cancelled' ? 'cancelled' : ''}">${safe(status)}</div>
+  <footer class="foot">Terima kasih telah berbelanja di ${safe(sellerName)}.<br>Nota dibuat dari NiagaBio.</footer>
+</main>
+</body>
+</html>`);
+      popup.document.close();
+      popup.focus();
+      setTimeout(() => popup.print(), 300);
+    } catch (error) {
+      nbToast(error.message || 'Gagal menyiapkan nota.', 'danger');
+    }
   }
 
   function attachActions(orders) {
@@ -163,6 +306,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.querySelectorAll('[data-cancel]').forEach(button => {
       button.addEventListener('click', async () => updateStatus(orders.find(item => String(item.id) === String(button.dataset.cancel)), 'cancelled'));
+    });
+
+    document.querySelectorAll('[data-print-note]').forEach(button => {
+      button.addEventListener('click', async () => printNote(orders.find(item => String(item.id) === String(button.dataset.printNote))));
     });
   }
 
@@ -179,7 +326,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     setText('orderBestProduct', productRecap[0]?.product || '-');
 
     if ($('recapRows')) {
-      $('recapRows').innerHTML = productRecap.map(item => `
+      $('recapRows').innerHTML = productRecap.slice(0, 5).map(item => `
         <tr>
           <td class="fw-semibold">${NB.escapeHtml(item.product)}</td>
           <td>${item.orders}</td>
@@ -283,7 +430,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   $('exportCsvBtn')?.addEventListener('click', exportCsv);
   $('resetRecapBtn')?.addEventListener('click', resetRecapData);
-  $('printBtn')?.addEventListener('click', () => window.print());
+  $('printBtn')?.addEventListener('click', printSummary);
 
   try {
     await loadOrders();

@@ -261,14 +261,16 @@ function nbToast(message, type = 'success') {
   let wrapper = document.querySelector('.toast-container');
   if (!wrapper) {
     wrapper = document.createElement('div');
-    wrapper.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+    wrapper.className = 'toast-container position-fixed top-0 start-50 translate-middle-x p-3';
+    wrapper.style.zIndex = '2000';
+    wrapper.style.pointerEvents = 'none';
     document.body.appendChild(wrapper);
   }
   
   const id = `toast_${Date.now()}`;
   const className = type === 'danger' ? 'text-bg-danger' : type === 'warning' ? 'text-bg-warning' : 'text-bg-success';
   wrapper.insertAdjacentHTML('beforeend', `
-    <div id="${id}" class="toast ${className}" role="alert">
+    <div id="${id}" class="toast ${className}" style="pointer-events:auto" role="alert">
       <div class="d-flex">
         <div class="toast-body fw-semibold">${nbEscape(message)}</div>
         <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
