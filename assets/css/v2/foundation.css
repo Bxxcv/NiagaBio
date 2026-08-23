@@ -809,3 +809,61 @@
   .nb-file-picker { grid-template-columns: 40px minmax(0,1fr); }
   .nb-file-picker-action { grid-column: 2; justify-self: start; }
 }
+
+
+/* ----------------------------------------------------------
+   FILE INPUT POLISH — SELLER/ADMIN/UPLOAD FORMS
+   Keep native input semantics; style the browser file button.
+   Product editor's custom picker is excluded via .nb-file-input-native.
+   ---------------------------------------------------------- */
+input[type="file"]:not(.nb-file-input-native) {
+  width: 100%;
+  min-height: 44px;
+  padding: 6px;
+  border: 1px solid var(--nb-line-strong, #cfd7df);
+  border-radius: 12px;
+  background: var(--nb-surface, #fff);
+  color: var(--nb-ink-soft, #344054);
+  font-family: var(--nb-font-ui);
+  font-size: var(--nb-text-sm);
+  line-height: 1.4;
+  cursor: pointer;
+}
+input[type="file"]:not(.nb-file-input-native):hover {
+  border-color: var(--nb-green-600, #128044);
+  background: var(--nb-canvas, #f7f9fb);
+}
+input[type="file"]:not(.nb-file-input-native):focus-visible {
+  outline: 2px solid var(--nb-navy-800, #05284f);
+  outline-offset: 2px;
+}
+input[type="file"]:not(.nb-file-input-native)::file-selector-button {
+  margin-right: 10px;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--nb-line-strong, #cfd7df);
+  border-radius: 9px;
+  background: var(--nb-navy-900, #05284f);
+  color: #fff;
+  font-family: var(--nb-font-ui);
+  font-size: var(--nb-text-xs);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 120ms ease, transform 120ms ease;
+}
+input[type="file"]:not(.nb-file-input-native):hover::file-selector-button {
+  background: var(--nb-navy-800, #0a3d70);
+}
+input[type="file"]:not(.nb-file-input-native):active::file-selector-button {
+  transform: translateY(1px);
+}
+@media (max-width: 575.98px) {
+  input[type="file"]:not(.nb-file-input-native) {
+    font-size: var(--nb-text-xs);
+    padding: 5px;
+  }
+  input[type="file"]:not(.nb-file-input-native)::file-selector-button {
+    min-height: 38px;
+    padding: 0 12px;
+  }
+}

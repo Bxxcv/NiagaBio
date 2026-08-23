@@ -177,3 +177,10 @@ Non-scope:
 - Input harga produk dan Harga Premium memakai format visual Rupiah (`Rp 80.000`) tetapi diparse menjadi integer sebelum disimpan. Jangan gunakan `Number()` langsung pada string berformat Rupiah.
 - File upload seller/admin memakai custom file-picker UI; input native tetap ada untuk menjaga browser file chooser dan logic upload existing.
 - Toast aplikasi berada di kanan atas dengan radius ringan.
+
+## Latest UI/UX regression fixes — 2026-08-24
+- Product editor modal: enforce mobile viewport scrolling with bounded modal height + scrollable body; preview panel becomes non-sticky on mobile.
+- Product editor header: remove the decorative "Katalog" eyebrow/icon; do not show unused labels.
+- Upload controls: polish native file inputs globally while preserving native file semantics and existing upload handlers. Custom product-editor file picker remains excluded.
+- Orders KPI: protect long Rupiah values (`#orderOmset`, pending/average totals) from wrapping/overlap on narrow screens.
+- No Supabase schema, RPC, auth, routing, checkout logic, or business logic changed.

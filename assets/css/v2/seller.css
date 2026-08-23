@@ -422,3 +422,84 @@ body.sidebar-open .sidebar-overlay {
 .nb-toast-stack { margin-top:8px; }
 .nb-app-toast { border-radius:12px; border:1px solid rgba(255,255,255,.14); overflow:hidden; }
 @media (max-width:767.98px) { .nb-product-form-grid{grid-template-columns:1fr;} .nb-product-preview-card{position:static;} .nb-product-modal-header{padding:18px;} .nb-product-modal-footer{padding:14px 18px;} }
+
+
+/* ----------------------------------------------------------
+   PRODUCT MODAL — MOBILE SCROLL SAFETY + COMFORT
+   ---------------------------------------------------------- */
+.nb-product-modal-dialog {
+  width: min(960px, calc(100vw - 1rem));
+  max-width: 960px;
+  margin: .5rem auto;
+}
+.nb-product-modal-dialog .nb-product-modal {
+  max-height: calc(100dvh - 1rem);
+  display: flex;
+  flex-direction: column;
+}
+.nb-product-modal-dialog .nb-product-modal-header,
+.nb-product-modal-dialog .nb-product-modal-footer {
+  flex: 0 0 auto;
+}
+.nb-product-modal-dialog .nb-product-modal form,
+.nb-product-modal-dialog .nb-product-modal .modal-body {
+  min-height: 0;
+}
+.nb-product-modal-dialog .nb-product-modal .modal-body {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+@media (max-width: 767.98px) {
+  .nb-product-modal-dialog {
+    width: calc(100vw - .5rem);
+    max-width: none;
+    margin: .25rem auto;
+    min-height: calc(100dvh - .5rem);
+  }
+  .nb-product-modal-dialog .nb-product-modal {
+    max-height: calc(100dvh - .5rem);
+    border-radius: 16px;
+  }
+  .nb-product-modal-dialog .modal-body {
+    padding: 16px;
+  }
+  .nb-product-modal-dialog .nb-product-modal-footer {
+    gap: 8px;
+  }
+  .nb-product-modal-dialog .nb-product-modal-footer .nb-btn {
+    flex: 1 1 0;
+  }
+}
+
+/* ----------------------------------------------------------
+   ORDER KPIs — MOBILE TYPOGRAPHY GUARD
+   ---------------------------------------------------------- */
+#orderOmset,
+#orderTotal,
+#orderPending,
+#orderPaid,
+#orderPendingNominal,
+#orderAverage {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 575.98px) {
+  #orderOmset,
+  #orderTotal,
+  #orderPending,
+  #orderPaid,
+  #orderPendingNominal,
+  #orderAverage {
+    font-size: clamp(1rem, 5.2vw, 1.45rem);
+    line-height: 1.15;
+    letter-spacing: -.035em;
+  }
+  .nb-content .nb-panel .p-4 {
+    padding: 16px !important;
+  }
+}
