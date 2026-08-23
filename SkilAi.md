@@ -170,3 +170,10 @@ Non-scope:
 - ubah auth/RLS
 - ubah business logic
 - ubah checkout/order flow tanpa alasan kuat
+
+
+### Seller UI — PRODUCT EDITOR / PRICE INPUT / FILE UPLOAD
+- Produk memakai modal editor yang sama untuk Tambah dan Edit; save tetap melalui `NB.save('products', ...)`, upload tetap melalui `NB.uploadFile()`, dan edit tanpa upload baru mempertahankan `image_url` lama.
+- Input harga produk dan Harga Premium memakai format visual Rupiah (`Rp 80.000`) tetapi diparse menjadi integer sebelum disimpan. Jangan gunakan `Number()` langsung pada string berformat Rupiah.
+- File upload seller/admin memakai custom file-picker UI; input native tetap ada untuk menjaga browser file chooser dan logic upload existing.
+- Toast aplikasi berada di kanan atas dengan radius ringan.

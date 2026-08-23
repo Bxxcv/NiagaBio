@@ -9,10 +9,54 @@ document.addEventListener('DOMContentLoaded', async () => {
   productLimitInfo.textContent = `${NB.isPremium(profile) ? 'Premium' : 'Free'}: maksimal ${limit} produk`;
 
   let editing = null;
+  const modalElement = document.getElementById('productEditorModal');
+  const productModal = modalElement && window.bootstrap ? bootstrap.Modal.getOrCreateInstance(modalElement) : null;
+  const imagePreview = document.getElementById('productImagePreview');
+  const imageName = document.getElementById('productImageName');
+  const previewName = document.getElementById('productPreviewName');
+  const previewPrice = document.getElementById('productPreviewPrice');
+  const previewCategory = document.getElementById('productPreviewCategory');
+
+  function updatePreview() {
+    previewName.textContent = productName.value.trim() || 'Nama produk';
+    previewPrice.textContent = nbFormatRupiah(productPrice.value) || 'Rp 0';
+    previewCategory.textContent = productCategory.value.trim() || 'Kategori';
+  }
+
+  function resetEditor() {
+    editing = null;
+    productForm.reset();
+    productFormTitle.textContent = 'Tambah Produk';
+    nbSetRupiahInputValue(productPrice, '');
+    imageName.textContent = 'JPG, PNG, atau WebP · Maks. 2 MB';
+    imagePreview.innerHTML = '<img src="assets/img/placeholder-product.svg" alt="Preview produk">';
+    updatePreview();
+  }
+
+  function openEditor(product = null) {
+    if (product) {
+      editing = product;
+      productName.value = product.name || '';
+      nbSetRupiahInputValue(productPrice, product.price || 0);
+      productCategory.value = product.category || '';
+      productDescription.value = product.description || '';
+      productFeatured.checked = Boolean(product.is_featured);
+      productFormTitle.textContent = 'Edit Produk';
+      imageName.textContent = 'Pilih gambar baru untuk mengganti gambar saat ini';
+      imagePreview.innerHTML = `<img src="${NB.safeImageUrl(product.image_url || 'assets/img/placeholder-product.svg')}" alt="Preview produk">`;
+    } else {
+      resetEditor();
+    }
+    updatePreview();
+    productModal?.show();
+  }
+
 
   async function render() {
     const rows = await NB.list('products', user.id);
     productCount.textContent = rows.length;
+    const productCountList = document.getElementById('productCountList');
+    if (productCountList) productCountList.textContent = rows.length;
     productRows.innerHTML = rows.map(product => `
       <tr>
         <td>
@@ -35,7 +79,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     document.querySelectorAll('[data-edit]').forEach(button => {
-      button.addEventListener('click', () => fill(rows.find(item => item.id === button.dataset.edit)));
+      button.addEventListener('click', () => openEditor(rows.find(item => item.id === button.dataset.edit)));
     });
 
     document.querySelectorAll('[data-del]').forEach(button => {
@@ -83,22 +127,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  function fill(product) {
-    if (!product) return;
-    editing = product;
-    productName.value = product.name || '';
-    productPrice.value = product.price || '';
-    productCategory.value = product.category || '';
-    productDescription.value = product.description || '';
-    productFeatured.checked = Boolean(product.is_featured);
-    productFormTitle.textContent = 'Edit Produk';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+  document.getElementById('openProductEditor')?.addEventListener('click', () => openEditor());
 
   resetProduct.addEventListener('click', () => {
-    editing = null;
-    productForm.reset();
-    productFormTitle.textContent = 'Tambah Produk';
+    resetEditor();
+    productModal?.hide();
+  });
+
+  [productName, productCategory, productPrice].forEach(input => input?.addEventListener('input', updatePreview));
+
+  productImage.addEventListener('change', () => {
+    const file = productImage.files?.[0];
+    if (!file) {
+      imageName.textContent = editing ? 'Pilih gambar baru untuk mengganti gambar saat ini' : 'JPG, PNG, atau WebP · Maks. 2 MB';
+      return;
+    }
+    imageName.textContent = file.name;
+    const url = URL.createObjectURL(file);
+    imagePreview.innerHTML = `<img src="${url}" alt="Preview gambar produk">`;
   });
 
   productForm.addEventListener('submit', async event => {
@@ -113,6 +159,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     button.disabled = true;
 
     try {
+      const wasEditing = Boolean(editing);
       let imageUrl = editing?.image_url || 'assets/img/placeholder-product.svg';
       if (productImage.files[0]) imageUrl = await NB.uploadFile(productImage.files[0], 'products');
 
@@ -120,7 +167,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         id: editing?.id || NB.uid('prd'),
         user_id: user.id,
         name: productName.value.trim(),
-        price: Number(productPrice.value || 0),
+        price: nbParseRupiah(productPrice.value),
         category: productCategory.value.trim(),
         description: productDescription.value.trim(),
         image_url: imageUrl,
@@ -130,10 +177,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         created_at: editing?.created_at || NB.now()
       });
 
-      editing = null;
-      productForm.reset();
       productFormTitle.textContent = 'Tambah Produk';
-      nbToast('Produk tersimpan.');
+      nbToast(wasEditing ? 'Perubahan produk tersimpan.' : 'Produk baru tersimpan.');
+      productModal?.hide();
+      resetEditor();
       render();
     } catch (error) {
       nbToast(error.message || 'Gagal simpan produk.', 'danger');

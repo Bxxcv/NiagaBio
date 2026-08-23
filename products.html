@@ -80,53 +80,19 @@
       </div>
       <div class="row g-4">
         <div class="col-lg-4">
-          <div class="nb-panel">
-            <h2 class="nb-h3 mb-1" id="productFormTitle">Tambah Produk</h2>
-            <p class="nb-text-sm nb-text-muted mb-4" id="productLimitInfo"></p>
-            <form id="productForm">
-              <div class="nb-form-group">
-                <label class="nb-form-label" for="productName">Nama produk <span class="nb-required">*</span></label>
-                <input class="nb-input" id="productName" required="" />
-              </div>
-              <div class="nb-form-group">
-                <label class="nb-form-label" for="productPrice">Harga <span class="nb-required">*</span></label>
-                <input class="nb-input" id="productPrice" min="0" required="" type="number" placeholder="0" />
-              </div>
-              <div class="nb-form-group">
-                <label class="nb-form-label" for="productCategory">Kategori</label>
-                <input class="nb-input" id="productCategory" placeholder="Fashion, Gadget, Food" />
-              </div>
-              <div class="nb-form-group">
-                <label class="nb-form-label" for="productDescription">Deskripsi</label>
-                <textarea class="nb-textarea" id="productDescription" rows="3"></textarea>
-              </div>
-              <div class="nb-form-group">
-                <label class="nb-form-label" for="productImage">Gambar produk</label>
-                <input accept="image/jpeg,image/png,image/webp" class="nb-input" id="productImage" type="file" />
-                <div class="nb-form-helper">Format JPG, PNG, atau WebP. Maksimal 2 MB.</div>
-              </div>
-              <div class="nb-form-group">
-                <label class="nb-check">
-                  <input id="productFeatured" type="checkbox" />
-                  Tandai sebagai produk unggulan
-                </label>
-              </div>
-              <div class="d-grid gap-2">
-                <button class="nb-btn nb-btn-primary" type="submit">
-                  <i class="bi bi-check-lg"></i> Simpan Produk
-                </button>
-                <button class="nb-btn nb-btn-secondary" id="resetProduct" type="button">
-                  <i class="bi bi-arrow-counterclockwise"></i> Reset
-                </button>
-              </div>
-            </form>
+          <div class="nb-panel nb-product-action-panel h-100">
+            <div class="nb-product-action-icon"><i class="bi bi-bag-plus"></i></div>
+            <h2 class="nb-h3 mb-2">Tambah produk baru</h2>
+            <p class="nb-text-sm nb-text-muted mb-4">Buat produk dengan foto, harga, kategori, dan deskripsi yang siap tampil di tokomu.</p>
+            <div class="nb-product-limit" id="productLimitInfo"></div>
+            <button class="nb-btn nb-btn-primary nb-btn--block mt-4" id="openProductEditor" type="button"><i class="bi bi-plus-lg"></i> Tambah Produk</button>
           </div>
         </div>
         <div class="col-lg-8">
           <div class="nb-panel">
             <div class="d-flex align-items-center justify-content-between mb-4">
               <h2 class="nb-h3 mb-0">Daftar Produk</h2>
-              <span class="nb-badge nb-badge-neutral"><span id="productCount">0</span> produk</span>
+              <span class="nb-badge nb-badge-neutral"><span id="productCountList">0</span> produk</span>
             </div>
             <div class="nb-table-wrap">
               <table class="nb-table">
@@ -144,6 +110,71 @@
     </div>
    </main>
   </div>
+  <div class="modal fade" id="productEditorModal" tabindex="-1" aria-labelledby="productFormTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content nb-product-modal">
+        <div class="modal-header nb-product-modal-header">
+          <div>
+            <div class="nb-eyebrow"><i class="bi bi-stars"></i> Katalog</div>
+            <h2 class="modal-title nb-h3 mb-1" id="productFormTitle">Tambah Produk</h2>
+            <p class="nb-text-sm nb-text-muted mb-0">Lengkapi informasi produk sebelum ditampilkan di tokomu.</p>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+        </div>
+        <form id="productForm">
+          <div class="modal-body">
+            <div class="nb-product-form-grid">
+              <div class="nb-product-preview-card">
+                <div class="nb-product-preview-media" id="productImagePreview"><img src="assets/img/placeholder-product.svg" alt="Preview produk"></div>
+                <div class="nb-product-preview-copy">
+                  <span class="nb-badge nb-badge-neutral" id="productPreviewCategory">Kategori</span>
+                  <strong id="productPreviewName">Nama produk</strong>
+                  <span id="productPreviewPrice">Rp 0</span>
+                </div>
+              </div>
+              <div>
+                <div class="nb-form-group">
+                  <label class="nb-form-label" for="productName">Nama produk <span class="nb-required">*</span></label>
+                  <input class="nb-input" id="productName" required autocomplete="off">
+                </div>
+                <div class="nb-form-group">
+                  <label class="nb-form-label" for="productPrice">Harga <span class="nb-required">*</span></label>
+                  <input class="nb-input nb-price-input" id="productPrice" data-rupiah-input inputmode="numeric" required type="text" placeholder="Rp 0" autocomplete="off">
+                  <div class="nb-form-helper">Format Rupiah akan otomatis ditambahkan saat mengetik.</div>
+                </div>
+                <div class="nb-form-group">
+                  <label class="nb-form-label" for="productCategory">Kategori</label>
+                  <input class="nb-input" id="productCategory" placeholder="Fashion, Gadget, Food" autocomplete="off">
+                </div>
+                <div class="nb-form-group">
+                  <label class="nb-form-label" for="productDescription">Deskripsi</label>
+                  <textarea class="nb-textarea" id="productDescription" rows="4" placeholder="Jelaskan produk secara singkat."></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="nb-form-group nb-form-group-file">
+              <label class="nb-form-label" for="productImage">Gambar produk</label>
+              <label class="nb-file-picker" for="productImage">
+                <span class="nb-file-picker-icon"><i class="bi bi-cloud-arrow-up"></i></span>
+                <span class="nb-file-picker-copy"><strong>Pilih gambar produk</strong><small id="productImageName">JPG, PNG, atau WebP · Maks. 2 MB</small></span>
+                <span class="nb-file-picker-action">Browse</span>
+              </label>
+              <input accept="image/jpeg,image/png,image/webp" class="nb-file-input-native" id="productImage" type="file">
+            </div>
+            <label class="nb-featured-toggle">
+              <span><i class="bi bi-star"></i><strong>Produk unggulan</strong><small>Prioritaskan produk ini di tampilan katalog.</small></span>
+              <input id="productFeatured" type="checkbox">
+            </label>
+          </div>
+          <div class="modal-footer nb-product-modal-footer">
+            <button class="nb-btn nb-btn-secondary" id="resetProduct" type="button">Reset</button>
+            <button class="nb-btn nb-btn-primary" type="submit"><i class="bi bi-check-lg"></i> Simpan Produk</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <script defer="" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
   </script>
   <script defer="" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">

@@ -261,8 +261,9 @@ function nbToast(message, type = 'success') {
   let wrapper = document.querySelector('.toast-container');
   if (!wrapper) {
     wrapper = document.createElement('div');
-    wrapper.className = 'toast-container position-fixed top-0 start-50 translate-middle-x p-3';
+    wrapper.className = 'toast-container position-fixed top-0 end-0 p-3 nb-toast-stack';
     wrapper.style.zIndex = '2000';
+    wrapper.style.width = 'min(380px, calc(100vw - 24px))';
     wrapper.style.pointerEvents = 'none';
     document.body.appendChild(wrapper);
   }
@@ -270,7 +271,7 @@ function nbToast(message, type = 'success') {
   const id = `toast_${Date.now()}`;
   const className = type === 'danger' ? 'text-bg-danger' : type === 'warning' ? 'text-bg-warning' : 'text-bg-success';
   wrapper.insertAdjacentHTML('beforeend', `
-    <div id="${id}" class="toast ${className}" style="pointer-events:auto" role="alert">
+    <div id="${id}" class="toast ${className} nb-app-toast shadow-sm" style="pointer-events:auto" role="alert">
       <div class="d-flex">
         <div class="toast-body fw-semibold">${nbEscape(message)}</div>
         <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
@@ -285,6 +286,34 @@ function nbToast(message, type = 'success') {
   
   element.addEventListener('hidden.bs.toast', () => element.remove());
 }
+
+
+function nbParseRupiah(value) {
+  const digits = String(value ?? '').replace(/[^0-9]/g, '');
+  return digits ? Number(digits) : 0;
+}
+
+function nbFormatRupiah(value) {
+  const amount = nbParseRupiah(value);
+  return amount ? `Rp ${amount.toLocaleString('id-ID')}` : '';
+}
+
+function nbSetRupiahInputValue(input, value) {
+  if (!input) return;
+  input.value = nbFormatRupiah(value);
+}
+
+window.nbParseRupiah = nbParseRupiah;
+window.nbFormatRupiah = nbFormatRupiah;
+window.nbSetRupiahInputValue = nbSetRupiahInputValue;
+
+document.addEventListener('input', event => {
+  const input = event.target.closest?.('[data-rupiah-input]');
+  if (!input) return;
+  const digits = input.value.replace(/[^0-9]/g, '');
+  input.value = digits ? `Rp ${Number(digits).toLocaleString('id-ID')}` : '';
+  input.setSelectionRange(input.value.length, input.value.length);
+});
 
 function setActiveSide(key) {
   document.querySelectorAll('.side-link').forEach(link => {

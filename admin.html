@@ -317,7 +317,7 @@
               </div>
               <div class="col-md-6">
                 <label class="form-label" for="premiumPrice">Harga Premium</label>
-                <input class="form-control" id="premiumPrice" min="0" placeholder="80000" type="number">
+                <input class="form-control" id="premiumPrice" data-rupiah-input inputmode="numeric" placeholder="Rp 80.000" type="text">
               </div>
               <div class="col-md-6">
                 <label class="form-label" for="adminWhatsApp">WhatsApp Admin</label>
@@ -330,7 +330,12 @@
               </div>
               <div class="col-md-6">
                 <label class="form-label" for="adminPremiumQrisFile">Upload QRIS Premium</label>
-                <input class="form-control" id="adminPremiumQrisFile" type="file" accept="image/jpeg,image/png,image/webp">
+                <label class="nb-file-picker nb-file-picker-admin" for="adminPremiumQrisFile">
+                  <span class="nb-file-picker-icon"><i class="bi bi-cloud-arrow-up"></i></span>
+                  <span class="nb-file-picker-copy"><strong>Upload file QRIS</strong><small id="adminPremiumQrisFileName">JPG, PNG, atau WebP</small></span>
+                  <span class="nb-file-picker-action">Browse</span>
+                </label>
+                <input class="nb-file-input-native" id="adminPremiumQrisFile" type="file" accept="image/jpeg,image/png,image/webp">
               </div>
               <div class="col-12">
                 <label class="form-label" for="adminPremiumNote">Catatan Upgrade Premium</label>

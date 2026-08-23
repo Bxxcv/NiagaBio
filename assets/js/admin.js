@@ -631,7 +631,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (refs.maintenanceMode) refs.maintenanceMode.checked = Boolean(state.settings.maintenance_mode);
     if (refs.allowRegister) refs.allowRegister.checked = state.settings.allow_register !== false;
     if (refs.maintenanceMessage) refs.maintenanceMessage.value = state.settings.maintenance_message || '';
-    if (refs.premiumPrice) refs.premiumPrice.value = state.settings.premium_price || 80000;
+    if (refs.premiumPrice) nbSetRupiahInputValue(refs.premiumPrice, state.settings.premium_price || 80000);
     if (refs.adminWhatsApp) refs.adminWhatsApp.value = state.settings.admin_whatsapp || '';
     if (refs.premiumQrisUrl) refs.premiumQrisUrl.value = state.settings.premium_qris_url || '';
     if (refs.premiumNote) refs.premiumNote.value = state.settings.premium_note || '';
@@ -906,7 +906,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         maintenance_mode: refs.maintenanceMode?.checked,
         maintenance_message: refs.maintenanceMessage?.value.trim(),
         allow_register: refs.allowRegister?.checked,
-        premium_price: Number(refs.premiumPrice?.value || 80000),
+        premium_price: nbParseRupiah(refs.premiumPrice?.value || 80000),
         admin_whatsapp: refs.adminWhatsApp?.value.trim(),
         premium_qris_url: premiumQrisUrl,
         premium_note: refs.premiumNote?.value.trim()
