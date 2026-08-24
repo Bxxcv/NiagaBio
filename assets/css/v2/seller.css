@@ -425,30 +425,44 @@ body.sidebar-open .sidebar-overlay {
 
 
 /* ----------------------------------------------------------
-   PRODUCT MODAL — MOBILE SCROLL SAFETY + COMFORT
+   PRODUCT MODAL — ROBUST VIEWPORT SCROLL / TOUCH SAFETY
+   The modal body must be the only scrolling region while Bootstrap
+   locks document scrolling behind the modal.
    ---------------------------------------------------------- */
 .nb-product-modal-dialog {
   width: min(960px, calc(100vw - 1rem));
   max-width: 960px;
   margin: .5rem auto;
+  min-height: calc(100dvh - 1rem);
+  display: flex;
+  align-items: center;
 }
 .nb-product-modal-dialog .nb-product-modal {
+  width: 100%;
+  height: min(960px, calc(100dvh - 1rem));
   max-height: calc(100dvh - 1rem);
   display: flex;
   flex-direction: column;
+  min-height: 0;
 }
 .nb-product-modal-dialog .nb-product-modal-header,
 .nb-product-modal-dialog .nb-product-modal-footer {
   flex: 0 0 auto;
 }
-.nb-product-modal-dialog .nb-product-modal form,
-.nb-product-modal-dialog .nb-product-modal .modal-body {
+.nb-product-modal-dialog .nb-product-modal form {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
   min-height: 0;
 }
 .nb-product-modal-dialog .nb-product-modal .modal-body {
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
+  touch-action: pan-y;
 }
 
 @media (max-width: 767.98px) {
@@ -457,8 +471,10 @@ body.sidebar-open .sidebar-overlay {
     max-width: none;
     margin: .25rem auto;
     min-height: calc(100dvh - .5rem);
+    align-items: stretch;
   }
   .nb-product-modal-dialog .nb-product-modal {
+    height: calc(100dvh - .5rem);
     max-height: calc(100dvh - .5rem);
     border-radius: 16px;
   }

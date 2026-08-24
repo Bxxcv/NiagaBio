@@ -180,6 +180,7 @@ Non-scope:
 
 ## Latest UI/UX regression fixes — 2026-08-24
 - Product editor modal: enforce mobile viewport scrolling with bounded modal height + scrollable body; preview panel becomes non-sticky on mobile.
+- Product editor modal (follow-up): the modal `<form>` is itself a flex child and `.modal-body` is the only flex-growing scroll region; this prevents the mobile modal from becoming a non-scrollable oversized form while Bootstrap locks background scrolling.
 - Product editor header: remove the decorative "Katalog" eyebrow/icon; do not show unused labels.
 - Upload controls: polish native file inputs globally while preserving native file semantics and existing upload handlers. Custom product-editor file picker remains excluded.
 - Orders KPI: protect long Rupiah values (`#orderOmset`, pending/average totals) from wrapping/overlap on narrow screens.
