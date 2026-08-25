@@ -121,12 +121,7 @@
     premium_price: Number(cfg.PREMIUM_PRICE || 80000),
     admin_whatsapp: '6281234567890',
     premium_qris_url: '',
-    premium_note: 'Transfer sesuai nominal, lalu upload bukti pembayaran. Admin akan memproses upgrade setelah pembayaran valid.',
-    platform_fee: 1000,
-    withdrawal_reserve: 2500,
-    payment_gateway_enabled: true,
-    payment_provider: 'buatqris',
-    payment_sandbox: true
+    premium_note: 'Transfer sesuai nominal, lalu upload bukti pembayaran. Admin akan memproses upgrade setelah pembayaran valid.'
   };
 
   function read(key, fallback) {
@@ -1075,9 +1070,9 @@
   }
 
   function preparePublicOrderPayload(row) {
-    const paymentMethod = String(row.payment_method || 'qris_manual').toLowerCase();
-    if (!['qris_manual', 'qris_whatsapp'].includes(paymentMethod)) {
-      throw new Error('Checkout hanya menerima pembayaran QRIS manual. Gunakan tombol WhatsApp untuk tanya penjual.');
+    const paymentMethod = String(row.payment_method || 'qris_buatqris').toLowerCase();
+    if (!['qris_buatqris', 'qris_manual', 'qris_whatsapp'].includes(paymentMethod)) {
+      throw new Error('Metode pembayaran tidak valid.');
     }
 
     const buyerName = String(row.buyer_name || '').trim().slice(0, 80);
@@ -1087,8 +1082,11 @@
     if (buyerPhone.length < 8 || buyerPhone.length > 18) throw new Error('Nomor WhatsApp pembeli tidak valid.');
 
     const quantity = Math.max(1, Number(row.quantity || 1));
-    const proofUrl = normalizeProofReference(row.proof_image_url || '', 'proofs', row.seller_id || '');
-    if (!proofUrl) {
+    const proofUrl = paymentMethod === 'qris_buatqris'
+      ? ''
+      : normalizeProofReference(row.proof_image_url || '', 'proofs', row.seller_id || '');
+
+    if (paymentMethod !== 'qris_buatqris' && !proofUrl) {
       throw new Error('Bukti pembayaran wajib diupload sebelum kirim pesanan.');
     }
 
@@ -1258,12 +1256,7 @@
       premium_price: Number(settings.premium_price || defaultSettings.premium_price),
       admin_whatsapp: normalizePhone(settings.admin_whatsapp || defaultSettings.admin_whatsapp),
       premium_qris_url: normalizeImageUrl(settings.premium_qris_url || '', ''),
-      premium_note: String(settings.premium_note || defaultSettings.premium_note),
-      platform_fee: Math.max(0, Number(settings.platform_fee ?? defaultSettings.platform_fee ?? 1000)),
-      withdrawal_reserve: Math.max(0, Number(settings.withdrawal_reserve ?? defaultSettings.withdrawal_reserve ?? 2500)),
-      payment_gateway_enabled: settings.payment_gateway_enabled !== false,
-      payment_provider: String(settings.payment_provider || defaultSettings.payment_provider || 'buatqris').toLowerCase(),
-      payment_sandbox: settings.payment_sandbox !== false
+      premium_note: String(settings.premium_note || defaultSettings.premium_note)
     };
 
     if (sb) {

@@ -115,3 +115,10 @@ Patch notes tidak menggantikan source of truth.
 
 ## Payment foundation update — 2026-08-25
 P0/P1 foundation is now implemented in `supabase/23_payment_ledger_foundation.sql`. Payment API/backend and checkout automation remain pending.
+
+### Payment Backend Ownership
+- `api/payment/create.js` — create QRIS transaction server-side.
+- `api/payment/status.js` — fallback/manual provider status check.
+- `api/payment/webhook.js` — signed provider callback.
+- `lib/buatqris.js` — provider API/signature helper, never imported by frontend.
+- `supabase/24_buatqris_payment_gateway.sql` — gateway order flow + webhook settlement RPC.

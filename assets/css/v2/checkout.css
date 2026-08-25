@@ -70,3 +70,24 @@
 .checkout-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
 
 /* Bridge styles removed — using .nb-btn--* from foundation.css */
+
+/* Payment gateway */
+.checkout-payment-grid{align-items:start}
+.checkout-qris--large{width:180px!important;height:180px!important;padding:10px;background:#fff}
+.checkout-payment-order{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:14px 16px;margin-bottom:18px;background:var(--nb-canvas,#f6f7f5);border:1px solid var(--nb-line);border-radius:var(--nb-radius-md,10px)}
+.checkout-payment-order span{display:block;color:var(--nb-muted);font-size:.8rem;margin-bottom:2px}
+.checkout-payment-order strong{display:block;color:var(--nb-ink);font-size:.92rem;word-break:break-word}
+.checkout-payment-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.checkout-payment-status{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:18px;padding:12px 14px;border:1px solid var(--nb-line);background:#fff;border-radius:999px;color:var(--nb-ink-soft);font-size:.9rem;font-weight:700;text-align:center}
+.checkout-payment-expiry{margin-top:10px;text-align:center;color:var(--nb-muted);font-size:.8rem}
+.checkout-payment-state--warning .success-icon{background:#fff7e6;color:#b7791f}
+@media(max-width:767px){
+  .checkout-wrap{padding:16px 12px}
+  .checkout-form-card,.checkout-summary{padding:18px}
+  .checkout-head{gap:14px}
+  .checkout-head>div{min-width:0;flex-basis:100%}
+  .checkout-head img.checkout-qris--large{width:170px!important;height:170px!important;margin:0 auto}
+  .checkout-payment-order{grid-template-columns:1fr}
+  .checkout-payment-actions{display:grid;grid-template-columns:1fr}
+  .checkout-payment-actions .nb-btn{width:100%}
+}

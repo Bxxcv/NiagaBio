@@ -285,3 +285,50 @@ Tidak boleh melompat langsung ke P4 sebelum P0–P2 tervalidasi.
 - Legal/compliance untuk model biaya/ledger platform.
 
 Jangan mengklaim settlement otomatis atau split payout sebelum provider benar-benar mendukungnya.
+
+## P3 — BuatQris Backend Integration
+
+**Status:** implemented in patch; requires Vercel env configuration + Supabase migration `24_buatqris_payment_gateway.sql`.
+
+### Backend routes
+
+- `POST /api/payment/create` — creates provider QRIS for an existing pending NiagaBio order.
+- `POST /api/payment/status` — fallback/manual provider status check; webhook remains primary.
+- `POST /api/payment/webhook` — verifies `X-BuatQris-Signature` (HMAC-SHA256) and applies `payment.success`, `payment.expired`, `payment.failed`.
+
+### Required Vercel environment variables
+
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `BQ_ACCOUNT_ID`
+- `BQ_SECRET_TOKEN`
+- `BQ_SIGNING_SECRET`
+- `BQ_API_URL` (optional; default `https://api.buatqris.site`)
+- `BQ_QRIS_METHOD` (optional; default `qris_two`)
+- `BQ_CALLBACK_URL` (recommended production value, e.g. `https://<domain>/api/payment/webhook`)
+
+Never place provider secrets in frontend code or Supabase public settings.
+
+### Payment flow
+
+`checkout → create_public_order(qris_buatqris) → /api/payment/create → BuatQris → QR → webhook → order paid/cancelled → rekap/nota`
+
+Polling/check-status is only a fallback and is rate-limited.
+
+### Financial semantics
+
+- `total_price` = seller product subtotal.
+- `platform_fee` = NiagaBio income, default Rp1.000, configurable in Admin Master.
+- `withdrawal_reserve` = reserved amount for seller withdrawal costs, default Rp2.500, configurable in Admin Master.
+- `gateway_fee` = actual provider fee returned by BuatQris; never hard-coded.
+- `buyer_total` = provider's `total_amount` once QRIS is created/confirmed.
+- `seller_earning` = product subtotal.
+- `platform_earning` = platform fee when the payment succeeds.
+
+### Security / reliability rules
+
+- BuatQris API is server-to-server only.
+- Webhook signature is verified against the raw request body.
+- Webhook processing is idempotent by provider transaction id.
+- Service-role backend is the only writer for `payment_transactions` and provider settlement fields.
+- Browser clients never receive `BQ_SECRET_TOKEN` or `BQ_SIGNING_SECRET`.

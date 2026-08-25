@@ -218,3 +218,13 @@ Non-scope sementara:
 - `payment_transactions` is seller/admin read-only from the client; create/update is reserved for backend/service role.
 - Do not deploy payment UI/backend until migration 23 is applied and audited in a safe environment.
 - Next implementation: Vercel serverless BuatQris create/webhook/status using ENV secrets only; then checkout UI; then reconciliation/Admin finance validation.
+
+## Latest Task State — Payment Gateway P3
+- P3 backend BuatQris is implemented as a patch, but it is not production-ready until migration `supabase/24_buatqris_payment_gateway.sql` is run and Vercel environment variables are configured.
+- Required provider secrets: `BQ_ACCOUNT_ID`, `BQ_SECRET_TOKEN`, `BQ_SIGNING_SECRET` (Vercel only). Do not ask for secrets in chat unless absolutely necessary; prefer the user setting them directly in Vercel.
+- Payment routes: `/api/payment/create`, `/api/payment/status`, `/api/payment/webhook`.
+- Checkout now targets `qris_buatqris` and no longer requires manual proof for gateway orders.
+- Webhook is the source of truth; status polling is fallback only.
+- Never hard-code BuatQris gateway fees. Use provider `admin_fee`/`total_amount` response values.
+- Preserve seller subtotal, platform fee, withdrawal reserve, gateway fee, and platform earnings as separate ledger fields.
+- Before any production payment test, use BuatQris Sandbox (`test=1`) and verify create → QR → test pay → webhook → order paid → rekap/nota.

@@ -270,3 +270,6 @@ Urutan implementasi:
 
 ## Payment foundation update — 2026-08-25
 P0/P1 foundation is now implemented in `supabase/23_payment_ledger_foundation.sql`. Payment API/backend and checkout automation remain pending.
+
+## Payment Gateway Milestone — P3
+BuatQris is the primary payment gateway for Free and Premium sellers. Checkout creates a gateway-backed order, shows the provider QR/payment URL, and receives payment state through webhook. The Admin Master owns platform fee and withdrawal reserve configuration. Provider fees are recorded separately from platform income.

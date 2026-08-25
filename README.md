@@ -64,3 +64,6 @@ Premium revenue + seller transaction platform_fee → Admin Master ledger/report
 
 ## Payment foundation update — 2026-08-25
 P0/P1 foundation is now implemented in `supabase/23_payment_ledger_foundation.sql`. Payment API/backend and checkout automation remain pending.
+
+### Payment Gateway Status
+P3 backend integration for BuatQris is implemented in `/api/payment/*` plus Supabase migration `24_buatqris_payment_gateway.sql`. Sandbox-first testing is required before production.
