@@ -67,3 +67,7 @@ P0/P1 foundation is now implemented in `supabase/23_payment_ledger_foundation.sq
 
 ### Payment Gateway Status
 P3 backend integration for BuatQris is implemented in `/api/payment/*` plus Supabase migration `24_buatqris_payment_gateway.sql`. Sandbox-first testing is required before production.
+
+### Latest payment status
+P25 security hardening is complete. Run `supabase/25_payment_security_hardening.sql` after migration 24 before the first BuatQris sandbox test.
+

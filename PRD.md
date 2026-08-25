@@ -273,3 +273,7 @@ P0/P1 foundation is now implemented in `supabase/23_payment_ledger_foundation.sq
 
 ## Payment Gateway Milestone — P3
 BuatQris is the primary payment gateway for Free and Premium sellers. Checkout creates a gateway-backed order, shows the provider QR/payment URL, and receives payment state through webhook. The Admin Master owns platform fee and withdrawal reserve configuration. Provider fees are recorded separately from platform income.
+
+### Payment security status
+P25 hardening is applied before sandbox smoke testing. Browser users cannot forge order payment status or financial/provider fields; BuatQris webhook via service-role is the settlement authority.
+

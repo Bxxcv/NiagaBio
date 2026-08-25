@@ -228,3 +228,10 @@ Non-scope sementara:
 - Never hard-code BuatQris gateway fees. Use provider `admin_fee`/`total_amount` response values.
 - Preserve seller subtotal, platform fee, withdrawal reserve, gateway fee, and platform earnings as separate ledger fields.
 - Before any production payment test, use BuatQris Sandbox (`test=1`) and verify create → QR → test pay → webhook → order paid → rekap/nota.
+
+## Payment Security P25 — completed
+- `payment_status` and all payment/settlement fields on `orders` are immutable for normal browser callers.
+- `service_role` remains the webhook settlement authority; admins retain existing admin capabilities.
+- Public direct INSERT policy remains intentionally unchanged: `qris_buatqris` orders must go through `create_public_order()` rather than a raw browser INSERT.
+- Regression rule: never expose a client path that can set `paid`, provider transaction IDs, gateway fees, seller/platform earnings, or withdrawal reserve.
+

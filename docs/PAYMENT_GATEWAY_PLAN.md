@@ -332,3 +332,8 @@ Polling/check-status is only a fallback and is rate-limited.
 - Webhook processing is idempotent by provider transaction id.
 - Service-role backend is the only writer for `payment_transactions` and provider settlement fields.
 - Browser clients never receive `BQ_SECRET_TOKEN` or `BQ_SIGNING_SECRET`.
+
+## P25 Security Hardening
+Before sandbox smoke testing, run `supabase/25_payment_security_hardening.sql`.
+Settlement authority remains server-side/service-role only; seller/browser updates cannot forge payment state or financial/provider fields.
+

@@ -106,3 +106,7 @@ Detail model ada di `docs/PAYMENT_GATEWAY_PLAN.md`.
 
 ## Payment foundation (23)
 `23_payment_ledger_foundation.sql` is additive/idempotent where possible. Run only after the existing production schema/patches are present. It does not integrate BuatQris yet.
+
+### Migration 25
+`25_payment_security_hardening.sql` must run after `24_buatqris_payment_gateway.sql`. It hardens the `orders` trigger so browser callers cannot mutate payment/settlement fields.
+
