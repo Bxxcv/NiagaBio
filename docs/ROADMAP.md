@@ -148,67 +148,78 @@ Catatan: push notification seperti aplikasi HP butuh service worker, permission 
 
 ## Fase 5 — Payment
 
-Status saat ini: QRIS manual.
+Status saat ini: **planning payment gateway otomatis; implementasi belum dimulai**.
 
-Alur sekarang:
-
+Keputusan provider:
 ```txt
-Pembeli scan QRIS seller
-→ pembeli upload bukti
-→ seller cek manual
-→ seller tandai selesai
+BuatQris = payment gateway utama untuk seller Free + Premium
 ```
 
-Ini aman untuk MVP.
-
-Rencana payment bertahap:
-
-### Tahap 5A — QRIS manual lebih rapi
-
+Model fee Admin Master:
 ```txt
-- QRIS seller tampil jelas.
-- Upload bukti aman.
-- Reminder cek bukti.
-- Status pesanan jelas.
+platform_fee       = default Rp1.000 / transaksi
+withdrawal_reserve = default Rp2.500 / transaksi
 ```
 
-### Tahap 5B — Saldo internal seller
+Catatan: reserve Rp2.500 adalah bagian dari model bisnis/ledger NiagaBio untuk membantu menutup biaya withdrawal seller; jangan mengklaim itu sebagai fee transaksi provider. `gateway_fee` harus mengikuti response/settlement BuatQris.
 
+### Tahap 5A — Audit fondasi
 ```txt
-- Order selesai menambah estimasi saldo.
-- Seller bisa reset periode rekap.
-- Riwayat reset/pencairan manual.
-- Admin bisa melihat laporan platform.
+- Audit schema orders saat ini.
+- Audit app_settings.
+- Audit RLS/functions create_public_order.
+- Tentukan snapshot ledger fields.
 ```
 
-### Tahap 5C — Payment gateway otomatis
-
-Butuh:
-
+### Tahap 5B — Ledger + Admin Master Finance
 ```txt
-- Payment gateway QRIS dynamic.
-- Supabase Edge Function/backend.
-- Webhook payment status.
-- Tabel payment_transactions.
-- Signature verification.
-- Order auto paid.
+- platform_fee setting.
+- withdrawal_reserve setting.
+- premium revenue historis via approved_amount.
+- seller transaction revenue via paid platform_fee.
+- gateway fee terpisah.
+- seller earning terpisah.
 ```
 
-Jangan menaruh secret payment gateway di frontend.
-
-### Tahap 5D — Payout/disbursement
-
-Butuh:
-
+### Tahap 5C — BuatQris Backend
 ```txt
-- Data rekening seller.
-- Verifikasi rekening/KYC.
-- Disbursement API.
-- Riwayat pencairan.
-- Fee platform.
+- serverless create payment.
+- webhook.
+- status fallback.
+- idempotency.
+- signature verification.
+- secret hanya di Vercel ENV.
 ```
 
-Ini level marketplace. Jangan dikerjakan sebelum model bisnis dan legalnya jelas.
+### Tahap 5D — Checkout otomatis
+```txt
+Checkout → Create payment → QR/payment URL → Buyer bayar → Webhook → Order paid
+```
+
+### Tahap 5E — Rekonsiliasi
+```txt
+- Orders.
+- Rekap/omset.
+- Nota.
+- Admin Master financial dashboard.
+- Seller earning ledger.
+```
+
+### Tahap 5F — Sandbox + rollout
+```txt
+- success.
+- expired.
+- failed.
+- duplicate webhook.
+- invalid signature.
+- amount mismatch.
+- refresh/retry.
+- mobile/desktop.
+```
+
+Detail ada di `docs/PAYMENT_GATEWAY_PLAN.md`.
+
+Payout/disbursement otomatis, KYC, multi-provider, dan GoPay Merchant bukan scope MVP payment saat ini.
 
 ## Fase 6 — SEO dan Google
 
@@ -345,17 +356,19 @@ Jangan promosi besar sebelum soft launch selesai.
 
 ## Prioritas pengerjaan berikutnya
 
-Urutan paling aman:
+Urutan saat ini:
 
 ```txt
-1. Google Search Console + sitemap.
-2. Domain custom.
-3. Custom SMTP Supabase.
-4. Soft launch 5–10 seller.
-5. Fix bug dari feedback nyata.
-6. Perbaiki landing berdasarkan feedback.
-7. Tambah konten SEO tambahan.
-8. Baru pikirkan payment gateway otomatis.
+1. Audit schema/RLS/current checkout untuk payment.
+2. Ledger + Admin Master platform fee / withdrawal reserve.
+3. Backend BuatQris create/webhook/status.
+4. Checkout payment otomatis.
+5. Reconciliation: order, rekap, nota, seller earning.
+6. Admin Master financial dashboard.
+7. Sandbox + security/regression audit.
+8. Soft launch 5–10 seller.
+9. Google Search Console + domain custom + SEO lanjutan.
+10. Feedback nyata dan iterasi.
 ```
 
 ## Checklist sebelum setiap deploy
@@ -376,8 +389,9 @@ Urutan paling aman:
 ## Hal yang jangan dilakukan dulu
 
 ```txt
-❌ Jangan langsung payment gateway otomatis.
-❌ Jangan langsung payout otomatis.
+❌ Jangan langsung payout/disbursement otomatis.
+❌ Jangan langsung multi-provider payment.
+❌ Jangan jadikan GoPay Merchant sebagai gateway marketplace utama.
 ❌ Jangan pindah framework.
 ❌ Jangan tambah library berat.
 ❌ Jangan hapus SQL patch lama tanpa paham efeknya.

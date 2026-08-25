@@ -10,7 +10,7 @@ Kamu adalah AI assistant permanen untuk project **NiagaBio**. Prioritas: **telit
 - **Stack:** HTML + CSS vanilla + JavaScript vanilla + Supabase + Vercel
 - **Target:** seller online, UMKM, creator, user HP-first
 - **Gaya:** modern, ringan, mobile-first, human-made; bukan template AI generik
-- **Current next task:** rapikan UI/UX tema toko; **jangan menyentuh task tersebut sampai diminta**
+- **Current active task:** payment gateway BuatQris + ledger + Admin Master financial reporting
 
 ## 2. WAJIB BACA
 
@@ -147,29 +147,53 @@ Jika user meminta file:
 - kirim hanya file yang perlu diubah bila memungkinkan
 - jangan mengirim ZIP besar jika patch kecil cukup
 
-## 9. CURRENT DIRECTION
+## 9. WORKING PRINCIPLES — FARID / RID
 
-Dokumentasi sedang dikonsolidasikan agar AI baru bisa langsung memahami project.
+- User may ask for any file, API credential, screenshot, test result, or other evidence needed to debug/implement safely; only request the minimum necessary and never ask the user to expose secrets in chat when a safer environment variable/local setup can be used.
+- Ask questions when requirements or evidence are ambiguous; do not guess.
+- Give suggestions when they materially improve safety, architecture, UX, cost, or maintainability.
+- Optimize for token efficiency: reuse established context, do not repeat already-answered questions, and inspect only relevant files first.
+- Before declaring a fix done, test repeatedly across the affected flow and at least one regression path.
+- Work as a professional web developer/security-minded reviewer: protect auth, RLS, secrets, data integrity, idempotency, and production rollback.
+- When a small patch is enough, send only the changed files. Use a ZIP only when multiple files/paths make it safer or clearer.
+- When the user wants another AI (Claude/Gemini) to review/execute, provide a concise MVP-mode prompt with exact scope, source-of-truth files, hard constraints, validation steps, and no redundant context.
+- The user develops on SPCK Editor + Termux, deploys with Vercel, and pushes source to GitHub. Keep changes practical for this workflow.
 
-Setelah dokumentasi selesai:
+## 10. PAYMENT GATEWAY CURRENT DECISION
 
-**Task berikutnya: `rapikan tampilan tema-tema toko`.**
+- Provider: **BuatQris** for Free + Premium seller payment in MVP.
+- `platform_fee`: default Rp1.000/transaction, configurable in Admin Master.
+- `withdrawal_reserve`: default Rp2.500/transaction, configurable in Admin Master; do not label it as provider transaction fee unless provider contract proves that.
+- `gateway_fee`: provider-reported/settlement-derived; never hard-code from assumptions.
+- Payment secret: Vercel ENV only (`BQ_ACCOUNT_ID`, `BQ_SECRET_TOKEN`).
+- Webhook = primary payment-status source; status endpoint = fallback/recovery.
+- Payment ledger must separate seller earning, platform earning, gateway fee, and withdrawal reserve.
+- Admin Master must show Premium revenue, paid seller transaction fee revenue, total platform earning, seller ledger/obligation, gateway fees, and reserve totals separately.
+- Existing manual QRIS must remain safe until automated payment passes sandbox + regression testing.
 
-Scope awal task:
-- visual hierarchy
-- spacing
-- typography
-- card/product/link treatment
-- responsive mobile-first
-- konsistensi komponen
-- karakter unik tiap tema
+## 11. RECENT UI/PRINT NOTES
 
-Non-scope:
-- ganti framework
-- ubah Supabase schema
-- ubah auth/RLS
-- ubah business logic
-- ubah checkout/order flow tanpa alasan kuat
+- Seller toast: top-right.
+- Product add/edit uses one modal; mobile body scroll is fixed; keep it scrollable.
+- Price input uses Rupiah masking visually and numeric parse before save.
+- File upload controls are polished without breaking native input/upload handlers.
+- Seller order recap = summary; order detail remains in Pesanan Masuk; print nota is separate.
+- A printer issue observed on a workplace POS-58 was traced to Windows print queue/spooler behavior, not proven as a NiagaBio application bug. Do not change print logic again without application-level evidence.
+
+## 12. CURRENT DIRECTION
+
+Dokumentasi sudah dikonsolidasikan. Source-of-truth payment plan ada di `docs/PAYMENT_GATEWAY_PLAN.md`.
+
+**Task aktif:** `BuatQris payment gateway + ledger + Admin Master financial dashboard`.
+
+Urutan: audit → migration → Admin settings → backend create/webhook/status → checkout → order/reconciliation → Admin finance → sandbox → security/regression → rollout.
+
+Non-scope sementara:
+- payout/disbursement otomatis
+- KYC otomatis
+- multi-provider
+- GoPay Merchant sebagai payment gateway utama
+- framework migration
 
 
 ### Seller UI — PRODUCT EDITOR / PRICE INPUT / FILE UPLOAD

@@ -1,6 +1,6 @@
 # NiagaBio
 
-NiagaBio adalah web app **link-in-bio + toko/katalog + checkout manual + dashboard seller + admin tools** untuk UMKM, seller online, creator, dan pengguna HP-first.
+NiagaBio adalah web app **link-in-bio + toko/katalog + checkout + dashboard seller + Admin Master** untuk UMKM, seller online, creator, dan pengguna HP-first.
 
 ## Stack
 - HTML
@@ -8,72 +8,55 @@ NiagaBio adalah web app **link-in-bio + toko/katalog + checkout manual + dashboa
 - JavaScript vanilla
 - Supabase
 - Vercel
+- GitHub
+- Development dari HP: SPCK Editor + Termux
 
 Project ini **bukan** React/Next/Vue.
 
-## Source of truth project
-
+## Source of truth
 Untuk AI/developer baru, baca berurutan:
 
-1. `PRD.md` — product requirements, flow, invariants, dan status terkini
-2. `SkilAi.md` — aturan kerja AI + debugging protocol + bug ledger
-3. `README.md` — overview singkat
-4. `Folder-structure.md` — peta file dan ownership
-5. `docs/` — panduan khusus
-6. `supabase/` — database/RLS/security bila relevan
+1. `PRD.md`
+2. `SkilAi.md`
+3. `README.md`
+4. `Folder-structure.md`
+5. `docs/PAYMENT_GATEWAY_PLAN.md` untuk task payment
+6. dokumen `docs/` relevan
+7. source code terkait
+8. `supabase/` bila menyentuh database/security
 
-Patch notes di `docs/patch-notes/` adalah **riwayat**, bukan source of truth.
+Patch notes hanya riwayat.
 
-## Struktur utama
-
-```text
-NiagaBio/
-├── PRD.md
-├── SkilAi.md
-├── README.md
-├── Folder-structure.md
-├── *.html
-├── assets/
-│   ├── css/
-│   ├── js/
-│   ├── img/
-│   └── ...
-├── api/
-├── supabase/
-└── docs/
-```
-
-## Production
-
-- Vercel: `https://niaga-bio.vercel.app`
-- GitHub: `https://github.com/Bxxcv/NiagaBio`
-
-## Alur utama
+## Alur aktif
 
 ```text
 Seller:
-Register/Login → Profile → Product/Link/Social/Gallery → Theme → Checkout → Public Store
+Register/Login → Profile → Product/Link/Social/Gallery → Theme → Public Store → Orders
 
 Buyer:
-Public Store → Product → Checkout → Payment/Proof → Seller review
+Public Store → Product → Checkout → Payment → Webhook → Paid Order
 
 Premium:
-Request → Admin review → Approve/Reject → Plan/feature access
+Request → Admin review → approved_amount → Premium
+
+Platform finance:
+Premium revenue + seller transaction platform_fee → Admin Master ledger/report
 ```
 
+## Payment decision
+**BuatQris** adalah provider payment gateway utama untuk seller Free dan Premium pada fase MVP payment otomatis.
+
+- Secret: Vercel Environment Variables.
+- Browser tidak boleh memanggil provider dengan secret.
+- Webhook adalah sumber utama perubahan status payment.
+- Provider fee tidak di-hardcode.
+- Platform fee dan withdrawal reserve diatur dari Admin Master dan di-snapshot ke order.
+
 ## Prinsip penting
-
-- Mobile-first.
-- Sederhana untuk seller awam.
-- Jangan merusak logic existing.
+- Mobile-first, tetapi desktop harus memanfaatkan viewport dengan baik.
 - Cari akar masalah sebelum patch.
-- Jangan menyentuh database untuk bug yang sebenarnya hanya HTML/CSS/JS.
-- Jangan expose service-role key.
-- Jangan disable RLS di production.
-
-## Status saat ini
-
-- Core seller/public/admin flow aktif.
-- Theme persistence sudah diverifikasi melalui Supabase RPC.
-- Akar masalah rendering tema yang pernah terjadi: `u.html` tidak memuat `assets/css/main.css`.
-- **Task aktif berikutnya:** rapikan tampilan tema toko. Logic tema tidak diubah kecuali diperlukan.
+- Jangan menebak data/error.
+- Jangan mengubah logic/Supabase hanya untuk bug CSS/HTML/JS yang tidak membutuhkan database.
+- Security/RLS lebih penting dari tampilan.
+- Jangan expose service-role key atau provider secret.
+- Setiap perubahan harus divalidasi syntax + flow + regression.

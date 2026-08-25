@@ -80,3 +80,23 @@ Untuk instalasi push notification production versi final, jalankan hanya:
 ```
 
 Patch final ini menggantikan bridge lama SQL 21 dan tidak memakai `PUSH_WEBHOOK_SECRET` atau Supabase Vault. Jika SQL 20/21 pernah dijalankan sebelumnya, SQL 22 akan memperbaiki trigger lama secara idempotent.
+
+## Payment gateway — upcoming
+
+Payment gateway otomatis **belum diimplementasikan** pada source ini.
+
+Keputusan produk:
+- provider: BuatQris
+- seller: Free + Premium
+- secret: Vercel Environment Variables
+- webhook: sumber utama status payment
+- ledger: seller earning / platform earning / gateway fee / withdrawal reserve dipisahkan
+
+Sebelum membuat migration baru:
+1. audit `orders`, `app_settings`, RPC `create_public_order`, dan RLS aktual;
+2. pastikan migration additive/idempotent bila memungkinkan;
+3. jangan memutus order manual lama;
+4. tambahkan read-only audit query untuk payment tables/functions/policies;
+5. dokumentasikan migration baru di sini setelah benar-benar dibuat.
+
+Detail model ada di `docs/PAYMENT_GATEWAY_PLAN.md`.
