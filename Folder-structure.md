@@ -111,3 +111,7 @@ History:
 - `docs/patch-notes/*`
 
 Patch notes tidak menggantikan source of truth.
+
+
+## Payment foundation update — 2026-08-25
+P0/P1 foundation is now implemented in `supabase/23_payment_ledger_foundation.sql`. Payment API/backend and checkout automation remain pending.

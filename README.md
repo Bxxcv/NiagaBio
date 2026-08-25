@@ -60,3 +60,7 @@ Premium revenue + seller transaction platform_fee → Admin Master ledger/report
 - Security/RLS lebih penting dari tampilan.
 - Jangan expose service-role key atau provider secret.
 - Setiap perubahan harus divalidasi syntax + flow + regression.
+
+
+## Payment foundation update — 2026-08-25
+P0/P1 foundation is now implemented in `supabase/23_payment_ledger_foundation.sql`. Payment API/backend and checkout automation remain pending.

@@ -196,7 +196,32 @@
             <div class="admin-report-card">
               <span>Pendapatan Premium</span>
               <b id="platformRevenueValue">Rp0</b>
-              <small>Berdasarkan nominal approval; request lama tanpa nominal memakai harga Premium saat ini.</small>
+              <small>Historis dari approved_amount request Premium.</small>
+            </div>
+            <div class="admin-report-card">
+              <span>Fee Transaksi Seller</span>
+              <b id="platformSellerFeeRevenue">Rp0</b>
+              <small>Platform fee dari order yang benar-benar paid.</small>
+            </div>
+            <div class="admin-report-card">
+              <span>Total Pendapatan Platform</span>
+              <b id="platformTotalRevenue">Rp0</b>
+              <small>Premium + fee transaksi seller.</small>
+            </div>
+            <div class="admin-report-card">
+              <span>Gateway Fee</span>
+              <b id="platformGatewayFee">Rp0</b>
+              <small>Fee provider yang tercatat dari settlement/payment.</small>
+            </div>
+            <div class="admin-report-card">
+              <span>Withdrawal Reserve</span>
+              <b id="platformWithdrawalReserve">Rp0</b>
+              <small>Reserve dari order paid sesuai snapshot fee.</small>
+            </div>
+            <div class="admin-report-card">
+              <span>Hak Seller (Ledger)</span>
+              <b id="platformSellerEarning">Rp0</b>
+              <small>Hak seller dari order paid, bukan saldo provider.</small>
             </div>
             <div class="admin-report-card">
               <span>Request Approved</span>
@@ -322,6 +347,34 @@
               <div class="col-md-6">
                 <label class="form-label" for="adminWhatsApp">WhatsApp Admin</label>
                 <input class="form-control" id="adminWhatsApp" placeholder="628xxxx">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="platformFee">Biaya Layanan NiagaBio</label>
+                <input class="form-control" id="platformFee" data-rupiah-input inputmode="numeric" placeholder="Rp 1.000" type="text">
+                <div class="nb-text-xs nb-text-muted mt-1">Pendapatan platform per transaksi seller. Disimpan sebagai snapshot pada order baru.</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="withdrawalReserve">Cadangan Withdrawal Seller</label>
+                <input class="form-control" id="withdrawalReserve" data-rupiah-input inputmode="numeric" placeholder="Rp 2.500" type="text">
+                <div class="nb-text-xs nb-text-muted mt-1">Reserve model bisnis; bukan otomatis fee transaksi BuatQris.</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="paymentProvider">Payment Gateway</label>
+                <select class="form-select" id="paymentProvider">
+                  <option value="buatqris">BuatQris</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-check mt-4">
+                  <input id="paymentGatewayEnabled" type="checkbox">
+                  <span class="nb-fw-600">Gateway Aktif</span>
+                </label>
+              </div>
+              <div class="col-md-3">
+                <label class="form-check mt-4">
+                  <input id="paymentSandbox" type="checkbox">
+                  <span class="nb-fw-600">Sandbox</span>
+                </label>
               </div>
               <div class="col-md-6">
                 <label class="form-label" for="adminPremiumQrisUrl">QRIS Premium URL</label>

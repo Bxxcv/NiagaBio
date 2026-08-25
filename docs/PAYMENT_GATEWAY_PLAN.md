@@ -1,6 +1,6 @@
 # PAYMENT GATEWAY PLAN — NiagaBio × BuatQris
 
-**Status:** PLANNING / next implementation task  
+**Status:** P0/P1 FOUNDATION IMPLEMENTED; backend/checkout integration pending  
 **Last updated:** 2026-08-25
 
 ## 1. Keputusan
@@ -251,7 +251,13 @@ Perbedaan Free/Premium tetap pada fitur produk, theme, limit, analytics, dll.; j
 - payment expired
 - browser refresh di tengah payment
 
-## 12. Urutan implementasi
+## 12. Implemented foundation
+
+- `supabase/23_payment_ledger_foundation.sql` adds Admin Master payment settings, order fee/ledger snapshots, `payment_transactions`, and ownership RLS.
+- Admin Master now exposes configurable `platform_fee`, `withdrawal_reserve`, gateway provider, enabled/sandbox flags, and finance cards for Premium revenue, seller transaction fees, total platform revenue, gateway fees, reserve totals, and seller ledger obligations.
+- Legacy manual QRIS/order flow remains active; this migration does not call BuatQris.
+
+## 13. Urutan implementasi
 
 ```text
 P0  Audit schema/RLS/current checkout

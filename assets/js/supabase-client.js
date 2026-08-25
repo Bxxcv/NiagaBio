@@ -121,7 +121,12 @@
     premium_price: Number(cfg.PREMIUM_PRICE || 80000),
     admin_whatsapp: '6281234567890',
     premium_qris_url: '',
-    premium_note: 'Transfer sesuai nominal, lalu upload bukti pembayaran. Admin akan memproses upgrade setelah pembayaran valid.'
+    premium_note: 'Transfer sesuai nominal, lalu upload bukti pembayaran. Admin akan memproses upgrade setelah pembayaran valid.',
+    platform_fee: 1000,
+    withdrawal_reserve: 2500,
+    payment_gateway_enabled: true,
+    payment_provider: 'buatqris',
+    payment_sandbox: true
   };
 
   function read(key, fallback) {
@@ -1253,7 +1258,12 @@
       premium_price: Number(settings.premium_price || defaultSettings.premium_price),
       admin_whatsapp: normalizePhone(settings.admin_whatsapp || defaultSettings.admin_whatsapp),
       premium_qris_url: normalizeImageUrl(settings.premium_qris_url || '', ''),
-      premium_note: String(settings.premium_note || defaultSettings.premium_note)
+      premium_note: String(settings.premium_note || defaultSettings.premium_note),
+      platform_fee: Math.max(0, Number(settings.platform_fee ?? defaultSettings.platform_fee ?? 1000)),
+      withdrawal_reserve: Math.max(0, Number(settings.withdrawal_reserve ?? defaultSettings.withdrawal_reserve ?? 2500)),
+      payment_gateway_enabled: settings.payment_gateway_enabled !== false,
+      payment_provider: String(settings.payment_provider || defaultSettings.payment_provider || 'buatqris').toLowerCase(),
+      payment_sandbox: settings.payment_sandbox !== false
     };
 
     if (sb) {

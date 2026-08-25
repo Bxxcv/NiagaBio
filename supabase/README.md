@@ -31,6 +31,7 @@ Untuk project Supabase baru:
 15_order_proof_antispam_hardening.sql
 16_private_proof_storage.sql
 18_rate_limit_audit_log_hardening.sql
+23_payment_ledger_foundation.sql
 ```
 
 `14_readonly_security_regression_audit.sql` boleh dijalankan kapan saja untuk audit, karena read-only.
@@ -46,6 +47,7 @@ Urutan patch penting setelah tahap security:
 15_order_proof_antispam_hardening.sql
 16_private_proof_storage.sql
 18_rate_limit_audit_log_hardening.sql
+23_payment_ledger_foundation.sql
 ```
 
 ## Quick audit
@@ -100,3 +102,7 @@ Sebelum membuat migration baru:
 5. dokumentasikan migration baru di sini setelah benar-benar dibuat.
 
 Detail model ada di `docs/PAYMENT_GATEWAY_PLAN.md`.
+
+
+## Payment foundation (23)
+`23_payment_ledger_foundation.sql` is additive/idempotent where possible. Run only after the existing production schema/patches are present. It does not integrate BuatQris yet.

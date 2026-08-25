@@ -209,3 +209,12 @@ Non-scope sementara:
 - Upload controls: polish native file inputs globally while preserving native file semantics and existing upload handlers. Custom product-editor file picker remains excluded.
 - Orders KPI: protect long Rupiah values (`#orderOmset`, pending/average totals) from wrapping/overlap on narrow screens.
 - No Supabase schema, RPC, auth, routing, checkout logic, or business logic changed.
+
+
+## PAYMENT FOUNDATION — 2026-08-25
+- Added `supabase/23_payment_ledger_foundation.sql` as the P0/P1 database foundation for BuatQris payment work.
+- Admin Master now owns configurable `platform_fee` and `withdrawal_reserve`; payment provider/sandbox flags are stored in `app_settings`.
+- New order financial snapshots are protected server-side by `protect_orders_fields()`; clients cannot spoof fee/earning fields.
+- `payment_transactions` is seller/admin read-only from the client; create/update is reserved for backend/service role.
+- Do not deploy payment UI/backend until migration 23 is applied and audited in a safe environment.
+- Next implementation: Vercel serverless BuatQris create/webhook/status using ENV secrets only; then checkout UI; then reconciliation/Admin finance validation.

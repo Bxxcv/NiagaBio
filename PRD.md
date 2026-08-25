@@ -266,3 +266,7 @@ Urutan implementasi:
 - File picker seller/admin: tampilan custom/polished, tetap memakai native file input dan handler existing.
 - Public store: 10 tema responsive dan karakter layout dipertahankan.
 - Order KPI mobile: nilai Rupiah harus tidak overlap/wrapping.
+
+
+## Payment foundation update — 2026-08-25
+P0/P1 foundation is now implemented in `supabase/23_payment_ledger_foundation.sql`. Payment API/backend and checkout automation remain pending.

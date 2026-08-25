@@ -16,6 +16,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     requestRows: $('requestRows'),
     passwordResetRows: $('passwordResetRows'),
     platformRevenueValue: $('platformRevenueValue'),
+    platformSellerFeeRevenue: $('platformSellerFeeRevenue'),
+    platformTotalRevenue: $('platformTotalRevenue'),
+    platformGatewayFee: $('platformGatewayFee'),
+    platformWithdrawalReserve: $('platformWithdrawalReserve'),
+    platformSellerEarning: $('platformSellerEarning'),
     platformApprovedRequests: $('platformApprovedRequests'),
     platformPendingRequests: $('platformPendingRequests'),
     platformExpiringSoon: $('platformExpiringSoon'),
@@ -39,6 +44,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     allowRegister: $('allowRegister'),
     maintenanceMessage: $('maintenanceMessage'),
     premiumPrice: $('premiumPrice'),
+    platformFee: $('platformFee'),
+    withdrawalReserve: $('withdrawalReserve'),
+    paymentProvider: $('paymentProvider'),
+    paymentGatewayEnabled: $('paymentGatewayEnabled'),
+    paymentSandbox: $('paymentSandbox'),
     adminWhatsApp: $('adminWhatsApp'),
     premiumQrisUrl: $('adminPremiumQrisUrl'),
     premiumQrisFile: $('adminPremiumQrisFile'),
@@ -598,7 +608,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       return Number.isFinite(time) && time <= sevenDays && time >= Date.now();
     });
 
-    setText(refs.platformRevenueValue, NB.money(platformPremiumRevenue()));
+    const paidOrders = state.orders.filter(order => String(order.payment_status || '').toLowerCase() === 'paid');
+    const sellerFeeRevenue = paidOrders.reduce((sum, order) => sum + Number(order.platform_fee || 0), 0);
+    const gatewayFee = paidOrders.reduce((sum, order) => sum + Number(order.gateway_fee || 0), 0);
+    const withdrawalReserve = paidOrders.reduce((sum, order) => sum + Number(order.withdrawal_reserve || 0), 0);
+    const sellerEarning = paidOrders.reduce((sum, order) => sum + Number(order.seller_earning || order.total_price || 0), 0);
+    const premiumRevenue = platformPremiumRevenue();
+    setText(refs.platformRevenueValue, NB.money(premiumRevenue));
+    setText(refs.platformSellerFeeRevenue, NB.money(sellerFeeRevenue));
+    setText(refs.platformTotalRevenue, NB.money(premiumRevenue + sellerFeeRevenue));
+    setText(refs.platformGatewayFee, NB.money(gatewayFee));
+    setText(refs.platformWithdrawalReserve, NB.money(withdrawalReserve));
+    setText(refs.platformSellerEarning, NB.money(sellerEarning));
     setText(refs.platformApprovedRequests, approved.length);
     setText(refs.platformPendingRequests, pending.length);
     setText(refs.platformExpiringSoon, expiring.length);
@@ -635,6 +656,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (refs.adminWhatsApp) refs.adminWhatsApp.value = state.settings.admin_whatsapp || '';
     if (refs.premiumQrisUrl) refs.premiumQrisUrl.value = state.settings.premium_qris_url || '';
     if (refs.premiumNote) refs.premiumNote.value = state.settings.premium_note || '';
+    if (refs.platformFee) nbSetRupiahInputValue(refs.platformFee, state.settings.platform_fee ?? 1000);
+    if (refs.withdrawalReserve) nbSetRupiahInputValue(refs.withdrawalReserve, state.settings.withdrawal_reserve ?? 2500);
+    if (refs.paymentProvider) refs.paymentProvider.value = state.settings.payment_provider || 'buatqris';
+    if (refs.paymentGatewayEnabled) refs.paymentGatewayEnabled.checked = state.settings.payment_gateway_enabled !== false;
+    if (refs.paymentSandbox) refs.paymentSandbox.checked = state.settings.payment_sandbox !== false;
   }
 
   function renderAll() {
@@ -908,6 +934,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         allow_register: refs.allowRegister?.checked,
         premium_price: nbParseRupiah(refs.premiumPrice?.value || 80000),
         admin_whatsapp: refs.adminWhatsApp?.value.trim(),
+        platform_fee: nbParseRupiah(refs.platformFee?.value || 1000),
+        withdrawal_reserve: nbParseRupiah(refs.withdrawalReserve?.value || 2500),
+        payment_provider: refs.paymentProvider?.value || 'buatqris',
+        payment_gateway_enabled: refs.paymentGatewayEnabled?.checked !== false,
+        payment_sandbox: refs.paymentSandbox?.checked !== false,
         premium_qris_url: premiumQrisUrl,
         premium_note: refs.premiumNote?.value.trim()
       });
