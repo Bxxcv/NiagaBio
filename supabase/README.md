@@ -110,3 +110,13 @@ Detail model ada di `docs/PAYMENT_GATEWAY_PLAN.md`.
 ### Migration 25
 `25_payment_security_hardening.sql` must run after `24_buatqris_payment_gateway.sql`. It hardens the `orders` trigger so browser callers cannot mutate payment/settlement fields.
 
+### Migration 26 (fix audit findings)
+`26_fix_audit_findings.sql` runs after 25 and fixes two audit bugs:
+
+- BUG-01: public order trigger v15 rejected gateway method `qris_buatqris`. Migration 26 rebuilds the trigger to whitelist all four methods and only require proof upload for manual QRIS.
+- BUG-02: settlement wrote wrong ledger. Now `seller_earning = total_price` and `platform_earning = platform_fee + withdrawal_reserve`, matching the PRD financial model.
+
+It keeps the RPC signature of `apply_buatqris_payment_event` intact because `api/payment/webhook.js` and `api/payment/status.js` call it via PostgREST. It is idempotent and safe to re-run. Duplicate success webhooks refresh provider references without recomputing earnings.
+
+Run order for payment gateway: `23 -> 24 -> 25 -> 26`.
+
