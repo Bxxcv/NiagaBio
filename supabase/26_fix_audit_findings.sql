@@ -108,10 +108,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- 4. Ensure RPC apply_buatqris_payment_event is used in webhook flow
 --    (already defined in migration 24, but ensure it's correct)
 
--- 5. Add comment to migration 25 to clarify dependency
-COMMENT ON EXTENSION IF EXISTS plpgsql IS 'NiagaBio P25 hardening before sandbox testing';
-
--- 6. Log this migration in a comment for audit trail
+-- 5. Log this migration in a comment for audit trail
 -- Applied: 2026-08-26
 -- Purpose: Fix critical audit findings (HASIL_DATA.md)
 -- Author: Arise AI Assistant
