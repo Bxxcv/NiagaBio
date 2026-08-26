@@ -48,6 +48,30 @@ Premium revenue + seller transaction platform_fee → Admin Master ledger/report
 
 - Secret: Vercel Environment Variables.
 - Browser tidak boleh memanggil provider dengan secret.
+
+---
+
+### Patch & Perbaikan Audit (26 Agustus 2025)
+
+| Patch | File | Tujuan | Risiko |
+|-------|------|--------|--------|
+| `26_fix_audit_findings.sql` | `supabase/26_fix_audit_findings.sql` | Fix BUG-01 (blokir `qris_buatqris`) dan BUG-02 (akunting) | Low (RLS dipertahankan) |
+| `assets/js/checkout.js` | `assets/js/checkout.js` | Fix BUG-05 (UX: persistence order saat refresh) | None |
+| `api/payment/create.js` | `api/payment/create.js` | Tambahkan log audit request/response provider | None |
+
+- **BUG-01**: Trigger lama memblokir `qris_buatqris` dan memaksa `proof_image_url` wajib, padahal tidak untuk `qris_buatqris`. Patch: whitelist `qris_buatqris`, allow empty `proof_image_url` untuk metode ini, dan hitung `platform_earning = platform_fee + withdrawal_reserve`.
+- **BUG-02**: `apply_buatqris_payment_event` tidak memasukkan `withdrawal_reserve` ke `platform_earning` dan mengurangi `seller_earning` dengan `gateway_fee` secara tidak adil. Patch: perbaiki kalkulasi.
+- **BUG-05**: Saat user refresh halaman checkout, state hilang dan QRIS tidak muncul. Patch: simpan state di `sessionStorage` dan restore saat load.
+
+Untuk menerapkan patch:
+```bash
+# Pastikan sudah apply patch 25_payment_security_hardening.sql terlebih dahulu
+supabase db reset --db-url "$SUPABASE_DB_URL"
+# atau
+supabase db patch 26
+```
+
+Setelah patch, pastikan env `OPENROUTER_API_KEY` dan `BQ_CALLBACK_URL` terkonfigurasi di Vercel.
 - Webhook adalah sumber utama perubahan status payment.
 - Provider fee tidak di-hardcode.
 - Platform fee dan withdrawal reserve diatur dari Admin Master dan di-snapshot ke order.

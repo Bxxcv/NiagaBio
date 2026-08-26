@@ -178,6 +178,43 @@ document.addEventListener('DOMContentLoaded', async () => {
     const product = products.find(item => String(item.id) === String(productId)) || products[0];
     if (!product) return empty('Produk tidak ditemukan atau belum aktif.');
 
+    // Attempt to restore from sessionStorage if order_id exists
+    const savedOrderKey = Object.keys(sessionStorage)
+      .find(key => key.startsWith('nb_order_'));
+    if (savedOrderKey) {
+      try {
+        const saved = JSON.parse(sessionStorage.getItem(savedOrderKey));
+        if (saved && saved.orderId) {
+          // Verify order exists and matches current context
+          const existingOrder = await NB.get('orders', saved.orderId);
+          if (existingOrder && existingOrder.status === 'pending' && existingOrder.payment_method === 'qris_buatqris') {
+            // Fetch payment data
+            const paymentResponse = await fetch('/api/payment/status', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ order_id: saved.orderId })
+            });
+            const payment = await paymentResponse.json().catch(() => ({}));
+            if (paymentResponse.ok && payment.status === 'pending') {
+              renderPayment({
+                profile,
+                product,
+                order: existingOrder,
+                payment,
+                buyerName: saved.buyerName,
+                buyerPhone: saved.buyerPhone
+              });
+              return;
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to restore order from sessionStorage', e);
+      }
+      // Clean up invalid/expired saved order
+      sessionStorage.removeItem(savedOrderKey);
+    }
+
     root.innerHTML = `
       <div class="checkout-backbar">
         <a class="nb-btn nb-btn--outline" href="${NB.safeHref(storeUrl(profile))}"><i class="bi bi-arrow-left me-1"></i>Kembali ke Toko</a>
@@ -240,6 +277,17 @@ document.addEventListener('DOMContentLoaded', async () => {
           payment_method: 'qris_buatqris',
           proof_image_url: ''
         });
+
+        // Persist order_id in sessionStorage for resumption
+        sessionStorage.setItem(`nb_order_${order.id}`, JSON.stringify({
+          orderId: order.id,
+          sellerId: profile.user_id,
+          productId: product.id,
+          quantity,
+          buyerName,
+          buyerPhone,
+          createdAt: new Date().toISOString()
+        }));
 
         button.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Membuat QRIS…';
         const paymentResponse = await fetch('/api/payment/create', {

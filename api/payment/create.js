@@ -83,11 +83,35 @@ module.exports = async function handler(req, res) {
     const amount = Math.round(Number(order.buyer_total || 0));
     if (!Number.isFinite(amount) || amount <= 0) return res.status(400).json({ error: 'Total pembayaran order tidak valid.' });
 
+    // Log audit: Request to BuatQris
+    console.info('[NiagaBio] [AUDIT] Payment.create.request', {
+      order_id: order.id,
+      seller_id: order.seller_id,
+      amount,
+      description: `NiagaBio #${order.id}`,
+      sandbox: Boolean(settings.payment_sandbox === true),
+      timestamp: new Date().toISOString(),
+      ip: clientIp(req)
+    });
+
     const provider = await createQris({
       amount,
       description: `NiagaBio #${order.id}`,
       callbackUrl: callbackUrl(req),
       sandbox: settings.payment_sandbox === true
+    });
+
+    // Log audit: Response from BuatQris
+    console.info('[NiagaBio] [AUDIT] Payment.create.response', {
+      order_id: order.id,
+      transaction_id: String(provider.transaction_id || '').trim(),
+      status: String(provider.status || 'pending'),
+      total_amount: Number(provider.total_amount || amount),
+      admin_fee: Number(provider.admin_fee || 0),
+      qr_url: String(provider.qr_url || '').substring(0, 128) + (String(provider.qr_url || '').length > 128 ? '...' : ''),
+      qris_method: String(provider.qris_method || ''),
+      expires_at: provider.expires_at || null,
+      timestamp: new Date().toISOString()
     });
 
     const transactionId = String(provider.transaction_id || '').trim();
