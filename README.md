@@ -95,3 +95,6 @@ P3 backend integration for BuatQris is implemented in `/api/payment/*` plus Supa
 ### Latest payment status
 P25 security hardening is complete. Run `supabase/25_payment_security_hardening.sql` after migration 24 before the first BuatQris sandbox test.
 
+
+## Payment/Withdrawal status — 2026-08-26
+P27 seller wallet + withdrawal foundation implemented. Seller balance is derived from paid seller earnings minus pending/completed withdrawals. Withdrawal is seller-initiated and processed server-side through BuatQris. Admin Master visual redesign remains a separate next task.

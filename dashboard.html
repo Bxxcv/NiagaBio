@@ -39,6 +39,9 @@
           <a class="side-link" data-nav="orders" href="orders">
             <i class="bi bi-receipt"></i> Pesanan
           </a>
+          <a class="side-link" data-nav="wallet" href="wallet">
+            <i class="bi bi-wallet2"></i> Saldo & Tarik
+          </a>
         </div>
 
         <div class="nb-nav-group">
@@ -292,6 +295,17 @@
           </div>
         </div>
 
+        <section class="nb-panel wallet-dashboard-card mb-4" id="dashboardWalletCard">
+          <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <div>
+              <div class="nb-text-xs text-uppercase fw-semibold opacity-75">Saldo tersedia</div>
+              <div class="nb-h2 mb-1" id="dashboardWalletAvailable">Rp0</div>
+              <div class="nb-text-sm nb-text-muted" id="dashboardWalletMeta">Memuat saldo seller...</div>
+            </div>
+            <div class="d-flex gap-2"><a class="nb-btn nb-btn-secondary nb-btn-sm" href="wallet"><i class="bi bi-wallet2"></i> Kelola saldo</a></div>
+          </div>
+        </section>
+
         <div class="row g-4">
           <!-- Pesanan terbaru -->
           <div class="col-xl-8">
@@ -368,5 +382,6 @@
   <script defer src="assets/js/push-notifications.js"></script>
 
   <script defer src="assets/js/dashboard.js"></script>
+  <script defer src="assets/js/dashboard-wallet.js"></script>
 </body>
 </html>

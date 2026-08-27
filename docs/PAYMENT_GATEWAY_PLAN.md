@@ -337,3 +337,11 @@ Polling/check-status is only a fallback and is rate-limited.
 Before sandbox smoke testing, run `supabase/25_payment_security_hardening.sql`.
 Settlement authority remains server-side/service-role only; seller/browser updates cannot forge payment state or financial/provider fields.
 
+
+## P27 — Seller Wallet & Withdrawal
+- Seller wallet is derived, not manually editable.
+- `available_balance = paid seller earnings - pending/completed withdrawal amounts`.
+- `withdrawal_reserve` is tracked separately and may be consumed to cover provider withdrawal fees.
+- Withdrawal is seller-initiated; provider handles bank/e-wallet payout.
+- Provider fee/status from BuatQris response/webhook is authoritative.
+- Seller payout account values are stored in a server-only table; UI returns masked account numbers.

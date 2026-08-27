@@ -235,3 +235,11 @@ Non-scope sementara:
 - Public direct INSERT policy remains intentionally unchanged: `qris_buatqris` orders must go through `create_public_order()` rather than a raw browser INSERT.
 - Regression rule: never expose a client path that can set `paid`, provider transaction IDs, gateway fees, seller/platform earnings, or withdrawal reserve.
 
+
+### P27 — Seller Wallet & Withdrawal
+- Jangan mengubah credential/provider secret di frontend.
+- Payout account data hanya diproses backend; browser menerima account number yang sudah dimask.
+- Withdrawal request wajib dikunci secara atomik agar saldo tidak bisa ditarik dua kali secara concurrent.
+- `withdrawal_reserve` bukan `platform_earning`.
+- Provider webhook menjadi sumber status payout; polling/status endpoint hanya fallback.
+- Sebelum migration baru, audit schema/function/trigger/policy aktif terlebih dahulu.

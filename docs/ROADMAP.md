@@ -398,3 +398,9 @@ Urutan saat ini:
 ❌ Jangan promosi besar sebelum soft launch.
 ❌ Jangan mengandalkan frontend untuk security.
 ```
+
+### P27 — Seller Wallet & Withdrawal
+Status: IMPLEMENTED foundation. Seller can view derived balance, save payout account, request withdrawal via backend, and receive provider webhook status updates.
+
+### Next task
+Admin Master redesign only (visual/UX), inspired by the supplied eProduct dashboard reference but using NiagaBio visual language. Do not mix this design task with payment logic changes unless a bug is proven.

@@ -122,3 +122,11 @@ P0/P1 foundation is now implemented in `supabase/23_payment_ledger_foundation.sq
 - `api/payment/webhook.js` — signed provider callback.
 - `lib/buatqris.js` — provider API/signature helper, never imported by frontend.
 - `supabase/24_buatqris_payment_gateway.sql` — gateway order flow + webhook settlement RPC.
+
+### P27 payment additions
+- `wallet.html` — seller wallet/withdrawal UI.
+- `assets/js/wallet.js` — wallet UI + backend calls.
+- `assets/js/dashboard-wallet.js` — dashboard wallet summary.
+- `assets/css/v2/wallet.css` — wallet-specific UI.
+- `api/withdraw/*` — backend payout account, create withdrawal, status.
+- `supabase/27_seller_wallet_withdrawal.sql` — payout account, withdrawal ledger, wallet/settlement RPC.

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Saldo & Withdrawal - NiagaBio</title>
+  <meta name="description" content="Kelola saldo hasil penjualan dan penarikan dana NiagaBio.">
+  <link rel="icon" href="/favicon.ico?v=4" sizes="any">
+  <link rel="shortcut icon" href="/favicon.ico?v=4" type="image/x-icon">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32x32.png?v=4">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/niagabio-logo.svg?v=4">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="assets/css/main.css" rel="stylesheet">
+  <link href="assets/css/v2/foundation.css" rel="stylesheet">
+  <link href="assets/css/v2/seller.css" rel="stylesheet">
+  <link href="assets/css/v2/wallet.css" rel="stylesheet">
+</head>
+<body data-protected="true">
+  <div class="app-shell">
+    <aside class="sidebar nb-sidebar">
+      <div class="nb-sidebar-brand"><img src="assets/img/niagabio-logo.svg" alt="NiagaBio" width="32" height="32"><span>NiagaBio</span></div>
+      <nav class="nb-sidebar-nav">
+        <div class="nb-nav-group"><span class="nb-nav-label">Utama</span>
+          <a class="side-link" href="dashboard"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+          <a class="side-link" href="products"><i class="bi bi-bag"></i> Produk</a>
+          <a class="side-link" href="orders"><i class="bi bi-receipt"></i> Pesanan</a>
+          <a class="side-link active" href="wallet"><i class="bi bi-wallet2"></i> Saldo & Tarik</a>
+        </div>
+        <div class="nb-nav-group"><span class="nb-nav-label">Toko</span>
+          <a class="side-link" href="profile"><i class="bi bi-person"></i> Profil Toko</a>
+          <a class="side-link" href="links"><i class="bi bi-link-45deg"></i> Link Custom</a>
+          <a class="side-link" href="social"><i class="bi bi-share"></i> Sosial Media</a>
+          <a class="side-link" href="gallery"><i class="bi bi-images"></i> Galeri</a>
+          <a class="side-link" href="themes"><i class="bi bi-palette"></i> Tema</a>
+          <a class="side-link" href="checkout-settings"><i class="bi bi-qr-code"></i> Checkout</a>
+        </div>
+        <div class="nb-nav-group"><span class="nb-nav-label">Akun</span>
+          <a class="side-link" href="notifications"><i class="bi bi-bell"></i> Notifikasi</a>
+          <a class="side-link" href="upgrade" data-hide-when-premium><i class="bi bi-stars"></i> Upgrade</a>
+          <a class="side-link d-none" data-admin-only href="admin"><i class="bi bi-shield-lock"></i> Admin Master</a>
+        </div>
+      </nav>
+      <div class="nb-sidebar-footer">
+        <div class="d-flex align-items-center justify-content-between mb-2 px-2"><span class="nb-plan-badge" data-plan>Free</span></div>
+        <a class="side-link" href="u?username=demo" id="sidebarPublicPreview" target="_blank" rel="noopener"><i class="bi bi-eye"></i> Lihat Toko</a>
+        <a class="side-link" href="https://chat-niaga-bio.vercel.app" target="_blank" rel="noopener"><i class="bi bi-robot"></i> Chat Bot</a>
+        <a class="side-link" href="#" data-logout><i class="bi bi-box-arrow-right"></i> Keluar</a>
+      </div>
+    </aside>
+
+    <main class="main-content nb-main">
+      <header class="topbar nb-topbar">
+        <div class="d-flex align-items-center gap-3">
+          <button class="nb-menu-toggle d-lg-none" type="button" data-sidebar-toggle aria-label="Buka menu"><i class="bi bi-list"></i></button>
+          <div><div class="nb-topbar-title">Saldo & Tarik</div><div class="nb-topbar-meta">Kelola hasil penjualan dan pencairan dana</div></div>
+        </div>
+        <div class="nb-topbar-actions"><button class="nb-btn nb-btn-ghost nb-btn-icon" id="walletRefresh" type="button" aria-label="Refresh"><i class="bi bi-arrow-clockwise"></i></button></div>
+      </header>
+
+      <div class="content-wrap nb-content wallet-page">
+        <div class="nb-page-header mb-4">
+          <h1>Saldo Penjualan</h1>
+          <p>Saldo berasal dari transaksi yang sudah dibayar. Penarikan diproses otomatis melalui BuatQris.</p>
+        </div>
+
+        <section class="wallet-balance-card mb-4">
+          <div><div class="wallet-kicker">Saldo tersedia</div><div class="wallet-balance" id="walletAvailable">Rp0</div><div class="wallet-meta" id="walletPending">Rp0 sedang dalam proses penarikan</div></div>
+          <button class="nb-btn nb-btn-primary" id="openWithdrawBtn" type="button"><i class="bi bi-send"></i> Tarik saldo</button>
+        </section>
+
+        <div class="row g-3 mb-4">
+          <div class="col-6 col-xl-3"><div class="nb-panel wallet-stat"><span>Total earned</span><strong id="walletEarned">Rp0</strong></div></div>
+          <div class="col-6 col-xl-3"><div class="nb-panel wallet-stat"><span>Total ditarik</span><strong id="walletWithdrawn">Rp0</strong></div></div>
+          <div class="col-6 col-xl-3"><div class="nb-panel wallet-stat"><span>Cadangan withdrawal</span><strong id="walletReserve">Rp0</strong></div></div>
+          <div class="col-6 col-xl-3"><div class="nb-panel wallet-stat"><span>Reserve tersedia</span><strong id="walletReserveAvailable">Rp0</strong></div></div>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-xl-5">
+            <section class="nb-panel">
+              <div class="wallet-section-head"><div><h2 class="nb-h3">Rekening / E-wallet</h2><p class="nb-text-sm nb-text-muted mb-0">Data payout digunakan hanya saat kamu menarik saldo.</p></div></div>
+              <form id="payoutForm" class="wallet-form mt-4">
+                <div><label class="form-label" for="payoutMethod">Metode</label><select class="form-select" id="payoutMethod"><option value="bank">Bank</option><option value="gopay">GoPay</option><option value="dana">DANA</option><option value="ovo">OVO</option><option value="shopeepay">ShopeePay</option></select></div>
+                <div id="bankNameWrap"><label class="form-label" for="bankName">Nama bank</label><select class="form-select" id="bankName"><option>BRI</option><option>BCA</option><option>BNI</option><option>BSI</option><option>Jago</option><option>Mandiri</option><option>Maybank</option><option>Permata</option><option>Danamon</option><option>Seabank</option></select></div>
+                <div><label class="form-label" for="bankAccount">Nomor rekening / e-wallet</label><input class="form-control" id="bankAccount" inputmode="numeric" autocomplete="off" placeholder="Masukkan nomor" required></div>
+                <div><label class="form-label" for="bankHolder">Nama pemilik</label><input class="form-control" id="bankHolder" autocomplete="name" placeholder="Sesuai rekening" required></div>
+                <label class="form-check"><input class="form-check-input" id="payoutDefault" type="checkbox" checked><span class="form-check-label">Jadikan payout utama</span></label>
+                <button class="nb-btn nb-btn-secondary w-100" type="submit"><i class="bi bi-check2-circle"></i> Simpan rekening</button>
+              </form>
+              <div class="wallet-account-list mt-4" id="payoutAccountsList"></div>
+            </section>
+          </div>
+
+          <div class="col-xl-7">
+            <section class="nb-panel h-100">
+              <div class="wallet-section-head"><div><h2 class="nb-h3">Riwayat penarikan</h2><p class="nb-text-sm nb-text-muted mb-0">Status diperbarui dari webhook BuatQris.</p></div></div>
+              <div class="wallet-withdrawals mt-3" id="withdrawalRows"><div class="text-muted py-4 text-center">Memuat...</div></div>
+            </section>
+          </div>
+        </div>
+
+        <div class="nb-panel mt-4 wallet-note"><i class="bi bi-shield-check"></i><div><strong>Payout aman</strong><p class="mb-0">Secret Token tidak pernah dikirim ke browser. NiagaBio meneruskan withdrawal dari backend ke BuatQris.</p></div></div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal fade" id="withdrawModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content nb-modal-content">
+      <div class="modal-header"><div><h2 class="modal-title h4 mb-1">Tarik saldo</h2><p class="nb-text-sm nb-text-muted mb-0">Minimum mengikuti pengaturan payout platform.</p></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button></div>
+      <form id="withdrawForm"><div class="modal-body">
+        <div class="wallet-withdraw-summary mb-3"><span>Saldo tersedia</span><strong id="modalAvailable">Rp0</strong></div>
+        <label class="form-label" for="withdrawAmount">Nominal penarikan</label><input class="form-control form-control-lg" id="withdrawAmount" data-rupiah-input inputmode="numeric" placeholder="Rp 10.000" required>
+        <div class="wallet-fee-note mt-2" id="withdrawFeeNote">Fee provider akan mengikuti metode payout.</div>
+        <div class="wallet-destination-note mt-3" id="withdrawDestinationNote">Pilih rekening/e-wallet payout utama terlebih dahulu.</div>
+      </div><div class="modal-footer"><button type="button" class="nb-btn nb-btn-ghost" data-bs-dismiss="modal">Batal</button><button class="nb-btn nb-btn-primary" id="confirmWithdrawBtn" type="submit"><i class="bi bi-send"></i> Tarik sekarang</button></div></form>
+    </div></div>
+  </div>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="assets/js/config.js"></script>
+  <script defer src="assets/js/supabase-client.js"></script>
+  <script defer src="assets/js/common.js"></script>
+  <script defer src="assets/js/wallet.js"></script>
+</body>
+</html>

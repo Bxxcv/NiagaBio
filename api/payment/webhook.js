@@ -13,6 +13,29 @@ function readRawBody(req) {
   });
 }
 
+async function applyWithdrawalEvent(payload, deliveryId) {
+  const response = await supabaseRequest('/rest/v1/rpc/apply_buatqris_withdrawal_event', {
+    method: 'POST',
+    headers: { Prefer: 'return=representation' },
+    body: JSON.stringify({
+      p_withdrawal_id: String(payload.withdrawal_id || payload.transaction_id || ''),
+      p_status: String(payload.status || 'pending'),
+      p_amount: Number(payload.amount || 0),
+      p_fee: Number(payload.fee || 0),
+      p_net_amount: Number(payload.net_amount || 0),
+      p_bank_name: String(payload.bank_name || ''),
+      p_bank_account: String(payload.bank_account || ''),
+      p_bank_holder: String(payload.bank_holder || ''),
+      p_provider_transaction_id: String(payload.transaction_id || payload.withdrawal_id || ''),
+      p_is_test: Boolean(payload.is_test),
+      p_processed_at: payload.processed_at || null
+    })
+  });
+  const data = await readJson(response);
+  if (!response.ok) throw new Error(data?.message || data?.error || 'Gagal menyimpan event withdrawal.');
+  return Array.isArray(data) ? data[0] : data;
+}
+
 async function applyEvent(payload, deliveryId, eventType) {
   const response = await supabaseRequest('/rest/v1/rpc/apply_buatqris_payment_event', {
     method: 'POST',
@@ -60,6 +83,13 @@ module.exports = async function handler(req, res) {
 
     const event = String(req.headers['x-buatqris-event'] || payload.event || '').trim();
     const deliveryId = String(req.headers['x-buatqris-delivery'] || payload.transaction_id || '').trim();
+    if (['withdrawal.pending', 'withdrawal.approved', 'withdrawal.rejected'].includes(event)) {
+      const withdrawalId = String(payload.withdrawal_id || payload.transaction_id || '').trim();
+      if (!withdrawalId) return res.status(400).json({ error: 'withdrawal_id missing.' });
+      const appliedWithdrawal = await applyWithdrawalEvent(payload, deliveryId);
+      return res.status(200).json({ ok: true, event, status: payload.status, withdrawal: appliedWithdrawal || null });
+    }
+
     if (!['payment.success', 'payment.expired', 'payment.failed'].includes(event)) {
       return res.status(200).json({ ok: true, skipped: true, event });
     }

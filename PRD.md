@@ -277,3 +277,13 @@ BuatQris is the primary payment gateway for Free and Premium sellers. Checkout c
 ### Payment security status
 P25 hardening is applied before sandbox smoke testing. Browser users cannot forge order payment status or financial/provider fields; BuatQris webhook via service-role is the settlement authority.
 
+
+## P27 — Seller Wallet & Withdrawal (2026-08-26)
+- Seller dapat melihat saldo tersedia dari order paid (`seller_earning`) dan riwayat withdrawal.
+- Withdrawal seller diproses otomatis melalui backend NiagaBio → BuatQris `api_withdraw`.
+- Payout account mendukung bank, GoPay, DANA, OVO, ShopeePay.
+- Withdrawal minimum default Rp10.000; fee provider DANA/OVO/ShopeePay default Rp2.500; bank/GoPay default Rp0 berdasarkan konfigurasi provider saat ini. Nilai provider actual tetap menjadi source of truth.
+- Withdrawal dibuat seller-initiated; tidak auto-withdraw setiap order.
+- `withdrawal_reserve` adalah reserve ledger terpisah, bukan profit platform.
+- Provider webhook `withdrawal.pending/approved/rejected` memperbarui ledger secara idempotent.
+- Admin Master redesign ditunda ke task berikutnya; P27 tidak mengubah visual Admin Master.
