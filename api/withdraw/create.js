@@ -38,6 +38,18 @@ module.exports = async function handler(req, res) {
     const settings = settingsRows[0];
     if (settings.withdrawal_enabled === false) return res.status(503).json({ error: 'Withdrawal sedang dinonaktifkan.' });
 
+    // BuatQris withdrawal (api_withdraw) contract has no documented/verified
+    // sandbox or test parameter (unlike api_create_qris, which accepts
+    // `test`). Per policy: never guess provider parameters, and never let a
+    // real payout be triggered while the platform is in sandbox mode. Block
+    // withdrawal creation entirely while payment_sandbox is on, rather than
+    // silently mislabeling a real provider call as "test".
+    if (settings.payment_sandbox === true) {
+      return res.status(503).json({
+        error: 'Withdrawal nyata dinonaktifkan selama mode sandbox aktif. Nonaktifkan payment_sandbox di Admin Master sebelum melakukan penarikan sungguhan.'
+      });
+    }
+
     const reserveResponse = await sb('/rest/v1/rpc/reserve_seller_withdrawal', {
       method: 'POST',
       headers: { Prefer: 'return=representation' },
@@ -64,26 +76,26 @@ module.exports = async function handler(req, res) {
       const withdrawalId = String(provider.withdrawal_id || provider.transaction_id || '').trim();
       if (!withdrawalId) throw new Error('BuatQris tidak mengembalikan withdrawal_id.');
 
-      const patch = await sb(`/rest/v1/withdrawal_requests?id=eq.${encodeURIComponent(requestRow.id)}`, {
-        method: 'PATCH',
+      // Route through the same row-locked, idempotent RPC family used by the
+      // webhook path (apply_buatqris_withdrawal_event), instead of a raw
+      // PATCH racing against it. See attach_buatqris_withdrawal_provider_ref
+      // (supabase/28_sandbox_wallet_isolation.sql).
+      const attachResponse = await sb('/rest/v1/rpc/attach_buatqris_withdrawal_provider_ref', {
+        method: 'POST',
         headers: { Prefer: 'return=representation' },
         body: JSON.stringify({
-          provider_withdrawal_id: withdrawalId,
-          provider_transaction_id: String(provider.transaction_id || withdrawalId),
-          provider_status: String(provider.status || 'pending').toLowerCase(),
-          provider_fee: numeric(provider.fee, expectedFee),
-          net_amount: numeric(provider.net_amount, amount - numeric(provider.fee, expectedFee)),
-          status: ['approved', 'success'].includes(String(provider.status || '').toLowerCase()) ? String(provider.status).toLowerCase() : 'pending',
-          reserve_used: ['approved', 'success'].includes(String(provider.status || '').toLowerCase()) ? numeric(provider.fee, expectedFee) : 0,
-          reserve_held: ['approved', 'success'].includes(String(provider.status || '').toLowerCase()) ? 0 : expectedFee,
-          is_test: Boolean(provider.is_test ?? settings.payment_sandbox === true),
-          processed_at: ['approved', 'success'].includes(String(provider.status || '').toLowerCase()) ? (provider.processed_at || new Date().toISOString()) : null,
-          updated_at: new Date().toISOString()
+          p_request_id: requestRow.id,
+          p_provider_withdrawal_id: withdrawalId,
+          p_provider_transaction_id: String(provider.transaction_id || withdrawalId),
+          p_provider_status: String(provider.status || 'pending').toLowerCase(),
+          p_provider_fee: numeric(provider.fee, expectedFee),
+          p_net_amount: numeric(provider.net_amount, amount - numeric(provider.fee, expectedFee)),
+          p_is_test: Boolean(provider.is_test ?? settings.payment_sandbox === true)
         })
       });
-      const rows = await json(patch);
-      if (!patch.ok) throw new Error('Withdrawal dibuat di provider tetapi gagal dicatat di ledger lokal.');
-      const result = rows?.[0] || requestRow;
+      const rows = await json(attachResponse);
+      if (!attachResponse.ok) throw new Error(rows?.message || rows?.error || 'Withdrawal dibuat di provider tetapi gagal dicatat di ledger lokal.');
+      const result = (Array.isArray(rows) ? rows[0] : rows) || requestRow;
       return res.status(200).json({
         ok: true,
         withdrawal: {

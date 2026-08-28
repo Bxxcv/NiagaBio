@@ -32,6 +32,11 @@ Untuk project Supabase baru:
 16_private_proof_storage.sql
 18_rate_limit_audit_log_hardening.sql
 23_payment_ledger_foundation.sql
+24_buatqris_payment_gateway.sql
+25_payment_security_hardening.sql
+26_fix_audit_findings.sql
+27_seller_wallet_withdrawal.sql
+28_sandbox_wallet_isolation.sql
 ```
 
 `14_readonly_security_regression_audit.sql` boleh dijalankan kapan saja untuk audit, karena read-only.
@@ -48,6 +53,11 @@ Urutan patch penting setelah tahap security:
 16_private_proof_storage.sql
 18_rate_limit_audit_log_hardening.sql
 23_payment_ledger_foundation.sql
+24_buatqris_payment_gateway.sql
+25_payment_security_hardening.sql
+26_fix_audit_findings.sql
+27_seller_wallet_withdrawal.sql
+28_sandbox_wallet_isolation.sql
 ```
 
 ## Quick audit
@@ -114,9 +124,68 @@ Detail model ada di `docs/PAYMENT_GATEWAY_PLAN.md`.
 `26_fix_audit_findings.sql` runs after 25 and fixes two audit bugs:
 
 - BUG-01: public order trigger v15 rejected gateway method `qris_buatqris`. Migration 26 rebuilds the trigger to whitelist all four methods and only require proof upload for manual QRIS.
-- BUG-02: settlement wrote wrong ledger. Now `seller_earning = total_price` and `platform_earning = platform_fee + withdrawal_reserve`, matching the PRD financial model.
+- BUG-02 (as shipped in 26): settlement wrote `platform_earning = platform_fee + withdrawal_reserve`.
+  **This formula was corrected in migration 28** — see below; it contradicted
+  PRD.md section 6 ("jangan mencampur ... pendapatan platform ... reserve
+  biaya withdrawal seller") and `docs/PAYMENT_GATEWAY_PLAN.md`'s own financial
+  semantics (`platform_earning = platform fee`). Treat this paragraph as
+  historical; 28 is the corrected, currently-active behavior.
 
 It keeps the RPC signature of `apply_buatqris_payment_event` intact because `api/payment/webhook.js` and `api/payment/status.js` call it via PostgREST. It is idempotent and safe to re-run. Duplicate success webhooks refresh provider references without recomputing earnings.
 
-Run order for payment gateway: `23 -> 24 -> 25 -> 26`.
+### Migration 27 (seller wallet & withdrawal)
+`27_seller_wallet_withdrawal.sql` adds `seller_payout_accounts`, `withdrawal_requests`,
+`get_seller_wallet_summary`, `reserve_seller_withdrawal`, and
+`apply_buatqris_withdrawal_event`. Run after 26.
+
+### Migration 28 (sandbox isolation + platform_earning fix + withdrawal hardening)
+`28_sandbox_wallet_isolation.sql` runs after 27. It is a correction/hardening
+patch, not new functionality:
+
+- Adds `orders.is_test` (was previously missing — sandbox payments had no way
+  to be excluded from `orders`-derived wallet balance). Value is propagated
+  from `payment_transactions.is_test` at settlement time and is "sticky"
+  (never flips back to non-test). Locked from client mutation in
+  `protect_orders_fields()`, same pattern as every other settlement field.
+- `get_seller_wallet_summary` now excludes `is_test = true` orders and
+  `withdrawal_requests` from all balance aggregates.
+- Corrects `platform_earning` back to `= platform_fee` (see migration 26 note
+  above). `withdrawal_reserve` remains its own separate ledger column; it was
+  never dropped, only no longer folded into `platform_earning`.
+- Adds `attach_buatqris_withdrawal_provider_ref` so `api/withdraw/create.js`'s
+  initial provider-id binding uses a row-locked, idempotent function instead
+  of a raw PATCH racing against the webhook path.
+- Adds a state-machine guard to `apply_buatqris_withdrawal_event`: once a
+  withdrawal reaches a terminal status (`success`/`rejected`/`failed`/
+  `cancelled`), an out-of-order webhook cannot move it to a different status;
+  `approved` cannot regress to `pending`.
+- All RPC signatures are preserved exactly (existing callers in
+  `api/payment/*` and `api/withdraw/*` are unaffected except the one
+  intentional call-site change in `api/withdraw/create.js` described above).
+
+Run order for payment gateway: `23 -> 24 -> 25 -> 26 -> 27 -> 28`.
+
+### Duplicate migration number "13"
+Two files share the number 13: `13_admin_theme_consistency_fixes.sql` and
+`13_checkout_order_flow_fix.sql`. Per the "Fresh install" and "Existing
+production database" sections above, **only `13_checkout_order_flow_fix.sql`
+is part of the documented, actually-run migration chain**.
+`13_admin_theme_consistency_fixes.sql` is not referenced anywhere in this
+README's run order — its content (admin/theme/`approved_amount` consistency,
+per SkilAi.md) was applied separately/out-of-band from the numbered payment
+chain. Do not assume execution order from the filename alone; this note is
+the documented actual order. Neither file is renamed here (renaming
+production-applied migration history is unsafe) — this section exists so the
+ambiguity is written down instead of guessed at again.
+
+### Admin override of order financial fields — confirmed intentional
+`protect_orders_fields()` allows `public.is_admin()` (in addition to
+`service_role`) to bypass the settlement-field lock on `orders`. This is
+actively used: `assets/js/admin.js` → `updateOrderStatus()` calls
+`NB.save('orders', { ...order, payment_status: status, paid_at })` to let an
+admin manually mark a legacy `qris_manual`/`whatsapp` order as paid or
+cancelled. This is confirmed intentional, not unused/dead privilege — no
+privilege reduction was made. If this admin path is ever removed from the UI,
+the corresponding bypass in `protect_orders_fields()` should be removed in
+the same change.
 
