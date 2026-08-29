@@ -107,15 +107,20 @@
 
       <div class="admin-content" id="adminOverview">
         <div class="admin-panel active" id="adminOverviewPanel" data-admin-panel="overview">
-          <section class="admin-hero mb-4">
-            <span class="pill"><i class="bi bi-shield-check"></i> Owner Area</span>
-            <h2>Kontrol semua user, premium, request, dan setting platform dari satu panel.</h2>
-            <p>Order seller tidak ditampilkan sebagai menu utama agar Admin Master fokus ke kontrol platform. Pantau request premium, pendapatan premium, user aktif, dan setting penting.</p>
-            <div class="admin-quick-card mt-3" style="max-width:320px">
-              <div class="small text-muted mb-2">Status sistem</div>
-              <div class="d-flex flex-wrap gap-2" id="adminSystemBadges">
-                <span class="admin-count-pill">Memuat...</span>
+          <section class="admin-hero admin-hero--light mb-4">
+            <div class="admin-hero-copy">
+              <span class="pill"><i class="bi bi-shield-check"></i> Owner Area</span>
+              <h2>Kontrol semua user, premium, request, dan setting platform dari satu panel.</h2>
+              <p>Order seller tidak ditampilkan sebagai menu utama agar Admin Master fokus ke kontrol platform. Pantau request premium, pendapatan premium, user aktif, dan setting penting.</p>
+              <div class="admin-quick-card mt-3" style="max-width:340px">
+                <div class="small text-muted mb-2">Status sistem</div>
+                <div class="d-flex flex-wrap gap-2" id="adminSystemBadges">
+                  <span class="admin-count-pill">Memuat...</span>
+                </div>
               </div>
+            </div>
+            <div class="admin-hero-deco" aria-hidden="true">
+              <i class="bi bi-shop-window"></i>
             </div>
           </section>
 
@@ -174,9 +179,24 @@
               </button>
             </div>
           </section>
-        </div>
 
-        <section class="nb-panel admin-section mb-4 admin-panel" id="adminUsersSection" data-admin-panel="users" hidden>
+          <section class="admin-recent-grid mb-4" aria-label="Aktivitas terbaru">
+            <div class="row g-3">
+              <div class="col-lg-6">
+                <div class="admin-detail-card h-100">
+                  <h3><i class="bi bi-stars"></i> User Premium Terbaru</h3>
+                  <div class="admin-mini-feed" id="platformLatestPremium">Memuat...</div>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="admin-detail-card h-100">
+                  <h3><i class="bi bi-bell"></i> Aktivitas Request Terbaru</h3>
+                  <div class="admin-mini-feed" id="platformLatestRequests">Memuat...</div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div> data-admin-panel="users" hidden>
           <div class="admin-section-head">
             <div>
               <h2><i class="bi bi-people text-green me-2"></i> Kelola User</h2>
@@ -266,20 +286,6 @@
               <span>Premium Expired 7 Hari</span>
               <b id="platformExpiringSoon">0</b>
               <small>User premium yang segera habis.</small>
-            </div>
-          </div>
-          <div class="row g-3">
-            <div class="col-lg-6">
-              <div class="admin-detail-card h-100">
-                <h3>User Premium Terbaru</h3>
-                <div class="admin-mini-feed" id="platformLatestPremium">Memuat...</div>
-              </div>
-            </div>
-            <div class="col-lg-6">
-              <div class="admin-detail-card h-100">
-                <h3>Aktivitas Request Terbaru</h3>
-                <div class="admin-mini-feed" id="platformLatestRequests">Memuat...</div>
-              </div>
             </div>
           </div>
         </section>

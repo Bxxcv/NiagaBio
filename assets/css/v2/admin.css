@@ -245,6 +245,48 @@ body.sidebar-open .sidebar-overlay{display:block}
 .admin-panel[hidden]{display:none!important}
 
 /* ---------- 2. HERO & CARDS ---------- */
+.admin-hero.admin-hero--light{
+  background:
+    radial-gradient(650px 280px at 92% -25%, rgba(15,122,69,.10), transparent 60%),
+    linear-gradient(135deg, var(--nb-green-50,#f4faf2) 0%, #fff 65%);
+  color:var(--nb-ink);
+  border:1px solid var(--nb-green-100,#eaf5e7);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  position:relative;
+}
+.admin-hero.admin-hero--light .pill{
+  background:var(--nb-green-100,#eaf5e7);
+  color:var(--nb-green-700,#0f7a45);
+}
+.admin-hero.admin-hero--light h2{color:var(--nb-ink)}
+.admin-hero.admin-hero--light p{color:var(--nb-ink-soft,#344054)}
+.admin-hero.admin-hero--light .admin-quick-card{
+  background:#fff;border:1px solid var(--nb-line);backdrop-filter:none;
+}
+.admin-hero.admin-hero--light .admin-quick-card .small{color:var(--nb-muted)!important}
+.admin-hero-copy{flex:1;min-width:0}
+.admin-hero-deco{
+  flex-shrink:0;width:120px;height:120px;border-radius:28px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--nb-green-600),var(--adm-green-deep));
+  color:#fff;font-size:2.6rem;
+  box-shadow:0 18px 34px -16px rgba(15,122,69,.5);
+  transform:rotate(-4deg);
+}
+@media(max-width:767.98px){.admin-hero.admin-hero--light{flex-direction:column;align-items:stretch}.admin-hero-deco{display:none}}
+
+.admin-recent-grid .admin-detail-card h3{
+  display:flex;align-items:center;gap:8px;
+}
+.admin-recent-grid .admin-detail-card h3 i{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:26px;height:26px;border-radius:8px;font-size:.85rem;
+  background:var(--nb-green-50);color:var(--nb-green-700);
+}
+
 .admin-hero{
   background:
     radial-gradient(600px 260px at 90% -20%, rgba(255,255,255,.10), transparent 60%),
