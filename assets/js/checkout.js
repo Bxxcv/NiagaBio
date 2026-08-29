@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   };
 
   function storeUrl(profile) {
-    return `u?username=${encodeURIComponent(profile.username || username)}`;
+    return `/seller/u?username=${encodeURIComponent(profile.username || username)}`;
   }
 
   function normalizePhone(phone) {

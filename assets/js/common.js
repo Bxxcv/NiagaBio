@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     logout.addEventListener('click', async event => {
       event.preventDefault();
       await NB.signOut();
-      location.href = 'login';
+      location.href = '/login.html';
     });
   }
   
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   let profile = null;
   
   if (document.body.dataset.protected === 'true' && !user) {
-    location.href = 'login';
+    location.href = '/login.html';
     return;
   }
   
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (maintenanceEnabled && !isAdmin && !isMaintenancePage && !isLoginPage) {
       window.NB_MAINTENANCE_REDIRECTING = true;
       sessionStorage.setItem('nb_maintenance_message', settings.maintenance_message || 'Website sedang maintenance.');
-      location.replace('maintenance');
+      location.replace('/maintenance.html');
       return;
     }
   } catch (error) {
@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const link = document.createElement('a');
       link.className = 'side-link notification-side-link';
       link.dataset.nav = 'notifications';
-      link.href = 'notifications';
+      link.href = '/seller/notifications';
       link.innerHTML = '<i class="bi bi-bell"></i><span>Notifikasi</span><span class="notification-badge d-none" data-notif-badge>0</span>';
       
       const before = nav.querySelector('[data-nav="upgrade"]') || nav.querySelector('[data-admin-only]') || nav.querySelector('hr') || nav.querySelector('.admin-sidebar-divider');

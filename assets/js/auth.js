@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const user = await NB.signIn(loginEmail.value.trim(), loginPassword.value);
         const profile = user ? await NB.getProfile(user.id) : null;
         nbToast('Login berhasil.');
-        location.href = profile?.role === 'admin' ? 'admin' : 'dashboard';
+        location.href = profile?.role === 'admin' ? '/admin/admin.html' : '/seller/dashboard.html';
       } catch (error) {
         nbToast(error.message || 'Gagal login.', 'danger');
       } finally {
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         await NB.updatePassword(password);
         nbToast('Password berhasil diganti. Silakan login ulang.');
         await NB.signOut();
-        setTimeout(() => { location.href = 'login'; }, 900);
+        setTimeout(() => { location.href = '/login.html'; }, 900);
       } catch (error) {
         nbToast(error.message || 'Gagal menyimpan password baru. Buka ulang link reset dari email.', 'danger');
       } finally {
@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         await NB.signUp(registerEmail.value.trim(), registerPassword.value, registerName.value.trim());
         nbToast('Akun berhasil dibuat. Plan kamu otomatis Free.');
-        location.href = 'dashboard';
+        location.href = '/seller/dashboard.html';
       } catch (error) {
         nbToast(error.message || 'Gagal daftar.', 'danger');
       } finally {

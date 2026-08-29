@@ -493,7 +493,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const mode = checkout.checkout_mode || 'whatsapp';
 
       if (!demoModePage && premium && checkout.qris_enabled && (mode === 'qris_manual' || mode === 'qris_whatsapp')) {
-        location.href = `checkout?username=${encodeURIComponent(profile.username)}&product=${encodeURIComponent(product.id)}`;
+        location.href = `/checkout.html?username=${encodeURIComponent(profile.username)}&product=${encodeURIComponent(product.id)}`;
         return;
       }
 

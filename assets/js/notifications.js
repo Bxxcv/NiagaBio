@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   function itemHtml(item) {
     const unread = !item.is_read;
     return `
-      <article class="notification-item ${unread ? 'is-unread' : ''}" data-notification-id="${NB.escapeHtml(item.id)}" data-notification-link="${NB.safeHref(item.link_url || 'notifications')}">
+      <article class="notification-item ${unread ? 'is-unread' : ''}" data-notification-id="${NB.escapeHtml(item.id)}" data-notification-link="${NB.safeHref(item.link_url || '/seller/notifications')}">
         <div class="notification-icon"><i class="bi ${typeIcon(item.type)}"></i></div>
         <div class="notification-body">
           <div class="notification-row">

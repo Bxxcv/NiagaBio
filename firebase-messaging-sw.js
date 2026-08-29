@@ -22,7 +22,7 @@ if (configured) {
     const data = payload?.data || {};
     const title = data.title || 'Pesanan baru masuk';
     const body = data.body || 'Ada aktivitas baru di NiagaBio.';
-    const rawLink = String(data.link || '/orders').trim();
+    const rawLink = String(data.link || '/seller/orders').trim();
     const link = rawLink.startsWith('/') ? rawLink : `/${rawLink.replace(/^\/+/, '')}`;
     const tag = `niagabio-${data.notification_id || Date.now()}`;
 
@@ -41,7 +41,7 @@ if (configured) {
 
 self.addEventListener('notificationclick', event => {
   event.notification.close();
-  const link = event.notification?.data?.link || '/orders';
+  const link = event.notification?.data?.link || '/seller/orders';
   const destination = new URL(link, self.location.origin).href;
 
   event.waitUntil((async () => {

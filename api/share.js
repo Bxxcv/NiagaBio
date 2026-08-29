@@ -265,7 +265,7 @@ module.exports = async function handler(req, res) {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=86400');
 
-  const fallbackUrl = `${origin}/u?username=${encodeURIComponent(username || 'demo-account')}`;
+  const fallbackUrl = `${origin}/seller/u?username=${encodeURIComponent(username || 'demo-account')}`;
 
   if (!username) {
     res.status(200).send(renderShareHtml({
@@ -296,7 +296,7 @@ module.exports = async function handler(req, res) {
   }
 
   const storeName = profile.display_name || profile.username || 'Toko';
-  const storeUrl = `${origin}/u?username=${encodeURIComponent(profile.username || username)}`;
+  const storeUrl = `${origin}/seller/u?username=${encodeURIComponent(profile.username || username)}`;
   const storeImage = absoluteUrl(profile.avatar_url || DEFAULT_IMAGE, origin);
   let title = `${storeName} - ${BRAND}`;
   let description = truncate(profile.bio || 'Lihat katalog produk, link penting, dan checkout toko ini di NiagaBio.');

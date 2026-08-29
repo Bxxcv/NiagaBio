@@ -140,7 +140,7 @@
   }
 
   function notificationLink(notification) {
-    const link = String(notification?.link_url || 'orders').trim();
+    const link = String(notification?.link_url || '/seller/orders').trim();
     if (/^https?:\/\//i.test(link)) return link;
     return link.startsWith('/') ? link : `/${link}`;
   }
@@ -297,7 +297,7 @@
           type: data.type || 'info',
           title: data.title || 'Notifikasi baru',
           message: data.body || '',
-          link_url: data.link || 'notifications',
+          link_url: data.link || '/seller/notifications',
           created_at: new Date().toISOString(),
           is_read: false
         }, 'fcm');

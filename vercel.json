@@ -12,7 +12,7 @@
     },
     {
       "source": "/u/:username",
-      "destination": "/u.html?username=:username"
+      "destination": "/seller/u.html?username=:username"
     },
     {
       "source": "/checkout/:username/:product",
