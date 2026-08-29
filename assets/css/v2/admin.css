@@ -336,6 +336,69 @@ body.sidebar-open .sidebar-overlay{display:block}
 .admin-metric-wide{grid-column:1/-1}
 @media(min-width:768px){.admin-metric-wide{grid-column:auto}}
 
+/* KPI accent colors — order tetap: Users, Premium, Free, Pending, Blocked, Omset */
+.admin-kpi-grid .admin-metric:nth-child(1) .icon-bubble{background:var(--nb-navy-50,#f4f7fb);color:var(--nb-navy-800,#0b3d70)}
+.admin-kpi-grid .admin-metric:nth-child(2) .icon-bubble{background:#fff6e0;color:#b45309}
+.admin-kpi-grid .admin-metric:nth-child(3) .icon-bubble{background:var(--nb-green-50);color:var(--nb-green-700)}
+.admin-kpi-grid .admin-metric:nth-child(4) .icon-bubble{background:var(--nb-warning-bg,#fff4d6);color:var(--nb-warning,#9a6700)}
+.admin-kpi-grid .admin-metric:nth-child(5) .icon-bubble{background:var(--nb-danger-bg,#feeceb);color:var(--nb-danger,#b42318)}
+.admin-kpi-grid .admin-metric:nth-child(6){background:linear-gradient(135deg,var(--nb-green-50),#fff)}
+.admin-kpi-grid .admin-metric:nth-child(6) .icon-bubble{background:var(--nb-green-700);color:#fff}
+
+/* Report card top accent — order sesuai urutan card di HTML (scoped lebih spesifik
+   dari .admin-report-card{border:1px solid ...} di section 5 biar gak ketimpa) */
+.admin-report-grid .admin-report-card{border-top:3px solid var(--nb-line)}
+.admin-report-grid .admin-report-card:nth-child(1){border-top-color:var(--nb-green-600)}
+.admin-report-grid .admin-report-card:nth-child(2){border-top-color:#b45309}
+.admin-report-grid .admin-report-card:nth-child(3){border-top-color:var(--nb-navy-800)}
+.admin-report-grid .admin-report-card:nth-child(4){border-top-color:#7c3aed}
+.admin-report-grid .admin-report-card:nth-child(5){border-top-color:#0e7490}
+.admin-report-grid .admin-report-card:nth-child(6){border-top-color:var(--nb-green-700)}
+.admin-report-grid .admin-report-card:nth-child(7){border-top-color:var(--nb-success)}
+.admin-report-grid .admin-report-card:nth-child(8){border-top-color:var(--nb-warning)}
+.admin-report-grid .admin-report-card:nth-child(9){border-top-color:var(--nb-danger)}
+
+/* Section head icon → bubble (semua panel: User/Laporan/Request/Setting) */
+.admin-section-head h2{display:flex;align-items:center;gap:10px}
+.admin-section-head h2 i{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:34px;height:34px;border-radius:11px;flex-shrink:0;
+  background:var(--nb-green-50);color:var(--nb-green-700)!important;
+  font-size:1rem;margin:0!important;
+}
+
+/* Quick Actions (Overview) */
+.admin-quick-actions-head{margin-bottom:12px}
+.admin-quick-actions-head h3{font-family:var(--nb-font-display);font-size:1rem;font-weight:700;color:var(--nb-ink);margin:0}
+.admin-quick-actions-head p{font-size:.85rem;color:var(--nb-muted);margin:2px 0 0}
+.admin-quick-actions-grid{display:grid;gap:14px;grid-template-columns:repeat(2,1fr)}
+@media(min-width:768px){.admin-quick-actions-grid{grid-template-columns:repeat(4,1fr)}}
+.admin-quick-action{
+  display:flex;flex-direction:column;align-items:flex-start;gap:10px;
+  padding:18px;border-radius:16px;border:0;text-align:left;cursor:pointer;
+  color:#fff;font-family:inherit;width:100%;
+  transition:transform .2s var(--adm-ease),box-shadow .2s var(--adm-ease);
+  box-shadow:0 10px 24px -14px rgba(16,24,40,.3);
+  animation:admFadeUp .4s var(--adm-ease) both;
+}
+.admin-quick-actions-grid .admin-quick-action:nth-child(1){animation-delay:.05s}
+.admin-quick-actions-grid .admin-quick-action:nth-child(2){animation-delay:.1s}
+.admin-quick-actions-grid .admin-quick-action:nth-child(3){animation-delay:.15s}
+.admin-quick-actions-grid .admin-quick-action:nth-child(4){animation-delay:.2s}
+.admin-quick-action:hover{transform:translateY(-3px);box-shadow:0 16px 32px -14px rgba(16,24,40,.35)}
+.admin-quick-action:active{transform:translateY(-1px) scale(.99)}
+.admin-quick-action-icon{
+  width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.22);
+  display:grid;place-items:center;font-size:1.1rem;
+}
+.admin-quick-action-label{font-weight:700;font-size:.95rem}
+.admin-quick-action-sub{font-size:.78rem;opacity:.85;margin-top:-6px}
+.admin-quick-action--blue{background:linear-gradient(135deg,var(--nb-navy-800,#0b3d70),var(--nb-navy-950,#05284f))}
+.admin-quick-action--green{background:linear-gradient(135deg,var(--nb-green-600),var(--adm-green-deep))}
+.admin-quick-action--orange{background:linear-gradient(135deg,#f59e0b,#b45309)}
+.admin-quick-action--purple{background:linear-gradient(135deg,#8b5cf6,#5b21b6)}
+@media(max-width:420px){.admin-quick-actions-grid{grid-template-columns:1fr}}
+
 /* ---------- 3. SECTION HEAD & FILTERS ---------- */
 .admin-section-head{
   display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;
