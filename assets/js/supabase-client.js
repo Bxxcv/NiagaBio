@@ -248,7 +248,12 @@
 
       const isSupabaseObject = /\.supabase\.co$/i.test(parsed.hostname) && parsed.pathname.includes('/storage/v1/object/public/');
       const hasSafeImageExtension = /\.(jpe?g|png|webp)(\?.*)?$/i.test(parsed.pathname + parsed.search);
-      return (isSupabaseObject || hasSafeImageExtension) ? parsed.href : fallback;
+      // BuatQris may return QR image URLs without a conventional .png suffix.
+      // Trust only HTTPS BuatQris hosts for this exception because this helper is
+      // used exclusively to produce an <img src>.
+      const isTrustedBuatQris = /(^|\.)buatqris\.site$/i.test(parsed.hostname) &&
+        /(?:^|\/)(?:poto\/qris|qr|qris)(?:\/|$)/i.test(parsed.pathname);
+      return (isSupabaseObject || hasSafeImageExtension || isTrustedBuatQris) ? parsed.href : fallback;
     } catch (error) {
       return fallback;
     }
