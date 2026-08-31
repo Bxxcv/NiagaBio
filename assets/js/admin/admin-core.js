@@ -6,16 +6,31 @@ window.NBAdmin = (function () {
   const refs = {
     contentWrap: document.querySelector('.admin-content'),
     refreshBtn: $('adminRefreshBtn'),
-    systemBadges: $('adminSystemBadges'),
+    heroGreeting: $('adminHeroGreeting'),
+    pulseFeed: $('adminPulseFeed'),
+    navRequestBadge: $('adminNavRequestBadge'),
+    sidebarStatus: $('adminSidebarStatus'),
+    sidebarStatusMeta: $('adminSidebarStatusMeta'),
+    topbarSection: $('adminTopbarSection'),
+    topbarTitle: $('adminTopbarTitle'),
+    topbarDate: $('adminTopbarDate'),
+    topbarSearchForm: $('adminTopbarSearchForm'),
+    topbarSearch: $('adminTopbarSearch'),
     usersMetric: $('adminUsers'),
     premiumMetric: $('adminPremium'),
     freeMetric: $('adminFree'),
     blockedMetric: $('adminBlocked'),
     ordersMetric: $('adminOrders'),
     omsetMetric: $('adminOmset'),
-    revenueChart: $('adminRevenueChart'),
-    chartRange: $('adminChartRange'),
-    recentTransactions: $('adminRecentTransactions'),
+    omsetHint: $('adminOmsetHint'),
+    chartTotal: $('adminChartTotal'),
+    chartLegend: $('adminChartLegend'),
+    chartGridLines: $('adminChartGridLines'),
+    chartSvg: $('adminRevenueChartSvg'),
+    chartTip: $('adminChartTip'),
+    chartX: $('adminChartX'),
+    qaUsers: $('adminQaUsers'),
+    qaRequests: $('adminQaRequests'),
     userRows: $('userRows'),
     requestRows: $('requestRows'),
     passwordResetRows: $('passwordResetRows'),
@@ -28,8 +43,6 @@ window.NBAdmin = (function () {
     platformApprovedRequests: $('platformApprovedRequests'),
     platformPendingRequests: $('platformPendingRequests'),
     platformExpiringSoon: $('platformExpiringSoon'),
-    platformLatestPremium: $('platformLatestPremium'),
-    platformLatestRequests: $('platformLatestRequests'),
     userSearch: $('adminUserSearch'),
     planFilter: $('adminPlanFilter'),
     statusFilter: $('adminStatusFilter'),
@@ -216,9 +229,7 @@ window.NBAdmin = (function () {
     state.loading = isLoading;
     if (refs.refreshBtn) {
       refs.refreshBtn.disabled = isLoading;
-      refs.refreshBtn.innerHTML = isLoading
-        ? '<span class="spinner-border spinner-border-sm me-1"></span>Memuat'
-        : '<i class="bi bi-arrow-clockwise me-1"></i>Refresh';
+      refs.refreshBtn.querySelector('i')?.classList.toggle('spin', isLoading);
     }
   }
 
@@ -306,6 +317,7 @@ window.NBAdmin = (function () {
     sidebar?.classList.remove('show');
     document.body.classList.remove('sidebar-open');
 
+    renderAll();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 

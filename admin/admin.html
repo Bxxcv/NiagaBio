@@ -25,29 +25,31 @@
         <img src="/assets/img/niagabio-logo.svg" class="nb-logo-square" alt="NiagaBio">
         <div>
           <span class="admin-brand-title">NiagaBio</span>
-          <small>Owner Control</small>
+          <small>Admin Console</small>
         </div>
       </div>
 
+      <div class="admin-nav-label">Navigasi</div>
       <nav class="admin-nav">
         <a class="side-link active" href="#overview" data-admin-view="overview">
-          <i class="bi bi-speedometer2"></i>
-          Overview
+          <i class="bi bi-grid-1x2"></i>
+          Ringkasan
         </a>
         <a class="side-link" href="#users" data-admin-view="users">
           <i class="bi bi-people"></i>
           Kelola User
         </a>
         <a class="side-link" href="#reports" data-admin-view="reports">
-          <i class="bi bi-graph-up-arrow"></i>
+          <i class="bi bi-file-earmark-bar-graph"></i>
           Laporan Platform
         </a>
         <a class="side-link" href="#requests" data-admin-view="requests">
-          <i class="bi bi-inboxes"></i>
+          <i class="bi bi-inbox"></i>
           Request Masuk
+          <span class="am-nav-badge" id="adminNavRequestBadge" hidden>0</span>
         </a>
         <a class="side-link" href="#settings" data-admin-view="settings">
-          <i class="bi bi-sliders"></i>
+          <i class="bi bi-sliders2"></i>
           Setting Platform
         </a>
 
@@ -66,24 +68,40 @@
           Keluar
         </a>
       </nav>
+
+      <div class="admin-sidebar-status" id="adminSidebarStatus">
+        <div class="row1">
+          <span class="dot ok am-pulse"></span>
+          <div><div class="lbl">Status Platform</div><div class="val">Memuat...</div></div>
+        </div>
+        <div class="meta"><i class="bi bi-shield-check"></i><span id="adminSidebarStatusMeta">-</span></div>
+      </div>
+      <div class="admin-sidebar-version">NIAGABIO · ADMIN MASTER</div>
     </aside>
 
     <main class="admin-main">
       <header class="admin-topbar">
-        <div class="d-flex align-items-center gap-3">
-          <button class="nb-menu-toggle d-lg-none" type="button" data-sidebar-toggle aria-label="Buka menu">
-            <i class="bi bi-list"></i>
-          </button>
-          <div>
-            <h1>Admin Master</h1>
-            <small>Panel khusus owner NiagaBio</small>
-          </div>
+        <button class="nb-menu-toggle d-lg-none" type="button" data-sidebar-toggle aria-label="Buka menu">
+          <i class="bi bi-list"></i>
+        </button>
+        <div class="admin-topbar-title">
+          <div class="admin-topbar-crumb">NiagaBio <i class="bi bi-slash-lg"></i> <b id="adminTopbarSection">Ringkasan</b></div>
+          <h1 id="adminTopbarTitle">Ringkasan</h1>
         </div>
-        <div class="d-flex align-items-center gap-2">
-          <button class="btn-outline-nb btn-sm" type="button" id="adminRefreshBtn">
-            <i class="bi bi-arrow-clockwise"></i> Refresh
-          </button>
-          <span class="admin-count-pill badge-admin" data-plan>Admin</span>
+        <form class="admin-topbar-search d-none d-md-flex" id="adminTopbarSearchForm">
+          <i class="bi bi-search"></i>
+          <input type="text" id="adminTopbarSearch" placeholder="Cari user, request…">
+        </form>
+        <button class="admin-topbar-bell" type="button" id="adminRefreshBtn" title="Refresh data">
+          <i class="bi bi-arrow-clockwise"></i>
+          <span class="dot" id="adminRefreshDot" hidden></span>
+        </button>
+        <div class="admin-topbar-profile d-none d-sm-flex">
+          <div class="text-end">
+            <div class="date" id="adminTopbarDate">-</div>
+            <div class="name">Admin Master</div>
+          </div>
+          <div class="avatar">N</div>
         </div>
       </header>
 
@@ -109,119 +127,115 @@
 
         <!-- ============ OVERVIEW ============ -->
         <section class="admin-panel active" id="adminOverviewPanel" data-admin-panel="overview">
-          <section class="admin-hero admin-hero--light mb-4">
-            <div class="admin-hero-copy">
-              <span class="pill"><i class="bi bi-shield-check"></i> Owner Area</span>
-              <h2>Kontrol semua user, premium, request, dan setting platform dari satu panel.</h2>
-              <p>Order seller tidak ditampilkan sebagai menu utama agar Admin Master fokus ke kontrol platform. Pantau request premium, pendapatan premium, user aktif, dan setting penting.</p>
-              <div class="admin-quick-card mt-3" style="max-width:340px">
-                <div class="small text-muted mb-2">Status sistem</div>
-                <div class="d-flex flex-wrap gap-2" id="adminSystemBadges">
-                  <span class="admin-count-pill">Memuat...</span>
-                </div>
+          <!-- Editorial hero + live activity pulse (replaces Calendar & Attendance) -->
+          <section class="admin-hero-grid">
+            <div class="admin-hero am-rise">
+              <div class="admin-hero-pill"><span class="dot am-pulse"></span> Ringkasan Live</div>
+              <h2 id="adminHeroGreeting">Selamat datang, <em>Admin.</em></h2>
+              <p>Order seller tidak ditampilkan sebagai menu utama agar Admin Master fokus ke kontrol platform: user, premium, request, dan setting.</p>
+              <div class="admin-hero-cta">
+                <a href="#requests" class="solid" data-admin-view="requests"><i class="bi bi-lightning-charge-fill"></i> Tinjau Request</a>
+                <a href="#reports" class="outline" data-admin-view="reports"><i class="bi bi-graph-up-arrow"></i> Buka Laporan</a>
               </div>
             </div>
-            <div class="admin-hero-deco" aria-hidden="true">
-              <i class="bi bi-shop-window"></i>
+            <div class="admin-pulse-card am-rise" style="animation-delay:.1s">
+              <div class="am-caps">Aktivitas Real-time</div>
+              <h3>Denyut hari ini</h3>
+              <div class="am-pulse-list" id="adminPulseFeed">
+                <div class="text-muted small">Memuat aktivitas...</div>
+              </div>
             </div>
           </section>
 
-          <section class="admin-kpi-grid mb-4" aria-label="Statistik admin">
+          <section class="admin-kpi-grid" aria-label="Statistik admin">
             <div class="admin-metric">
-              <span class="icon-bubble"><i class="bi bi-people"></i></span>
-              <div><div class="value" id="adminUsers">0</div><p>User Aktif</p></div>
+              <div class="admin-metric-top">
+                <div><div class="am-caps">User Aktif</div><div class="value" id="adminUsers">0</div></div>
+                <span class="icon-bubble"><i class="bi bi-people"></i></span>
+              </div>
+              <div class="admin-metric-foot">total akun aktif</div>
             </div>
             <div class="admin-metric">
-              <span class="icon-bubble"><i class="bi bi-stars"></i></span>
-              <div><div class="value" id="adminPremium">0</div><p>Premium Aktif</p></div>
+              <div class="admin-metric-top">
+                <div><div class="am-caps">User Premium</div><div class="value" id="adminPremium">0</div></div>
+                <span class="icon-bubble"><i class="bi bi-gem"></i></span>
+              </div>
+              <div class="admin-metric-foot">langganan aktif</div>
             </div>
             <div class="admin-metric">
-              <span class="icon-bubble"><i class="bi bi-person"></i></span>
-              <div><div class="value" id="adminFree">0</div><p>Free Aktif</p></div>
+              <div class="admin-metric-top">
+                <div><div class="am-caps">User Free</div><div class="value" id="adminFree">0</div></div>
+                <span class="icon-bubble"><i class="bi bi-person"></i></span>
+              </div>
+              <div class="admin-metric-foot">belum upgrade</div>
             </div>
             <div class="admin-metric">
-              <span class="icon-bubble"><i class="bi bi-hourglass-split"></i></span>
-              <div><div class="value" id="adminOrders">0</div><p>Request Pending</p></div>
+              <div class="admin-metric-top">
+                <div><div class="am-caps">Request Pending</div><div class="value" id="adminOrders">0</div></div>
+                <span class="icon-bubble"><i class="bi bi-inbox"></i></span>
+              </div>
+              <div class="admin-metric-foot">butuh tinjauan</div>
             </div>
             <div class="admin-metric">
-              <span class="icon-bubble"><i class="bi bi-person-slash"></i></span>
-              <div><div class="value" id="adminBlocked">0</div><p>Blocked/Deleted</p></div>
+              <div class="admin-metric-top">
+                <div><div class="am-caps">Blokir / Hapus</div><div class="value" id="adminBlocked">0</div></div>
+                <span class="icon-bubble"><i class="bi bi-shield-exclamation"></i></span>
+              </div>
+              <div class="admin-metric-foot">nonaktif saat ini</div>
             </div>
-            <div class="admin-metric admin-metric-wide">
-              <span class="icon-bubble"><i class="bi bi-cash-stack"></i></span>
-              <div><div class="value" style="font-size:1.3rem" id="adminOmset">Rp0</div><p>Estimasi Pendapatan Premium</p></div>
+            <div class="admin-metric">
+              <div class="admin-metric-top">
+                <div><div class="am-caps">Est. Premium</div><div class="value" id="adminOmset" style="font-size:1.3rem">Rp0</div></div>
+                <span class="icon-bubble"><i class="bi bi-cash-stack"></i></span>
+              </div>
+              <div class="admin-metric-foot" id="adminOmsetHint">bulan berjalan</div>
             </div>
           </section>
 
-          <section class="admin-quick-actions mb-4" aria-label="Aksi cepat">
-            <div class="admin-quick-actions-head">
-              <h3>Aksi Cepat</h3>
-              <p>Lompat langsung ke bagian yang sering dipakai.</p>
-            </div>
-            <div class="admin-quick-actions-grid">
-              <button type="button" class="admin-quick-action admin-quick-action--blue" data-admin-view-target="users">
-                <span class="admin-quick-action-icon"><i class="bi bi-people"></i></span>
-                <span class="admin-quick-action-label">Kelola User</span>
-                <span class="admin-quick-action-sub">Upgrade, blokir, detail akun</span>
-              </button>
-              <button type="button" class="admin-quick-action admin-quick-action--green" data-admin-view-target="reports">
-                <span class="admin-quick-action-icon"><i class="bi bi-graph-up-arrow"></i></span>
-                <span class="admin-quick-action-label">Laporan Platform</span>
-                <span class="admin-quick-action-sub">Pendapatan & performa</span>
-              </button>
-              <button type="button" class="admin-quick-action admin-quick-action--orange" data-admin-view-target="requests">
-                <span class="admin-quick-action-icon"><i class="bi bi-inboxes"></i></span>
-                <span class="admin-quick-action-label">Request Masuk</span>
-                <span class="admin-quick-action-sub">Premium & lupa password</span>
-              </button>
-              <button type="button" class="admin-quick-action admin-quick-action--purple" data-admin-view-target="settings">
-                <span class="admin-quick-action-icon"><i class="bi bi-sliders"></i></span>
-                <span class="admin-quick-action-label">Setting Platform</span>
-                <span class="admin-quick-action-sub">Maintenance, harga, gateway</span>
-              </button>
-            </div>
-          </section>
-
-          <!-- Revenue chart + Recent transactions (replaces Calendar & Attendance) -->
-          <section class="admin-widgets-grid mb-4">
+          <!-- Chart + Aksi Cepat (= School Performance + shortcut di referensi) -->
+          <section class="admin-widgets-grid">
             <div class="admin-widget-card">
               <div class="admin-widget-head">
-                <h3><i class="bi bi-bar-chart-line text-green me-1"></i> Performa Pendapatan (6 Bulan)</h3>
-                <span id="adminChartRange">-</span>
-              </div>
-              <div class="am-chart" id="adminRevenueChart">
-                <div class="text-muted small">Memuat grafik...</div>
-              </div>
-              <div class="am-legend">
-                <span class="am-legend-item"><span class="am-legend-dot" style="background:var(--am-brand)"></span>Fee Transaksi Seller</span>
-                <span class="am-legend-item"><span class="am-legend-dot" style="background:var(--am-sky)"></span>Pendapatan Premium</span>
-              </div>
-            </div>
-            <div class="admin-widget-card">
-              <div class="admin-widget-head">
-                <h3><i class="bi bi-lightning-charge text-green me-1"></i> Transaksi Terbaru</h3>
-                <span>Real-time</span>
-              </div>
-              <div class="am-tx-list" id="adminRecentTransactions">
-                <div class="text-muted small">Memuat transaksi...</div>
-              </div>
-            </div>
-          </section>
-
-          <section class="admin-recent-grid mb-4" aria-label="Aktivitas terbaru">
-            <div class="row g-3">
-              <div class="col-lg-6">
-                <div class="admin-detail-card h-100">
-                  <h3><i class="bi bi-stars"></i> User Premium Terbaru</h3>
-                  <div class="admin-mini-feed" id="platformLatestPremium">Memuat...</div>
+                <div>
+                  <div class="am-caps">Grafik Pendapatan</div>
+                  <h3 id="adminChartTotal">Rp0</h3>
+                </div>
+                <div class="admin-widget-legend" id="adminChartLegend">
+                  <div class="text-muted small">Memuat...</div>
                 </div>
               </div>
-              <div class="col-lg-6">
-                <div class="admin-detail-card h-100">
-                  <h3><i class="bi bi-bell"></i> Aktivitas Request Terbaru</h3>
-                  <div class="admin-mini-feed" id="platformLatestRequests">Memuat...</div>
-                </div>
+              <div class="am-chart-wrap">
+                <div class="am-chart-grid" id="adminChartGridLines"></div>
+                <svg class="am-chart-svg" id="adminRevenueChartSvg" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+                <div class="am-chart-tip" id="adminChartTip"></div>
               </div>
+              <div class="am-chart-x" id="adminChartX"></div>
+            </div>
+            <div class="am-quick-actions">
+              <div class="head">
+                <div class="am-caps">Aksi Cepat</div>
+                <h3 class="am-display" style="font-size:1.3rem;margin:2px 0 0">Pintasan admin</h3>
+              </div>
+              <a href="#users" class="am-quick-action" data-admin-view="users">
+                <span class="icon-bubble"><i class="bi bi-people-fill"></i></span>
+                <span class="body"><b>Kelola User</b><small id="adminQaUsers">- akun terdaftar</small></span>
+                <i class="bi bi-arrow-right"></i>
+              </a>
+              <a href="#reports" class="am-quick-action" data-admin-view="reports">
+                <span class="icon-bubble"><i class="bi bi-file-earmark-bar-graph"></i></span>
+                <span class="body"><b>Laporan Platform</b><small>Rekap keuangan platform</small></span>
+                <i class="bi bi-arrow-right"></i>
+              </a>
+              <a href="#requests" class="am-quick-action" data-admin-view="requests">
+                <span class="icon-bubble"><i class="bi bi-inbox-fill"></i></span>
+                <span class="body"><b>Request Masuk</b><small id="adminQaRequests">- menunggu persetujuan</small></span>
+                <i class="bi bi-arrow-right"></i>
+              </a>
+              <a href="#settings" class="am-quick-action" data-admin-view="settings">
+                <span class="icon-bubble"><i class="bi bi-sliders2-vertical"></i></span>
+                <span class="body"><b>Setting Platform</b><small>Konfigurasi & maintenance</small></span>
+                <i class="bi bi-arrow-right"></i>
+              </a>
             </div>
           </section>
         </section>
@@ -389,20 +403,20 @@
             <div class="row g-3">
               <div class="col-md-6">
                 <div class="admin-setting-box">
-                  <label class="form-check" style="margin:0">
+                  <label class="am-toggle" style="margin:0">
                     <input id="maintenanceMode" type="checkbox">
-                    <span class="nb-fw-600">Maintenance Mode</span>
+                    <span>Maintenance Mode</span>
                   </label>
-                  <div class="nb-text-xs nb-text-muted mt-1">Jika aktif, user biasa diarahkan ke maintenance.</div>
+                  <div class="nb-text-xs nb-text-muted mt-2">Jika aktif, user biasa diarahkan ke maintenance.</div>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="admin-setting-box">
-                  <label class="form-check" style="margin:0">
+                  <label class="am-toggle" style="margin:0">
                     <input id="allowRegister" type="checkbox">
-                    <span class="nb-fw-600">Izinkan Register</span>
+                    <span>Izinkan Register</span>
                   </label>
-                  <div class="nb-text-xs nb-text-muted mt-1">Matikan kalau pendaftaran sementara ditutup.</div>
+                  <div class="nb-text-xs nb-text-muted mt-2">Matikan kalau pendaftaran sementara ditutup.</div>
                 </div>
               </div>
               <div class="col-12">
@@ -434,15 +448,15 @@
                 </select>
               </div>
               <div class="col-md-3">
-                <label class="form-check mt-4">
+                <label class="am-toggle mt-4">
                   <input id="paymentGatewayEnabled" type="checkbox">
-                  <span class="nb-fw-600">Gateway Aktif</span>
+                  <span>Gateway Aktif</span>
                 </label>
               </div>
               <div class="col-md-3">
-                <label class="form-check mt-4">
+                <label class="am-toggle mt-4">
                   <input id="paymentSandbox" type="checkbox">
-                  <span class="nb-fw-600">Sandbox</span>
+                  <span>Sandbox</span>
                 </label>
               </div>
               <div class="col-md-6">

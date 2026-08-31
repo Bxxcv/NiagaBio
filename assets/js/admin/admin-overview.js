@@ -1,29 +1,48 @@
-// NiagaBio Admin Master — Overview panel (stat cards, revenue chart, recent transactions, feeds)
+// NiagaBio Admin Master — Overview panel (hero, pulse feed, KPI, SVG chart, quick actions)
 (function () {
   const A = window.NBAdmin;
-  const { refs, state, safe, setText, formatDate, timeAgo, requestBadge, platformPremiumRevenue } = A;
+  const { refs, state, safe, setText, timeAgo } = A;
 
-  function renderSystemBadges() {
-    if (!refs.systemBadges) return;
+  const VIEW_TITLES = { overview: 'Ringkasan', users: 'Kelola User', reports: 'Laporan Platform', requests: 'Request Masuk', settings: 'Setting Platform' };
 
-    const maintenance = state.settings.maintenance_mode
-      ? '<span class="badge text-bg-danger"><i class="bi bi-tools me-1"></i>Maintenance ON</span>'
-      : '<span class="badge text-bg-success"><i class="bi bi-check-circle me-1"></i>Maintenance OFF</span>';
+  function renderTopbar() {
+    const view = A.initialAdminView();
+    setText(refs.topbarSection, VIEW_TITLES[view] || 'Ringkasan');
+    setText(refs.topbarTitle, VIEW_TITLES[view] || 'Ringkasan');
+    if (refs.topbarDate) {
+      refs.topbarDate.textContent = new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    }
+  }
 
-    const register = state.settings.allow_register
-      ? '<span class="badge text-bg-success"><i class="bi bi-person-plus me-1"></i>Register ON</span>'
-      : '<span class="badge text-bg-warning"><i class="bi bi-person-x me-1"></i>Register OFF</span>';
+  function renderHeroGreeting() {
+    if (!refs.heroGreeting) return;
+    const hour = new Date().getHours();
+    const salutation = hour < 11 ? 'Selamat pagi' : hour < 15 ? 'Selamat siang' : hour < 19 ? 'Selamat sore' : 'Selamat malam';
+    const name = state.me?.display_name || 'Admin';
+    const pendingRequests = state.premiumRequests.filter(A.isPendingRequest).length;
+    refs.heroGreeting.innerHTML = `${salutation}, <em>${safe(name)}.</em><br>${pendingRequests > 0 ? `Ada <em>${pendingRequests}</em> request premium menunggu tinjauan.` : 'Semua request premium sudah ditinjau.'}`;
+  }
 
-    const price = `<span class="badge text-bg-light text-dark border">Premium ${NB.money(state.settings.premium_price || 80000)}</span>`;
-    const qris = state.settings.premium_qris_url
-      ? '<span class="badge text-bg-success"><i class="bi bi-qr-code me-1"></i>QRIS Upgrade ON</span>'
-      : '<span class="badge text-bg-warning"><i class="bi bi-qr-code me-1"></i>QRIS Upgrade kosong</span>';
+  function renderSidebarStatus() {
+    if (!refs.sidebarStatus) return;
+    const maintenance = Boolean(state.settings.maintenance_mode);
+    const gatewayOn = state.settings.payment_gateway_enabled !== false;
+    const sandbox = state.settings.payment_sandbox !== false;
 
-    const errorTables = Object.keys(state.dataErrors || {});
-    const dataError = errorTables.length
-      ? `<span class="badge text-bg-danger" title="${safe(errorTables.map(table => `${table}: ${state.dataErrors[table]}`).join(' | '))}"><i class="bi bi-exclamation-triangle me-1"></i>Data gagal dimuat</span>`
-      : '';
-    refs.systemBadges.innerHTML = `${maintenance}${register}${price}${qris}${dataError}`;
+    const dotEl = refs.sidebarStatus.querySelector('.dot');
+    const valEl = refs.sidebarStatus.querySelector('.val');
+    if (dotEl) dotEl.className = `dot ${maintenance ? 'warn' : 'ok'} am-pulse`;
+    if (valEl) valEl.textContent = maintenance ? 'Maintenance aktif' : 'Semua sistem berjalan';
+    setText(refs.sidebarStatusMeta, `Gateway ${gatewayOn ? 'aktif' : 'nonaktif'} · ${sandbox ? 'Sandbox' : 'Live'}`);
+  }
+
+  function renderNavBadge() {
+    if (!refs.navRequestBadge) return;
+    const pendingRequests = state.premiumRequests.filter(A.isPendingRequest).length;
+    const pendingReset = state.passwordResetRequests.filter(r => String(r.status || 'pending').toLowerCase() === 'pending').length;
+    const total = pendingRequests + pendingReset;
+    refs.navRequestBadge.hidden = total === 0;
+    refs.navRequestBadge.textContent = String(total);
   }
 
   function renderMetrics() {
@@ -32,7 +51,7 @@
     const free = activeProfiles.filter(profile => profile.plan !== 'premium');
     const inactive = state.profiles.filter(profile => profile.status === 'blocked' || profile.status === 'deleted');
     const pendingRequests = state.premiumRequests.filter(A.isPendingRequest);
-    const revenue = platformPremiumRevenue();
+    const revenue = A.platformPremiumRevenue();
 
     setText(refs.usersMetric, activeProfiles.length);
     setText(refs.premiumMetric, premium.length);
@@ -40,12 +59,13 @@
     setText(refs.blockedMetric, inactive.length);
     setText(refs.ordersMetric, pendingRequests.length);
     setText(refs.omsetMetric, NB.money(revenue));
+
+    if (refs.qaUsers) refs.qaUsers.textContent = `${activeProfiles.length} akun terdaftar`;
+    if (refs.qaRequests) refs.qaRequests.textContent = `${pendingRequests.length} menunggu persetujuan`;
   }
 
-  // ---- Revenue chart: last 6 months, Fee Transaksi Seller vs Pendapatan Premium ----
-  function renderRevenueChart() {
-    if (!refs.revenueChart) return;
-
+  // ---- 6-month revenue buckets, reused by chart + omset hint ----
+  function monthlyBuckets() {
     const months = [];
     const now = new Date();
     for (let i = 5; i >= 0; i -= 1) {
@@ -57,98 +77,187 @@
       if (Number.isNaN(d.getTime())) return null;
       return months.find(m => m.key === `${d.getFullYear()}-${d.getMonth()}`);
     };
-
     state.orders.forEach(order => {
       if (String(order.payment_status).toLowerCase() !== 'paid') return;
       const bucket = findMonth(order.paid_at || order.updated_at || order.created_at);
       if (bucket) bucket.fee += Number(order.platform_fee || 0);
     });
-
     state.premiumRequests.forEach(request => {
       if (!A.isApprovedRequest(request)) return;
       const bucket = findMonth(request.reviewed_at || request.updated_at || request.created_at);
       if (bucket) bucket.premium += Number(request.approved_amount || request.amount || A.premiumPrice());
     });
-
-    const maxValue = Math.max(1, ...months.map(m => m.fee + m.premium));
-    if (refs.chartRange) refs.chartRange.textContent = `${months[0].label} - ${months[5].label} ${now.getFullYear()}`;
-
-    refs.revenueChart.innerHTML = months.map(m => {
-      const total = m.fee + m.premium;
-      const feeH = Math.max(2, Math.round((m.fee / maxValue) * 140));
-      const premiumH = Math.max(m.premium > 0 ? 2 : 0, Math.round((m.premium / maxValue) * 140));
-      return `
-        <div class="am-chart-col">
-          <div style="display:flex; align-items:flex-end; gap:4px; height:140px;">
-            <div class="am-chart-bar" style="height:${feeH}px; background:var(--am-brand); max-width:20px;">${total > 0 ? `<b>${NB.money(total)}</b>` : ''}</div>
-            <div class="am-chart-bar" style="height:${premiumH}px; background:var(--am-sky); max-width:20px;"></div>
-          </div>
-          <div class="am-chart-label">${safe(m.label)}</div>
-        </div>
-      `;
-    }).join('');
+    return months;
   }
 
-  // ---- Recent transactions (replaces the reference's Calendar & Attendance widget) ----
-  function renderRecentTransactions() {
-    if (!refs.recentTransactions) return;
+  function renderOmsetHint() {
+    if (!refs.omsetHint) return;
+    const months = monthlyBuckets();
+    const thisMonth = months[5].premium;
+    const lastMonth = months[4].premium;
+    if (lastMonth > 0) {
+      const growth = (((thisMonth - lastMonth) / lastMonth) * 100).toFixed(1);
+      refs.omsetHint.textContent = `${growth >= 0 ? '+' : ''}${growth}% vs bulan lalu`;
+    } else {
+      refs.omsetHint.textContent = 'bulan berjalan';
+    }
+  }
 
-    const rows = state.orders.slice(0, 8);
-    if (!rows.length) {
-      refs.recentTransactions.innerHTML = '<div class="text-muted small">Belum ada transaksi.</div>';
-      return;
+  // ---- SVG revenue chart: bars = fee transaksi, line+area = pendapatan premium ----
+  function renderRevenueChart() {
+    if (!refs.chartSvg) return;
+    const months = monthlyBuckets();
+    const totalFee = months.reduce((sum, m) => sum + m.fee, 0);
+    const totalPremium = months.reduce((sum, m) => sum + m.premium, 0);
+    setText(refs.chartTotal, `Rp${NB.money(totalFee + totalPremium).replace('Rp', '')}`);
+
+    if (refs.chartLegend) {
+      refs.chartLegend.innerHTML = `
+        <span><span class="sw" style="background:var(--gold)"></span>Fee <b>${NB.money(totalFee)}</b></span>
+        <span><span class="sw" style="background:var(--jade)"></span>Premium <b>${NB.money(totalPremium)}</b></span>
+      `;
     }
 
-    refs.recentTransactions.innerHTML = rows.map(order => {
+    const maxVal = Math.max(1, ...months.map(m => m.fee + m.premium));
+    const W = 100, H = 100;
+    const pts = months.map((m, i) => ({
+      x: (i / (months.length - 1)) * W,
+      y: H - (m.premium / maxVal) * H * 0.9 - 4,
+      ...m
+    }));
+
+    let pathD = `M ${pts[0].x} ${pts[0].y}`;
+    for (let i = 0; i < pts.length - 1; i += 1) {
+      const p0 = pts[i], p1 = pts[i + 1];
+      const cx = (p0.x + p1.x) / 2;
+      pathD += ` C ${cx} ${p0.y}, ${cx} ${p1.y}, ${p1.x} ${p1.y}`;
+    }
+    const areaD = `${pathD} L ${W} ${H} L 0 ${H} Z`;
+
+    const barW = (W / months.length) * 0.32;
+    const bars = pts.map((p, i) => {
+      const barH = (months[i].fee / maxVal) * H * 0.9;
+      return `<rect x="${(p.x - barW / 2).toFixed(2)}" y="${(H - barH).toFixed(2)}" width="${barW.toFixed(2)}" height="${barH.toFixed(2)}" rx="0.6" fill="var(--gold)" opacity="0.8"></rect>`;
+    }).join('');
+
+    const dots = pts.map((p, i) => `<circle data-i="${i}" cx="${p.x.toFixed(2)}" cy="${p.y.toFixed(2)}" r="1.1" fill="var(--cream)" stroke="var(--jade)" stroke-width="0.5"></circle>`).join('');
+    const hitAreas = pts.map((p, i) => `<rect data-i="${i}" x="${(p.x - (W / months.length) / 2).toFixed(2)}" y="0" width="${(W / months.length).toFixed(2)}" height="${H}" fill="transparent" style="cursor:pointer"></rect>`).join('');
+
+    refs.chartSvg.innerHTML = `
+      <defs>
+        <linearGradient id="amPremGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="var(--jade)" stop-opacity="0.32"></stop>
+          <stop offset="100%" stop-color="var(--jade)" stop-opacity="0"></stop>
+        </linearGradient>
+      </defs>
+      ${bars}
+      <path d="${areaD}" fill="url(#amPremGrad)"></path>
+      <path d="${pathD}" fill="none" stroke="var(--jade)" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round"></path>
+      ${dots}
+      ${hitAreas}
+    `;
+
+    if (refs.chartGridLines) {
+      refs.chartGridLines.innerHTML = [100, 75, 50, 25, 0].map(v => `<div><span>${v}%</span><i></i></div>`).join('');
+    }
+
+    if (refs.chartX) {
+      refs.chartX.innerHTML = months.map(m => `<span>${safe(m.label)}</span>`).join('');
+    }
+
+    if (refs.chartTip) {
+      const showTip = (index) => {
+        const m = months[index];
+        const p = pts[index];
+        refs.chartTip.innerHTML = `<div class="lbl">Bulan ${safe(m.label)}</div><div class="amt">${NB.money(m.fee + m.premium)}</div>`;
+        refs.chartTip.style.left = `${44 + (p.x / W) * (refs.chartSvg.clientWidth - 44)}px`;
+        refs.chartTip.style.top = '0px';
+        refs.chartTip.classList.add('show');
+        refs.chartX?.querySelectorAll('span').forEach((el, i) => el.classList.toggle('active', i === index));
+      };
+      const hideTip = () => {
+        refs.chartTip.classList.remove('show');
+        refs.chartX?.querySelectorAll('span').forEach(el => el.classList.remove('active'));
+      };
+      refs.chartSvg.querySelectorAll('[data-i]').forEach(el => {
+        el.addEventListener('mouseenter', () => showTip(Number(el.dataset.i)));
+      });
+      refs.chartSvg.addEventListener('mouseleave', hideTip);
+    }
+  }
+
+  // ---- Unified real activity pulse feed (replaces the reference's mock feed) ----
+  function renderPulseFeed() {
+    if (!refs.pulseFeed) return;
+
+    const items = [];
+    state.orders.slice(0, 10).forEach(order => {
       const status = String(order.payment_status || 'pending').toLowerCase();
-      const icon = status === 'paid' ? 'bi-check-circle' : status === 'cancelled' ? 'bi-x-circle' : 'bi-hourglass-split';
-      const seller = state.profiles.find(p => p.user_id === order.seller_id);
-      return `
-        <div class="am-tx-row">
-          <span class="am-tx-icon ${safe(status)}"><i class="bi ${icon}"></i></span>
-          <div class="am-tx-body">
-            <b>${safe(order.product_name || 'Produk')}</b>
-            <small>${safe(order.buyer_name || 'Pembeli')} ${seller ? `• @${safe(seller.username || seller.email)}` : ''}</small>
-          </div>
-          <div class="am-tx-amount">
-            <b>${NB.money(order.total_price)}</b>
-            <small>${A.timeAgo(order.created_at)}</small>
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
+      if (status !== 'paid') return;
+      items.push({
+        time: order.paid_at || order.updated_at || order.created_at,
+        text: `Order "${order.product_name || 'Produk'}" dari ${order.buyer_name || 'pembeli'} — ${NB.money(order.total_price)}`,
+        icon: 'bi-cash-coin', color: 'var(--jade)'
+      });
+    });
+    state.premiumRequests.slice(0, 10).forEach(request => {
+      if (!A.isApprovedRequest(request)) return;
+      items.push({
+        time: request.reviewed_at || request.updated_at || request.created_at,
+        text: `${request.shop_name || request.email || 'User'} upgrade Premium`,
+        icon: 'bi-gem', color: 'var(--gold-2)'
+      });
+    });
+    state.passwordResetRequests.slice(0, 10).forEach(request => {
+      items.push({
+        time: request.created_at,
+        text: `Reset password diajukan oleh ${request.display_name || request.email || 'user'}`,
+        icon: 'bi-key', color: 'var(--sky)'
+      });
+    });
+    state.profiles.slice(0, 10).forEach(profile => {
+      items.push({
+        time: profile.created_at,
+        text: `User baru: ${profile.display_name || profile.email || 'User'} bergabung`,
+        icon: 'bi-person-plus', color: 'var(--ink)'
+      });
+    });
 
-  function renderActivityFeeds() {
-    if (refs.platformLatestPremium) {
-      const latestPremium = state.profiles
-        .filter(profile => profile.plan === 'premium' && profile.status === 'active')
-        .sort((a, b) => String(b.plan_end_date || b.updated_at || '').localeCompare(String(a.plan_end_date || a.updated_at || '')))
-        .slice(0, 6);
-      refs.platformLatestPremium.innerHTML = latestPremium.map(profile => `
-        <div class="admin-feed-row">
-          <div><b>${safe(profile.display_name || profile.email || 'User')}</b><small>@${safe(profile.username || '-')}</small></div>
-          <span>${formatDate(profile.plan_end_date)}</span>
-        </div>
-      `).join('') || '<div class="text-muted small">Belum ada user premium.</div>';
-    }
+    items.sort((a, b) => String(b.time || '').localeCompare(String(a.time || '')));
+    const top = items.slice(0, 6);
 
-    if (refs.platformLatestRequests) {
-      const latestRequests = state.premiumRequests.slice(0, 8);
-      refs.platformLatestRequests.innerHTML = latestRequests.map(request => `
-        <div class="admin-feed-row">
-          <div><b>${safe(request.shop_name || request.email || 'Request')}</b><small>${safe(request.email || '-')}</small></div>
-          <span>${requestBadge(request.status || 'pending')}</span>
+    refs.pulseFeed.innerHTML = top.map(item => `
+      <div class="am-pulse-row">
+        <div class="am-pulse-icon" style="background:color-mix(in oklab, ${item.color} 14%, var(--cream)); color:${item.color}"><i class="bi ${item.icon}"></i></div>
+        <div class="am-pulse-body">
+          <div class="txt">${safe(item.text)}</div>
+          <div class="t">${timeAgo(item.time)}</div>
         </div>
-      `).join('') || '<div class="text-muted small">Belum ada request premium.</div>';
-    }
+      </div>
+    `).join('') || '<div class="text-muted small">Belum ada aktivitas.</div>';
   }
 
   A.registerRenderer(() => {
-    renderSystemBadges();
+    renderTopbar();
+    renderHeroGreeting();
+    renderSidebarStatus();
+    renderNavBadge();
     renderMetrics();
+    renderOmsetHint();
     renderRevenueChart();
-    renderRecentTransactions();
-    renderActivityFeeds();
+    renderPulseFeed();
+  });
+
+  A.registerBinder(() => {
+    refs.topbarSearchForm?.addEventListener('submit', event => {
+      event.preventDefault();
+      const q = refs.topbarSearch?.value.trim();
+      if (!q) return;
+      A.setAdminView('users');
+      if (refs.userSearch) {
+        refs.userSearch.value = q;
+        refs.userSearch.dispatchEvent(new Event('input'));
+      }
+    });
   });
 })();
