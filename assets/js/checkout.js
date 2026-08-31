@@ -66,7 +66,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function renderPayment({ profile, product, order, payment, buyerName, buyerPhone }) {
-    const qrSource = payment.qris_image || payment.qr_url || '';
+    const qrSource = payment.qr_url || payment.qris_image || '';
+    const qrFallback = payment.qr_url ? (payment.qris_image || '') : '';
     const expiresText = payment.expires_at ? new Date(payment.expires_at).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) : 'Mengikuti masa aktif provider';
 
     root.innerHTML = `
@@ -98,7 +99,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               <h2>Scan untuk membayar</h2>
               <p>Setelah pembayaran berhasil, status order akan diperbarui otomatis.</p>
             </div>
-            ${qrSource ? `<img class="checkout-qris checkout-qris--large" src="${NB.safeImageUrl(qrSource, 'assets/img/niagabio-logo.svg')}" alt="QRIS pembayaran">` : ''}
+            ${qrSource ? `<img class="checkout-qris checkout-qris--large" src="${NB.safeImageUrl(qrSource, 'assets/img/niagabio-logo.svg')}" alt="QRIS pembayaran" onerror="if(this.dataset.fb){this.src=this.dataset.fb;this.dataset.fb=''}" data-fb="${NB.safeImageUrl(qrFallback || 'assets/img/niagabio-logo.svg')}">` : ''}
           </div>
 
           <div class="checkout-payment-order">
@@ -113,7 +114,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
           <div class="checkout-payment-actions">
             ${payment.payment_url ? `<a class="nb-btn nb-btn--commerce" href="${NB.safeHref(payment.payment_url)}" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-1"></i>Buka Halaman Pembayaran</a>` : ''}
-            ${payment.qr_url && !payment.qris_image ? `<a class="nb-btn nb-btn--outline" href="${NB.safeHref(payment.qr_url)}" target="_blank" rel="noopener"><i class="bi bi-qr-code me-1"></i>Buka QR</a>` : ''}
+            ${payment.qr_url && !qrSource ? `<a class="nb-btn nb-btn--outline" href="${NB.safeHref(payment.qr_url)}" target="_blank" rel="noopener"><i class="bi bi-qr-code me-1"></i>Buka QR</a>` : ''}
             <button type="button" class="nb-btn nb-btn--soft" id="checkPaymentBtn"><i class="bi bi-arrow-repeat me-1"></i>Cek Status</button>
           </div>
 

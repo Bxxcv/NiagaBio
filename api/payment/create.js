@@ -59,11 +59,25 @@ module.exports = async function handler(req, res) {
       return res.status(409).json({ error: 'Order ini tidak lagi menunggu pembayaran.', status: order.payment_status });
     }
     if (String(order.payment_provider || '').toLowerCase() && String(order.provider_transaction_id || '').trim()) {
+      // Fetch full payment data from ledger so frontend can render QRIS
+      const txResponse = await supabaseRequest(
+        `/rest/v1/payment_transactions?order_id=eq.${encodeURIComponent(order.id)}&order=created_at.desc&limit=1&select=provider_transaction_id,status,qr_url,qris_image,payment_url,gateway_fee,provider_total_amount,qris_method,is_test,expires_at`
+      );
+      const txRows = await readJson(txResponse);
+      const tx = (Array.isArray(txRows) && txRows[0]) ? txRows[0] : {};
       return res.status(200).json({
         ok: true,
         existing: true,
-        transaction_id: order.provider_transaction_id,
-        amount: Number(order.buyer_total || 0)
+        transaction_id: tx.provider_transaction_id || order.provider_transaction_id,
+        status: String(tx.status || 'pending'),
+        amount: Number(order.buyer_total || 0),
+        total_amount: Number(tx.provider_total_amount || order.buyer_total || 0),
+        gateway_fee: Number(tx.gateway_fee || order.gateway_fee || 0),
+        qr_url: String(tx.qr_url || ''),
+        qris_image: String(tx.qris_image || ''),
+        payment_url: String(tx.payment_url || ''),
+        expires_at: tx.expires_at || order.payment_expires_at || null,
+        is_test: Boolean(tx.is_test)
       });
     }
 
