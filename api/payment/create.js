@@ -131,6 +131,7 @@ module.exports = async function handler(req, res) {
         gateway_fee: Number(provider.admin_fee || 0),
         provider_credit_amount: Number(provider.credit_amount || 0),
         qr_url: String(provider.qr_url || ''),
+        qris_image: String(provider.qris_image || ''),
         payment_url: String(provider.payment_url || ''),
         qris_method: String(provider.qris_method || ''),
         is_test: Boolean(provider.is_test ?? settings.payment_sandbox === true),

@@ -53,7 +53,7 @@ module.exports = async function handler(req, res) {
     if (!isUuid(orderId)) return res.status(400).json({ error: 'order_id tidak valid.' });
 
     const paymentResponse = await supabaseRequest(
-      `/rest/v1/payment_transactions?order_id=eq.${encodeURIComponent(orderId)}&select=id,order_id,provider_transaction_id,status,requested_amount,provider_total_amount,gateway_fee,provider_credit_amount,qr_url,payment_url,expires_at,paid_at,is_test&order=created_at.desc&limit=1`
+      `/rest/v1/payment_transactions?order_id=eq.${encodeURIComponent(orderId)}&select=id,order_id,provider_transaction_id,status,requested_amount,provider_total_amount,gateway_fee,provider_credit_amount,qr_url,qris_image,payment_url,expires_at,paid_at,is_test&order=created_at.desc&limit=1`
     );
     const rows = await readJson(paymentResponse);
     if (!paymentResponse.ok || !rows?.[0]) return res.status(404).json({ error: 'Transaksi pembayaran belum dibuat.' });

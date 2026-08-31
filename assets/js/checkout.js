@@ -194,8 +194,22 @@ document.addEventListener('DOMContentLoaded', async () => {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ order_id: saved.orderId })
             });
-            const payment = await paymentResponse.json().catch(() => ({}));
-            if (paymentResponse.ok && payment.status === 'pending') {
+            const paymentBody = await paymentResponse.json().catch(() => ({}));
+            // API returns { ok, status, payment: tx } — normalize to flat shape
+            // that renderPayment expects (same shape as /api/payment/create response)
+            if (paymentResponse.ok && paymentBody.status === 'pending') {
+              const tx = paymentBody.payment || {};
+              const payment = {
+                transaction_id:  tx.provider_transaction_id || '',
+                status:          'pending',
+                qr_url:          tx.qr_url          || '',
+                qris_image:      tx.qris_image       || '',
+                payment_url:     tx.payment_url      || '',
+                gateway_fee:     Number(tx.gateway_fee              || existingOrder.gateway_fee      || 0),
+                total_amount:    Number(tx.provider_total_amount    || existingOrder.buyer_total      || 0),
+                expires_at:      tx.expires_at       || existingOrder.payment_expires_at || null,
+                is_test:         Boolean(tx.is_test)
+              };
               renderPayment({
                 profile,
                 product,
