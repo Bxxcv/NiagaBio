@@ -1255,6 +1255,12 @@
       allow_register: Boolean(settings.allow_register),
       premium_price: Number(settings.premium_price || defaultSettings.premium_price),
       admin_whatsapp: normalizePhone(settings.admin_whatsapp || defaultSettings.admin_whatsapp),
+      platform_fee: Number(settings.platform_fee ?? defaultSettings.platform_fee ?? 1000),
+      withdrawal_reserve: Number(settings.withdrawal_reserve ?? defaultSettings.withdrawal_reserve ?? 2500),
+      payment_provider: String(settings.payment_provider || defaultSettings.payment_provider || 'buatqris'),
+      payment_gateway_enabled: settings.payment_gateway_enabled !== false,
+      // IMPORTANT: false must remain false. Never use `||` for this boolean.
+      payment_sandbox: settings.payment_sandbox === true,
       premium_qris_url: normalizeImageUrl(settings.premium_qris_url || '', ''),
       premium_note: String(settings.premium_note || defaultSettings.premium_note)
     };
