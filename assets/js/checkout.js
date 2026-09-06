@@ -88,8 +88,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           <div class="checkout-price-line"><span>Subtotal produk</span><strong>${money(order.total_price)}</strong></div>
           <div class="checkout-price-line"><span>Biaya layanan NiagaBio</span><strong>${money(order.platform_fee)}</strong></div>
           <div class="checkout-price-line"><span>Cadangan withdrawal</span><strong>${money(order.withdrawal_reserve)}</strong></div>
-          ${Number(payment.gateway_fee || 0) > 0 ? `<div class="checkout-price-line"><span>Biaya payment gateway</span><strong>${money(payment.gateway_fee)}</strong></div>` : ''}
           <div class="checkout-price-line total-line"><span>Total pembayaran</span><strong>${money(payment.total_amount || order.buyer_total)}</strong></div>
+          ${Number(payment.gateway_fee || 0) > 0 ? `<div class="checkout-note"><i class="bi bi-info-circle"></i><div><b>Total di atas sudah final.</b><span>Estimasi potongan payment gateway ${money(payment.gateway_fee)} dipotong dari penerimaan penjual/platform saat settlement, bukan ditambahkan ke total yang kamu bayar.</span></div></div>` : ''}
         </aside>
 
         <section class="checkout-form-card card-nb checkout-payment-card">
