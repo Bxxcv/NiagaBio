@@ -1,4 +1,4 @@
-const { checkStatus } = require('../../lib/buatqris');
+const { checkStatus, verifyOrderAccessToken } = require('../../lib/buatqris');
 const { supabaseRequest, readJson } = require('./_supabase');
 
 function isUuid(value) {
@@ -51,6 +51,9 @@ module.exports = async function handler(req, res) {
   try {
     const orderId = String(req.body?.order_id || '').trim();
     if (!isUuid(orderId)) return res.status(400).json({ error: 'order_id tidak valid.' });
+    if (!verifyOrderAccessToken(orderId, String(req.body?.access_token || ''))) {
+      return res.status(403).json({ error: 'Akses transaksi ini tidak sah.' });
+    }
 
     const paymentResponse = await supabaseRequest(
       `/rest/v1/payment_transactions?order_id=eq.${encodeURIComponent(orderId)}&select=id,order_id,provider_transaction_id,status,requested_amount,provider_total_amount,gateway_fee,provider_credit_amount,qr_url,qris_image,payment_url,expires_at,paid_at,is_test&order=created_at.desc&limit=1`

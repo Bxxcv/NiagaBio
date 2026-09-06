@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const response = await fetch('/api/payment/status', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ order_id: order.id })
+          body: JSON.stringify({ order_id: order.id, access_token: payment.access_token || '' })
         });
         const data = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(data.error || 'Status pembayaran gagal dicek.');
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const paymentResponse = await fetch('/api/payment/status', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ order_id: saved.orderId })
+              body: JSON.stringify({ order_id: saved.orderId, access_token: saved.accessToken || '' })
             });
             const paymentBody = await paymentResponse.json().catch(() => ({}));
             // API returns { ok, status, payment: tx } — normalize to flat shape
@@ -209,7 +209,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 gateway_fee:     Number(tx.gateway_fee              || existingOrder.gateway_fee      || 0),
                 total_amount:    Number(tx.provider_total_amount    || existingOrder.buyer_total      || 0),
                 expires_at:      tx.expires_at       || existingOrder.payment_expires_at || null,
-                is_test:         Boolean(tx.is_test)
+                is_test:         Boolean(tx.is_test),
+                access_token:    saved.accessToken || ''
               };
               renderPayment({
                 profile,
@@ -312,6 +313,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
         const payment = await paymentResponse.json().catch(() => ({}));
         if (!paymentResponse.ok) throw new Error(payment.error || 'Gagal membuat QRIS pembayaran.');
+
+        if (payment.access_token) {
+          sessionStorage.setItem(`nb_order_${order.id}`, JSON.stringify({
+            orderId: order.id,
+            sellerId: profile.user_id,
+            productId: product.id,
+            quantity,
+            buyerName,
+            buyerPhone,
+            accessToken: payment.access_token,
+            createdAt: new Date().toISOString()
+          }));
+        }
 
         renderPayment({ profile, product, order, payment, buyerName, buyerPhone });
       } catch (error) {

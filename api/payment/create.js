@@ -1,4 +1,4 @@
-const { createQris } = require('../../lib/buatqris');
+const { createQris, orderAccessToken, verifyOrderAccessToken } = require('../../lib/buatqris');
 const { supabaseRequest, readJson } = require('./_supabase');
 
 const RATE_WINDOW_MS = 60 * 1000;
@@ -59,6 +59,12 @@ module.exports = async function handler(req, res) {
       return res.status(409).json({ error: 'Order ini tidak lagi menunggu pembayaran.', status: order.payment_status });
     }
     if (String(order.payment_provider || '').toLowerCase() && String(order.provider_transaction_id || '').trim()) {
+      // Order ini sudah pernah create QRIS -> token seharusnya sudah pernah
+      // diberikan ke browser pemilik order. Wajib cocok sebelum data
+      // (qr_url/payment_url) dibocorkan ke pemanggil lain.
+      if (!verifyOrderAccessToken(order.id, String(body.access_token || ''))) {
+        return res.status(403).json({ error: 'Akses transaksi ini tidak sah.' });
+      }
       // Fetch full payment data from ledger so frontend can render QRIS
       const txResponse = await supabaseRequest(
         `/rest/v1/payment_transactions?order_id=eq.${encodeURIComponent(order.id)}&order=created_at.desc&limit=1&select=provider_transaction_id,status,qr_url,qris_image,payment_url,gateway_fee,provider_total_amount,qris_method,is_test,expires_at`
@@ -77,7 +83,8 @@ module.exports = async function handler(req, res) {
         qris_image: String(tx.qris_image || ''),
         payment_url: String(tx.payment_url || ''),
         expires_at: tx.expires_at || order.payment_expires_at || null,
-        is_test: Boolean(tx.is_test)
+        is_test: Boolean(tx.is_test),
+        access_token: orderAccessToken(order.id)
       });
     }
 
@@ -184,7 +191,8 @@ module.exports = async function handler(req, res) {
       payment_url: String(provider.payment_url || ''),
       expires_at: provider.expires_at || null,
       is_test: Boolean(provider.is_test ?? settings.payment_sandbox === true),
-      ledger_id: insertedRows?.[0]?.id || null
+      ledger_id: insertedRows?.[0]?.id || null,
+      access_token: orderAccessToken(order.id)
     });
   } catch (error) {
     console.error('[NiagaBio] create payment failed:', error);
