@@ -12,7 +12,7 @@ NiagaBio adalah web app **link-in-bio + toko/katalog + checkout + dashboard sell
 
 <!-- TODO: Ganti screenshot di bawah dengan foto asli NiagaBio (pakai .webp biar ringan) -->
 <p align="center">
-<img src="./docs/img/screenshot-hero.webp" alt="NiagaBio" width="720">
+<img src="assets/img/og-niagabio.jpg" alt="NiagaBio" width="720">
 </p>
 
 ## 🌟 Highlights
