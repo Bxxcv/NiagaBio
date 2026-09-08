@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (saved && saved.orderId) {
           // Verify order exists and matches current context
           const existingOrder = await NB.get('orders', saved.orderId);
-          if (existingOrder && existingOrder.status === 'pending' && existingOrder.payment_method === 'qris_buatqris') {
+          if (existingOrder && ['pending', 'paid'].includes(existingOrder.payment_status) && existingOrder.payment_method === 'qris_buatqris') {
             // Fetch payment data
             const paymentResponse = await fetch('/api/payment/status', {
               method: 'POST',
@@ -196,9 +196,26 @@ document.addEventListener('DOMContentLoaded', async () => {
               body: JSON.stringify({ order_id: saved.orderId, access_token: saved.accessToken || '' })
             });
             const paymentBody = await paymentResponse.json().catch(() => ({}));
+            const restoredStatus = String(paymentBody.status || '').toLowerCase();
             // API returns { ok, status, payment: tx } — normalize to flat shape
             // that renderPayment expects (same shape as /api/payment/create response)
-            if (paymentResponse.ok && paymentBody.status === 'pending') {
+            if (paymentResponse.ok && restoredStatus === 'success') {
+              const tx = paymentBody.payment || {};
+              renderPaid({
+                profile,
+                product,
+                quantity: existingOrder.quantity,
+                order: { ...existingOrder, buyer_total: Number(tx.provider_total_amount || existingOrder.buyer_total || 0) },
+                buyerName: saved.buyerName,
+                buyerPhone: saved.buyerPhone
+              });
+              return;
+            }
+            if (paymentResponse.ok && ['expired', 'failed', 'cancelled'].includes(restoredStatus)) {
+              renderExpired({ profile, product, order: existingOrder });
+              return;
+            }
+            if (paymentResponse.ok && restoredStatus === 'pending') {
               const tx = paymentBody.payment || {};
               const payment = {
                 transaction_id:  tx.provider_transaction_id || '',
