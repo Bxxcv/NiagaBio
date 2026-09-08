@@ -138,46 +138,88 @@ module.exports = async function handler(req, res) {
     const transactionId = String(provider.transaction_id || '').trim();
     if (!transactionId) throw new Error('BuatQris tidak mengembalikan transaction_id.');
 
-    const insertResponse = await supabaseRequest('/rest/v1/payment_transactions', {
-      method: 'POST',
-      headers: { Prefer: 'return=representation' },
-      body: JSON.stringify({
-        order_id: order.id,
-        seller_id: order.seller_id,
-        provider: 'buatqris',
-        provider_transaction_id: transactionId,
-        status: String(provider.status || 'pending').toLowerCase(),
-        requested_amount: amount,
-        provider_total_amount: Number(provider.total_amount || amount),
-        gateway_fee: Number(provider.admin_fee || 0),
-        provider_credit_amount: Number(provider.credit_amount || 0),
-        qr_url: String(provider.qr_url || ''),
-        qris_image: String(provider.qris_image || ''),
-        payment_url: String(provider.payment_url || ''),
-        qris_method: String(provider.qris_method || ''),
-        is_test: Boolean(provider.is_test ?? settings.payment_sandbox === true),
-        expires_at: provider.expires_at || null
-      })
-    });
-    const insertedRows = await readJson(insertResponse);
-    if (!insertResponse.ok) {
-      return res.status(502).json({ error: 'Transaksi provider dibuat, tetapi gagal dicatat di ledger lokal.', provider_transaction_id: transactionId });
+    const RETRY_BACKOFF_MS = [0, 300, 600];
+    let insertedRows = null;
+    let persisted = false;
+    let lastError = null;
+
+    for (let attempt = 0; attempt < RETRY_BACKOFF_MS.length; attempt += 1) {
+      if (attempt > 0) await new Promise(resolve => setTimeout(resolve, RETRY_BACKOFF_MS[attempt]));
+      try {
+        const insertResponse = await supabaseRequest('/rest/v1/payment_transactions', {
+          method: 'POST',
+          headers: { Prefer: 'return=representation' },
+          body: JSON.stringify({
+            order_id: order.id,
+            seller_id: order.seller_id,
+            provider: 'buatqris',
+            provider_transaction_id: transactionId,
+            status: String(provider.status || 'pending').toLowerCase(),
+            requested_amount: amount,
+            provider_total_amount: Number(provider.total_amount || amount),
+            gateway_fee: Number(provider.admin_fee || 0),
+            provider_credit_amount: Number(provider.credit_amount || 0),
+            qr_url: String(provider.qr_url || ''),
+            qris_image: String(provider.qris_image || ''),
+            payment_url: String(provider.payment_url || ''),
+            qris_method: String(provider.qris_method || ''),
+            is_test: Boolean(provider.is_test ?? settings.payment_sandbox === true),
+            expires_at: provider.expires_at || null
+          })
+        });
+        if (insertResponse.ok) {
+          insertedRows = await readJson(insertResponse);
+        } else if (insertResponse.status === 409) {
+          // Kemungkinan percobaan sebelumnya sempat berhasil insert tapi
+          // response-nya gagal dibaca (network blip) -> cek row yang sudah ada
+          // sebelum dianggap gagal total.
+          const lookupResponse = await supabaseRequest(
+            `/rest/v1/payment_transactions?order_id=eq.${encodeURIComponent(order.id)}&provider_transaction_id=eq.${encodeURIComponent(transactionId)}&limit=1`
+          );
+          const lookupRows = await readJson(lookupResponse);
+          if (lookupResponse.ok && lookupRows?.[0]) {
+            insertedRows = lookupRows;
+          } else {
+            throw new Error(`insert payment_transactions gagal (409, lookup juga tidak ketemu)`);
+          }
+        } else {
+          throw new Error(`insert payment_transactions gagal (status ${insertResponse.status})`);
+        }
+
+        const patchResponse = await supabaseRequest(`/rest/v1/orders?id=eq.${encodeURIComponent(order.id)}`, {
+          method: 'PATCH',
+          headers: { Prefer: 'return=minimal' },
+          body: JSON.stringify({
+            payment_method: 'qris_buatqris',
+            payment_provider: 'buatqris',
+            provider_transaction_id: transactionId,
+            provider_status: String(provider.status || 'pending'),
+            gateway_fee: Number(provider.admin_fee || 0),
+            payment_expires_at: provider.expires_at || null,
+            buyer_total: Number(provider.total_amount || amount)
+          })
+        });
+        if (!patchResponse.ok) throw new Error(`patch orders gagal (status ${patchResponse.status})`);
+
+        persisted = true;
+        break;
+      } catch (err) {
+        lastError = err;
+        // lanjut ke percobaan berikutnya (kalau masih ada) — TIDAK memanggil
+        // createQris() lagi, cuma retry penyimpanan ke Supabase.
+      }
     }
 
-    const patchResponse = await supabaseRequest(`/rest/v1/orders?id=eq.${encodeURIComponent(order.id)}`, {
-      method: 'PATCH',
-      headers: { Prefer: 'return=minimal' },
-      body: JSON.stringify({
-        payment_method: 'qris_buatqris',
-        payment_provider: 'buatqris',
+    if (!persisted) {
+      console.error('[NiagaBio] [ALERT] orphaned_provider_transaction', {
+        order_id: order.id,
         provider_transaction_id: transactionId,
-        provider_status: String(provider.status || 'pending'),
-        gateway_fee: Number(provider.admin_fee || 0),
-        payment_expires_at: provider.expires_at || null,
-        buyer_total: Number(provider.total_amount || amount)
-      })
-    });
-    if (!patchResponse.ok) throw new Error('Gagal mengikat transaksi payment ke order.');
+        seller_id: order.seller_id,
+        attempts: RETRY_BACKOFF_MS.length,
+        error: String(lastError?.message || lastError || 'unknown')
+      });
+      return res.status(502).json({ error: 'Transaksi provider dibuat, tetapi gagal dicatat di ledger lokal.', provider_transaction_id: transactionId });
+    }
 
     return res.status(200).json({
       ok: true,
