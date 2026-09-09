@@ -3,413 +3,300 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>NiagaBio — Link Bio & Etalase Online untuk semua Seller</title>
-<meta name="description" content="NiagaBio membantu seller kecil membuat link bio toko, katalog produk, checkout QRIS manual, dan dashboard pesanan sederhana dalam satu halaman toko.">
-<meta property="og:site_name" content="NiagaBio">
-<meta property="og:type" content="website">
-<meta property="og:title" content="NiagaBio - Link Bio, Katalog Produk, dan Checkout QRIS Manual">
-<meta property="og:description" content="Link bio yang sekalian jadi etalase jualan: katalog produk, QRIS manual, dan dashboard pesanan untuk seller kecil.">
-<meta property="og:image" content="https://niaga-bio.vercel.app/assets/img/og-niagabio.jpg">
-<meta property="og:image:secure_url" content="https://niaga-bio.vercel.app/assets/img/og-niagabio.jpg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:url" content="https://niaga-bio.vercel.app/">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="NiagaBio - Link Bio, Katalog Produk, dan Checkout QRIS Manual">
-<meta name="twitter:description" content="Link bio yang sekalian jadi etalase jualan: katalog produk, QRIS manual, dan dashboard pesanan untuk seller kecil.">
-<meta name="twitter:image" content="https://niaga-bio.vercel.app/assets/img/og-niagabio.jpg">
+<title>NiagaBio — Link Bio & Etalase Online untuk Seller</title>
+<meta name="description" content="NiagaBio membantu seller kecil membuat link bio toko, katalog produk, checkout QRIS, dan dashboard pesanan sederhana dalam satu halaman toko." />
+<meta property="og:site_name" content="NiagaBio" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="NiagaBio — Link Bio, Katalog Produk, dan Checkout QRIS" />
+<meta property="og:description" content="Link bio yang sekalian jadi etalase jualan: katalog produk, QRIS, dan dashboard pesanan untuk seller kecil." />
+<meta property="og:image" content="https://niaga-bio.vercel.app/assets/img/og-niagabio.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:url" content="https://niaga-bio.vercel.app/" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="NiagaBio — Link Bio, Katalog Produk, dan Checkout QRIS" />
+<meta name="twitter:description" content="Link bio yang sekalian jadi etalase jualan: katalog produk, QRIS, dan dashboard pesanan untuk seller kecil." />
+<meta name="twitter:image" content="https://niaga-bio.vercel.app/assets/img/og-niagabio.jpg" />
 <meta name="google-site-verification" content="3tQvCVZZxu2pJ4V7ZpBvA6MNd18KD6C-Z2HF5_7qooU" />
-<link rel="canonical" href="https://niaga-bio.vercel.app/">
-<link rel="icon" href="/favicon.ico?v=4" sizes="any">
-<link rel="shortcut icon" href="/favicon.ico?v=4" type="image/x-icon">
-<link rel="icon" href="/assets/img/favicon-32x32.png?v=4" sizes="32x32" type="image/png">
-<link rel="icon" href="/assets/img/favicon-16x16.png?v=4" sizes="16x16" type="image/png">
-<link rel="apple-touch-icon" href="/assets/img/niagabio-logo.svg?v=4" sizes="180x180">
-<link rel="manifest" href="/site.webmanifest">
-<link rel="icon" type="image/svg+xml" href="assets/img/niagabio-logo.svg" />
-<link rel="alternate icon" href="assets/img/niagabio-logo.svg" />
+<meta name="theme-color" content="#0E7C5A" />
+<link rel="canonical" href="https://niaga-bio.vercel.app/" />
+<link rel="icon" href="assets/img/niagabio-logo.svg" type="image/svg+xml" />
+<link rel="icon" href="assets/img/favicon-32x32.png" sizes="32x32" type="image/png" />
+<link rel="apple-touch-icon" href="assets/img/icon-192.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 <link rel="stylesheet" href="assets/css/landing.css" />
 </head>
 <body>
+<a class="skip-link" href="#main">Lewati ke konten</a>
 
-<!-- ============ NAVBAR ============ -->
+<!-- ================= NAVBAR ================= -->
 <header class="nav" id="nav">
   <div class="container nav-inner">
     <a href="#home" class="brand" aria-label="NiagaBio">
-      <span class="brand-badge"><img src="assets/img/niagabio-logo.svg" alt="" width="24" height="24" /></span>
+      <span class="brand-badge"><img src="assets/img/niagabio-logo.svg" alt="" width="26" height="26" /></span>
       <span class="brand-name">NiagaBio</span>
     </a>
-    <nav class="nav-links">
+    <nav class="nav-links" aria-label="Navigasi utama">
       <a href="#home">Home</a>
-      <a href="#about">About Us</a>
-      <a href="#features">Features</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#contact">Contact</a>
+      <a href="#kenapa">Kenapa</a>
+      <a href="#features">Fitur</a>
+      <a href="#pricing">Harga</a>
+      <a href="#faq">FAQ</a>
     </nav>
     <div class="nav-cta">
-      <a href="login" class="btn btn-outline"><i class="bi bi-box-arrow-in-right"></i> Masuk</a>
+      <a href="login" class="btn btn-ghost">Masuk</a>
       <a href="register" class="btn btn-primary">Mulai gratis</a>
     </div>
-    <button class="nav-toggle" aria-label="Menu" id="navToggle">
-  <span class="nav-icon">
-    <i class="bi bi-list"></i>
-    <i class="bi bi-x-lg"></i>
-  </span>
-</button>
+    <button class="nav-toggle" id="navToggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="navMobile">
+      <span class="nav-icon"><i class="bi bi-list"></i><i class="bi bi-x-lg"></i></span>
+    </button>
   </div>
   <div class="nav-mobile" id="navMobile">
     <a href="#home">Home</a>
-    <a href="#about">About Us</a>
-    <a href="#features">Features</a>
-    <a href="#pricing">Pricing</a>
-    <a href="#contact">Contact</a>
-    <a href="login" class="btn btn-outline btn-block"><i class="bi bi-box-arrow-in-right"></i> Masuk</a>
-    <a href="register" class="btn btn-primary btn-block">Mulai gratis</a>
+    <a href="#kenapa">Kenapa</a>
+    <a href="#features">Fitur</a>
+    <a href="#pricing">Harga</a>
+    <a href="#faq">FAQ</a>
+    <div class="nav-mobile-cta">
+      <a href="login" class="btn btn-outline btn-block">Masuk</a>
+      <a href="register" class="btn btn-primary btn-block">Mulai gratis</a>
+    </div>
   </div>
 </header>
 
-<!-- ============ HERO ============ -->
+<main id="main">
+
+<!-- ================= HERO ================= -->
 <section class="hero" id="home">
-  <div class="hero-blob hero-blob-1"></div>
-  <div class="hero-blob hero-blob-2"></div>
+  <span class="blob blob-1" aria-hidden="true"></span>
+  <span class="blob blob-2" aria-hidden="true"></span>
+  <span class="blob blob-3" aria-hidden="true"></span>
   <div class="container hero-grid">
     <div class="hero-copy">
-      <h1>Butuh Link Bio dan Etalase Toko Online gratis dan murah? <br/> <span class="text-primary">Niaga Bio</span> Solusinya.</h1>
-      <p class="lead">NiagaBio membantu kamu membuat link bio Dan Etalase Toko super murah dan lengkap, <strong> dengan fitur kelola pesanan, terima pembayaran, dan rekap orderan dengan mudah.</strong></p>
-      <div class="hero-cta">
-        <a href="register" class="btn btn-primary btn-lg">Mulai gratis sekarang <i class="bi bi-arrow-right"></i></a>
-        <a href="/seller/u?username=demo-account" class="btn btn-outline btn-lg"><i class="bi bi-play-fill"></i> Lihat demo</a>
+      <span class="pill reveal">Link bio + etalase toko dalam satu halaman</span>
+      <h1 class="reveal" data-delay="1">Satu link rapi untuk<br /><span class="text-primary underline-swipe">semua jualanmu</span></h1>
+      <p class="lead reveal" data-delay="2">Bikin halaman toko dalam hitungan menit: pajang produk, terima pesanan, dan rekap semuanya dari HP. Tanpa ribet, tanpa kode.</p>
+      <div class="hero-cta reveal" data-delay="3">
+        <a href="register" class="btn btn-primary btn-lg">Mulai gratis <i class="bi bi-arrow-right"></i></a>
+        <a href="https://niaga-bio.vercel.app/seller/u?username=demo-account" class="btn btn-soft btn-lg"><i class="bi bi-eye"></i> Lihat contoh toko</a>
       </div>
-      <ul class="check-inline">
-        <li><i class="bi bi-check-lg"></i> Gratis selamanya</li>
-        <li><i class="bi bi-check-lg"></i> Tanpa kartu kredit</li>
-        <li><i class="bi bi-check-lg"></i> Setup 5 menit</li>
+      <ul class="hero-notes reveal" data-delay="4">
+        <li><i class="bi bi-check-circle-fill"></i> Gratis selamanya</li>
+        <li><i class="bi bi-check-circle-fill"></i> Tanpa kartu kredit</li>
+        <li><i class="bi bi-check-circle-fill"></i> Siap dipakai dari HP</li>
       </ul>
     </div>
-    <div class="hero-art">
-      <picture>
-        <source srcset="assets/hero/hero-illustration.webp" type="image/webp" />
-        <img src="assets/hero/hero-illustration.webp" alt="Tim seller mengelola toko online NiagaBio" />
-      </picture>
-    </div>
-  </div>
-  <svg class="wave-bottom" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
-    <path d="M0,40 C360,90 1080,-10 1440,40 L1440,80 L0,80 Z" fill="white"/>
-  </svg>
-</section>
-
-<!-- ============ TRUST BAR ============ -->
-<section class="trust">
-  <p class="trust-label">Dipercaya oleh <span class="text-primary">10,000+</span> seller di Indonesia</p>
-  <div class="marquee">
-    <div class="marquee-track">
-      <span>TokoMaju</span><span>WarungKita</span><span>ThriftID</span><span>BeautyHub</span><span>SnackBox</span><span>FashionLine</span><span>KopiNusantara</span><span>GadgetPro</span>
-      <span>TokoMaju</span><span>WarungKita</span><span>ThriftID</span><span>BeautyHub</span><span>SnackBox</span><span>FashionLine</span><span>KopiNusantara</span><span>GadgetPro</span>
+    <div class="hero-art reveal" data-delay="2">
+      <img src="assets/illustrator/hero-illustration.webp" alt="Ilustrasi penjual menunjukkan halaman toko NiagaBio di ponsel" width="1000" height="840" fetchpriority="high" decoding="async" />
+      <span class="chip chip-a" aria-hidden="true"><i class="bi bi-bag-check-fill"></i> Order masuk</span>
+      <span class="chip chip-b" aria-hidden="true"><i class="bi bi-qr-code"></i> QRIS siap</span>
     </div>
   </div>
 </section>
 
-<!-- ============ PROBLEM ============ -->
-<section class="section bg-white" id="about">
+<!-- ================= MASALAH ================= -->
+<section class="section" id="kenapa">
   <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Masalah Umum</span>
-      <h2>Masalah yang sering dialami seller online?</h2>
-      <p>Kalau salah satu masalah ini relate banget, kamu nggak sendirian.</p>
+    <div class="section-head reveal">
+      <span class="eyebrow">Kenapa NiagaBio</span>
+      <h2>Jualan online sering berantakan di bagian ini</h2>
+      <p>Kalau salah satu terasa relate, halaman toko yang rapi biasanya cukup untuk membereskannya.</p>
     </div>
     <div class="grid-4">
-      <div class="card">
-        <div class="icon-badge icon-rose"><i class="bi bi-chat-dots-fill"></i></div>
-        <h3>Chat Berantakan</h3>
-        <p>Orderan tersebar di WA, IG, TikTok — sulit dikelola.</p>
-      </div>
-      <div class="card">
-        <div class="icon-badge icon-amber"><i class="bi bi-clipboard-data"></i></div>
-        <h3>Rekap Manual</h3>
-        <p>Harus catat satu-satu, rawan error &amp; menghabiskan waktu.</p>
-      </div>
-      <div class="card">
-        <div class="icon-badge icon-violet"><i class="bi bi-link-45deg"></i></div>
-        <h3>Link Tersebar</h3>
-        <p>Link produk, payment, sosmed sulit dijadikan satu.</p>
-      </div>
-      <div class="card">
-        <div class="icon-badge icon-blue"><i class="bi bi-cash-stack"></i></div>
-        <h3>Cek Pembayaran Ribet</h3>
-        <p>Harus cek mutasi bank manual, takut salah konfirmasi.</p>
-      </div>
+      <article class="card reveal"><span class="icon-badge tint-rose"><i class="bi bi-chat-dots-fill"></i></span><h3>Chat berantakan</h3><p>Orderan tersebar di WhatsApp, Instagram, dan TikTok.</p></article>
+      <article class="card reveal" data-delay="1"><span class="icon-badge tint-amber"><i class="bi bi-clipboard-data"></i></span><h3>Rekap manual</h3><p>Catat satu-satu di buku, gampang kelewat dan salah hitung.</p></article>
+      <article class="card reveal" data-delay="2"><span class="icon-badge tint-violet"><i class="bi bi-link-45deg"></i></span><h3>Link tersebar</h3><p>Link produk, pembayaran, dan sosmed susah dijadikan satu.</p></article>
+      <article class="card reveal" data-delay="3"><span class="icon-badge tint-blue"><i class="bi bi-cash-stack"></i></span><h3>Cek bayar ribet</h3><p>Harus buka mutasi manual sebelum berani konfirmasi.</p></article>
     </div>
   </div>
 </section>
 
-<!-- ============ SOLUTION ============ -->
+<!-- ================= SOLUSI ================= -->
 <section class="section bg-surface">
-  <div class="container solution-stack">
-    <div class="solution-row">
-      <div class="solution-art">
-        <picture>
-          <source srcset="assets/illustrator/mockup-etalase.webp" type="image/webp" />
-          <img src="assets/illustrator/mockup-etalase.png" alt="Mockup etalase NiagaBio di smartphone" loading="lazy"/>
-        </picture>
-      </div>
-      <div>
-        <span class="pill">Preview Account Premium</span>
-        <h2>Satu Link untuk Semua Produk</h2>
-        <p class="lead">Tampilkan semua produkmu dalam satu halaman yang rapi, mudah dibagikan, dan langsung terhubung ke WhatsApp.</p>
+  <div class="container stack-rows">
+    <div class="row-split">
+      <div class="row-art reveal"><img src="assets/illustrator/one-link.webp" alt="Ilustrasi satu link yang menampilkan banyak kartu produk" width="1000" height="900" loading="lazy" decoding="async" /></div>
+      <div class="row-copy reveal" data-delay="1">
+        <span class="pill"><i class="bi bi-shop"></i> Etalase</span>
+        <h2>Satu link untuk semua produk</h2>
+        <p class="lead">Tampilkan produkmu dalam halaman yang rapi, cepat dibuka, dan gampang dibagikan ke mana saja.</p>
         <ul class="check-grid">
-          <li><i class="bi bi-check-lg"></i> Katalog unlimited</li>
           <li><i class="bi bi-check-lg"></i> Foto &amp; deskripsi detail</li>
-          <li><i class="bi bi-check-lg"></i> Tombol WA otomatis</li>
           <li><i class="bi bi-check-lg"></i> Kategori produk</li>
+          <li><i class="bi bi-check-lg"></i> Tombol WhatsApp otomatis</li>
+          <li><i class="bi bi-check-lg"></i> Tema tampilan siap pakai</li>
         </ul>
       </div>
     </div>
-    <div class="solution-row reverse">
-      <div class="solution-art">
-        <picture>
-          <source srcset="assets/illustrator/mockup-dashboard.webp" type="image/webp" />
-          <img src="assets/illustrator/mockup-dashboard.jpg" alt="Mockup dashboard NiagaBio dengan grafik penjualan" loading="lazy"/>
-        </picture>
-      </div>
-      <div>
-        <span class="pill"><i class="bi bi-credit-card"></i> Pembayaran Mudah</span>
-        <h2>Terima Pembayaran QRIS &amp; Transfer</h2>
-        <p class="lead">Pelanggan bisa bayar pakai QRIS dari semua e-wallet. Notifikasi real-time dan rekap otomatis.</p>
+    <div class="row-split reverse">
+      <div class="row-art reveal"><img src="assets/illustrator/pay-qris.webp" alt="Ilustrasi penjual menunjukkan kode QRIS pembayaran" width="1000" height="900" loading="lazy" decoding="async" /></div>
+      <div class="row-copy reveal" data-delay="1">
+        <span class="pill"><i class="bi bi-credit-card"></i> Pembayaran</span>
+        <h2>Terima pembayaran lewat QRIS</h2>
+        <p class="lead">Pembeli bayar pakai QRIS dari e-wallet apa pun, lalu pesanannya langsung tercatat di dashboard.</p>
         <ul class="check-grid">
-          <li><i class="bi bi-check-lg"></i> QRIS manual upload</li>
-          <li><i class="bi bi-check-lg"></i> Verifikasi otomatis</li>
-          <li><i class="bi bi-check-lg"></i> Export CSV</li>
-          <li><i class="bi bi-check-lg"></i> Notifikasi real-time</li>
+          <li><i class="bi bi-check-lg"></i> Checkout QRIS + bukti bayar</li>
+          <li><i class="bi bi-check-lg"></i> Status pesanan jelas</li>
+          <li><i class="bi bi-check-lg"></i> Rekap order &amp; omset</li>
+          <li><i class="bi bi-check-lg"></i> Export data ke CSV</li>
         </ul>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============ FEATURES ============ -->
-<section class="section bg-white" id="features">
+<!-- ================= FITUR ================= -->
+<section class="section" id="features">
   <div class="container">
-    <div class="section-head">
+    <div class="section-head reveal">
       <span class="eyebrow">Fitur</span>
-      <h2>Fitur lengkap untuk jualan lebih mudah</h2>
-      <p>Semua yang kamu butuhkan untuk mulai dan tumbuhkan toko online, dalam satu platform.</p>
+      <h2>Semua yang dibutuhkan toko kecil</h2>
+      <p>Tidak berlebihan, hanya yang benar-benar dipakai tiap hari.</p>
     </div>
     <div class="grid-3">
-      <div class="card feature-card"><div class="icon-badge icon-primary"><i class="bi bi-shop"></i></div><h3>Etalase Online</h3><p>Tampilkan produk dengan foto, harga, dan deskripsi yang menarik.</p></div>
-      <div class="card feature-card"><div class="icon-badge icon-primary"><i class="bi bi-link-45deg"></i></div><h3>Link Bio Multi-Platform</h3><p>Satu link untuk Instagram, TikTok, Facebook, dan WhatsApp.</p></div>
-      <div class="card feature-card"><div class="icon-badge icon-primary"><i class="bi bi-qr-code-scan"></i></div><h3>QRIS Support</h3><p>Terima pembayaran dari semua e-wallet via QRIS.</p></div>
-      <div class="card feature-card"><div class="icon-badge icon-primary"><i class="bi bi-bar-chart-line-fill"></i></div><h3>Dashboard Order</h3><p>Pantau semua pesanan dalam satu tempat yang rapi.</p></div>
-      <div class="card feature-card"><div class="icon-badge icon-primary"><i class="bi bi-download"></i></div><h3>Export Data</h3><p>Download data orderan ke Excel/CSV kapanpun.</p></div>
-      <div class="card feature-card"><div class="icon-badge icon-primary"><i class="bi bi-phone"></i></div><h3>Mobile Friendly</h3><p>Kelola toko langsung dari HP kapan saja, di mana saja.</p></div>
+      <article class="card feature reveal"><span class="icon-badge tint-primary"><i class="bi bi-shop"></i></span><h3>Etalase online</h3><p>Produk tampil dengan foto, harga, dan deskripsi.</p></article>
+      <article class="card feature reveal" data-delay="1"><span class="icon-badge tint-primary"><i class="bi bi-link-45deg"></i></span><h3>Link bio multi-platform</h3><p>Satu link untuk Instagram, TikTok, Facebook, dan WhatsApp.</p></article>
+      <article class="card feature reveal" data-delay="2"><span class="icon-badge tint-primary"><i class="bi bi-qr-code-scan"></i></span><h3>Checkout QRIS</h3><p>Pembeli bayar dari e-wallet mana pun.</p></article>
+      <article class="card feature reveal"><span class="icon-badge tint-primary"><i class="bi bi-bar-chart-line-fill"></i></span><h3>Dashboard pesanan</h3><p>Semua order terkumpul di satu tempat.</p></article>
+      <article class="card feature reveal" data-delay="1"><span class="icon-badge tint-primary"><i class="bi bi-images"></i></span><h3>Galeri &amp; tema</h3><p>Portofolio produk dan tampilan yang bisa diganti.</p></article>
+      <article class="card feature reveal" data-delay="2"><span class="icon-badge tint-primary"><i class="bi bi-phone"></i></span><h3>Dikelola dari HP</h3><p>Semua halaman nyaman dipakai di layar kecil.</p></article>
     </div>
   </div>
 </section>
 
-<!-- ============ HOW IT WORKS ============ -->
+<!-- ================= CARA KERJA ================= -->
 <section class="section gradient-soft">
   <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Cara Kerja</span>
-      <h2>Cara kerja sederhana, hasil maksimal</h2>
+    <div class="section-head reveal">
+      <span class="eyebrow">Cara kerja</span>
+      <h2>Empat langkah, selesai</h2>
     </div>
-    <div class="steps">
-      <div class="step">
-        <div class="step-icon"><i class="bi bi-person-plus"></i><span class="step-num">01</span></div>
-        <h3>Daftar Gratis</h3>
-        <p>Buat akun dalam 1 menit, tanpa kartu kredit.</p>
-      </div>
-      <div class="step">
-        <div class="step-icon"><i class="bi bi-box-seam"></i><span class="step-num">02</span></div>
-        <h3>Tambah Produk</h3>
-        <p>Upload foto, harga, dan deskripsi produkmu.</p>
-      </div>
-      <div class="step">
-        <div class="step-icon"><i class="bi bi-link-45deg"></i><span class="step-num">03</span></div>
-        <h3>Bagikan Link</h3>
-        <p>Pasang link bio di Instagram, TikTok, &amp; WA.</p>
-      </div>
-      <div class="step">
-        <div class="step-icon"><i class="bi bi-bag-check-fill"></i><span class="step-num">04</span></div>
-        <h3>Terima Orderan</h3>
-        <p>Pesanan masuk dan langsung kamu kelola.</p>
-      </div>
-    </div>
+    <ol class="steps">
+      <li class="step reveal"><span class="step-num">01</span><h3>Daftar gratis</h3><p>Buat akun sebentar saja, tanpa kartu kredit.</p></li>
+      <li class="step reveal" data-delay="1"><span class="step-num">02</span><h3>Tambah produk</h3><p>Upload foto, harga, dan deskripsi produkmu.</p></li>
+      <li class="step reveal" data-delay="2"><span class="step-num">03</span><h3>Bagikan link</h3><p>Pasang di bio Instagram, TikTok, dan WhatsApp.</p></li>
+      <li class="step reveal" data-delay="3"><span class="step-num">04</span><h3>Kelola pesanan</h3><p>Order masuk, bayar, lalu terekap otomatis.</p></li>
+    </ol>
   </div>
 </section>
 
-<!-- ============ PRICING ============ -->
+<!-- ================= HARGA ================= -->
 <section class="section bg-surface" id="pricing">
   <div class="container">
-    <div class="section-head">
+    <div class="section-head reveal">
       <span class="eyebrow">Harga</span>
-      <h2>Paket harga transparan</h2>
-      <p>Mulai gratis, upgrade kapan saja. Tanpa biaya tersembunyi.</p>
-      <div class="price-toggle" id="priceToggle">
-        <button class="active" data-mode="monthly">Bulanan</button>
-        <button data-mode="yearly">Tahunan · Hemat 20%</button>
+      <h2>Mulai gratis, upgrade kalau perlu</h2>
+      <p>Tanpa biaya tersembunyi.</p>
+      <div class="price-toggle" id="priceToggle" role="group" aria-label="Pilih periode harga">
+        <button type="button" class="active" data-mode="monthly" aria-pressed="true">Bulanan</button>
+        <button type="button" data-mode="yearly" aria-pressed="false">Tahunan · hemat 20%</button>
       </div>
     </div>
-    <div class="grid-3 price-grid">
-      <div class="price-card highlight">
-        <span class="badge-pop"><i class="bi bi-star-fill"></i> Paling Populer</span>
+    <div class="price-grid">
+      <article class="price-card reveal">
         <h3>Gratis</h3>
-        <div class="price"><span class="amt" data-monthly="0" data-yearly="0">Rp0</span><span class="per">/selamanya</span></div>
+        <p class="price-note">Buat mulai jualan hari ini.</p>
+        <div class="price"><span class="amt">Rp0</span><span class="per">/selamanya</span></div>
         <ul class="check-list">
-          <li><i class="bi bi-check-lg"></i> 2 tema gratis</li><li><i class="bi bi-check-lg"></i> Post maksimal 5 produk</li><li><i class="bi bi-check-lg"></i> Link media sosial maksimal 3 link</li><li><i class="bi bi-check-lg"></i> Checkout Whatsapp</li><li>
+          <li><i class="bi bi-check-lg"></i> 2 tema gratis</li>
+          <li><i class="bi bi-check-lg"></i> Maksimal 5 produk</li>
+          <li><i class="bi bi-check-lg"></i> 3 link media sosial</li>
+          <li><i class="bi bi-check-lg"></i> Checkout WhatsApp</li>
         </ul>
-        <a href="register" class="btn btn-primary btn-block">Mulai gratis</a>
-      </div>
-      <div class="price-card">
+        <a href="register" class="btn btn-outline btn-block">Mulai gratis</a>
+      </article>
+      <article class="price-card highlight reveal" data-delay="1">
+        <span class="badge-pop"><i class="bi bi-star-fill"></i> Paling lengkap</span>
         <h3>Premium</h3>
-        <div class="price"><span class="amt" data-monthly="80000" data-yearly="64000">Rp80.000</span><span class="per">/bulan</span></div>
+        <p class="price-note">Buat toko yang sudah jalan.</p>
+        <div class="price"><span class="amt" data-monthly="Rp80.000" data-yearly="Rp64.000">Rp80.000</span><span class="per" data-monthly="/bulan" data-yearly="/bulan, ditagih tahunan">/bulan</span></div>
         <ul class="check-list">
-          <li>
-            <i class="bi bi-check-lg"></i> Template premium lebih beda</li>
-            <li><i class="bi bi-check-lg"></i> Katalog sampai 500 produk</li>
-          <li>
-            <i class="bi bi-check-lg"></i> Search, kategori, dan katalog rapi</li>
-            <li>
-              <i class="bi bi-check-lg"></i> Gallery untuk portofolio produk</li>
-          <li>
-            <i class="bi bi bi-check-lg"></i> QRIS manual checkout + bukti bayar
-          </li>
+          <li><i class="bi bi-check-lg"></i> Template premium</li>
+          <li><i class="bi bi-check-lg"></i> Katalog sampai 500 produk</li>
+          <li><i class="bi bi-check-lg"></i> Search &amp; kategori produk</li>
+          <li><i class="bi bi-check-lg"></i> Galeri portofolio</li>
+          <li><i class="bi bi-check-lg"></i> Checkout QRIS + bukti bayar</li>
           <li><i class="bi bi-check-lg"></i> Rekap order dan omset</li>
         </ul>
-        <a href="register" class="btn btn-outline btn-block">Pilih Premium</a>
-      </div>
+        <a href="register" class="btn btn-primary btn-block">Pilih Premium</a>
+      </article>
     </div>
   </div>
 </section>
 
-<!-- ============ TESTIMONIALS ============ -->
-<section class="section bg-white">
+<!-- ================= TESTIMONI ================= -->
+<section class="section">
   <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Testimoni</span>
-      <h2>Apa kata mereka?</h2>
+    <div class="section-head reveal">
+      <span class="eyebrow">Cerita seller</span>
+      <h2>Kata mereka yang sudah pakai</h2>
     </div>
     <div class="grid-3">
-      <figure class="card testi">
-        <div class="stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
-        <blockquote>"Sejak pakai NiagaBio, orderan jadi lebih terorganisir. Nggak perlu lagi catat manual di buku!"</blockquote>
-        <figcaption><div class="avatar"><img src="assets/img/testi/1.jpg" alt="user"></div><div><b>Lina Wijaya</b><small>Owner Warung Lina</small></div></figcaption>
+      <figure class="card testi reveal">
+        <div class="stars" aria-label="5 dari 5"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+        <blockquote>“Orderan sekarang ngumpul di satu tempat. Nggak perlu lagi catat manual di buku.”</blockquote>
+        <figcaption><span class="avatar"><img src="assets/img/testi/1.jpg" alt="" width="44" height="44" loading="lazy" /></span><span><b>Lina Wijaya</b><small>Owner Warung Lina</small></span></figcaption>
       </figure>
-      <figure class="card testi">
-        <div class="stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
-        <blockquote>"Fitur QRIS-nya sangat membantu pelanggan saya. Pembayaran jadi cepat dan auto-rekap."</blockquote>
-        <figcaption><div class="avatar"><img src="assets/img/testi/2.jpg" alt="user"></div><div><b>Budi Santoso</b><small>Seller Fashion Thrift</small></div></figcaption>
+      <figure class="card testi reveal" data-delay="1">
+        <div class="stars" aria-label="5 dari 5"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+        <blockquote>“Pembeli tinggal scan QRIS, jadi saya nggak bolak-balik cek mutasi.”</blockquote>
+        <figcaption><span class="avatar"><img src="assets/img/testi/2.jpg" alt="" width="44" height="44" loading="lazy" /></span><span><b>Budi Santoso</b><small>Seller fashion thrift</small></span></figcaption>
       </figure>
-      <figure class="card testi">
-        <div class="stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
-        <blockquote>"Conversion rate naik 40% setelah pakai NiagaBio. Etalase-nya rapi dan profesional banget."</blockquote>
-        <figcaption><div class="avatar"><img src="assets/img/testi/3.jpg" alt="user"></div><div><b>Agnes Cely</b><small>Reseller Skincare</small></div></figcaption>
+      <figure class="card testi reveal" data-delay="2">
+        <div class="stars" aria-label="5 dari 5"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+        <blockquote>“Etalasenya rapi, jadi lebih pede pasang linknya di bio.”</blockquote>
+        <figcaption><span class="avatar"><img src="assets/img/testi/3.jpg" alt="" width="44" height="44" loading="lazy" /></span><span><b>Agnes Cely</b><small>Reseller skincare</small></span></figcaption>
       </figure>
     </div>
   </div>
 </section>
 
-<!-- ============ COMPARISON ============ -->
-<section class="comparison">
-  <div class="comparison-blob comparison-blob-1"></div>
-  <div class="comparison-blob comparison-blob-2"></div>
+<!-- ================= FAQ ================= -->
+<section class="section bg-surface" id="faq">
   <div class="container narrow">
-    <div class="section-head light">
-      <h2>Kenapa memilih NiagaBio?</h2>
-      <p>Bandingkan dengan link bio biasa.</p>
-    </div>
-    <div class="compare-table">
-      <div class="compare-row compare-head">
-        <div>Fitur</div><div>Link Bio Biasa</div><div>NiagaBio</div>
-      </div>
-      <div class="compare-row"><div>Harga Produk Ditampilkan</div><div class="no"><i class="bi bi-x-lg"></i></div><div class="yes"><i class="bi bi-check-lg"></i></div></div>
-      <div class="compare-row alt"><div>Keranjang Belanja</div><div class="no"><i class="bi bi-x-lg"></i></div><div class="yes"><i class="bi bi-check-lg"></i></div></div>
-      <div class="compare-row"><div>Pembayaran QRIS</div><div class="no"><i class="bi bi-x-lg"></i></div><div class="yes"><i class="bi bi-check-lg"></i></div></div>
-      <div class="compare-row alt"><div>Dashboard Order</div><div class="no"><i class="bi bi-x-lg"></i></div><div class="yes"><i class="bi bi-check-lg"></i></div></div>
-      <div class="compare-row"><div>Export Data CSV</div><div class="no"><i class="bi bi-x-lg"></i></div><div class="yes"><i class="bi bi-check-lg"></i></div></div>
-      <div class="compare-row alt"><div>Analytics Penjualan</div><div class="no"><i class="bi bi-x-lg"></i></div><div class="yes"><i class="bi bi-check-lg"></i></div></div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ FAQ ============ -->
-<section class="section bg-white">
-  <div class="container narrow">
-    <div class="section-head">
+    <div class="section-head reveal">
       <span class="eyebrow">FAQ</span>
-      <h2>Pertanyaan yang sering diajukan</h2>
+      <h2>Pertanyaan yang sering masuk</h2>
     </div>
-    <div class="faq" id="faq">
-      <details><summary>Apakah NiagaBio benar-benar gratis?</summary><p>Iya, gratis selamanya. Kamu dapat 5 produk pertama, 2 tema gratis, 3 link media sosial, dan fitur Checkout WhatsApp. Tanpa kartu kredit saat mendaftar.</p></details>
-      <details><summary>Apa kelebihan dari Link bio di luar sana?</summary><p>Kalau Link bio di luar sana berfokusnya buat naruh link, NiagaBio fokusnya buat jualan. Di NiagaBio kamu bisa upload foto, harga, dan deskripsi produk, ada katalog, ada rekap order dan omset, sampai terima pembayaran pakai QRIS manual. Jadi 1 link langsung jadi toko mini</p></details>
-      <details><summary>Bagaimana cara pembeli pesan dan bayar di NiagaBio?</summary><p>Ada 2 cara. <br/> 1. <b>Checkout WhatsApp</b>: Pembeli klik tombol, langsung chat ke WA kamu.<br/> 2. <b>QRIS Manual</b>: Di paket Premium, pembeli bisa bayar pakai QRIS dan upload bukti bayar. Nanti masuk ke rekap order kamu otomatis.</p></details>
-      <details><summary>Berapa maksimal produk yang bisa saya jual?</summary><p>Di paket Gratis maksimal 5 produk. Kalau upgrade ke Premium Rp80.000/bulan, kamu bisa upload sampai 500 produk + fitur search, kategori, dan katalog rapi.</p></details>
-      <details><summary>Bisa dipakai di HP? Caranya ribet nggak?</summary><p>Bisa banget. <b>100% mobile-friendly</b>. <br /> Caranya cuma 3 langkah:</br> 
-      <i class="bi bi-1-circle-fill"></i> <b>Daftar Gratis 1 menit</b><br />
-      <i class="bi bi-2-circle-fill"></i> <b>Tambah Produk upload foto & harga</b> <br />
-      <i class="bi bi-3-circle-fill"></i> <b>Isi link sosial media kamu. </b> <br />
-      <i class="bi bi-4-circle-fill"></i> <b>Bagikan link bio kamu ke WhatsApp, Instagram, Twitter, dll.</b>
-      </p></details>
-      <details><summary>Apa yang saya dapat di paket Premium Rp80.000/bulan?</summary><p>
-        Kamu dapat: <br /> <b>
-<i class="bi bi-patch-check-fill"></i> Katalog sampai 500 produk
-<br />
-<i class="bi bi-patch-check-fill"></i> Template premium lebih beda
-<br />
-<i class="bi bi-patch-check-fill"></i> Galeri untuk portofolio produk
-<br />
-<i class="bi bi-patch-check-fill"></i> QRIS manual checkout + bukti bayar
-<br />
-<i class="bi bi-patch-check-fill"></i> Rekap order dan omset
-<br />
-<i class="bi bi-patch-check-fill"></i> Dashboard Order, Export Data CSV, Analytics Penjualan
-<br />
-<i class="bi bi-patch-check-fill"></i> Fitur Search, Kategori, dan Katalog Rapi</b>
-      </p></details>
-      <details><summary>Bagaimana jika butuh bantuan?</summary><p>Tim support kami siap membantu via WhatsApp, email, dan chat bot di halaman Beranda.</p></details>
+    <div class="faq reveal">
+      <details><summary>Benar-benar bisa dipakai gratis?<i class="bi bi-plus-lg"></i></summary><p>Bisa. Paket gratis berlaku selamanya dengan 2 tema, 5 produk, 3 link sosial, dan checkout WhatsApp.</p></details>
+      <details><summary>Perlu bisa coding?<i class="bi bi-plus-lg"></i></summary><p>Tidak. Semua diatur lewat dashboard dan bisa dikerjakan dari HP.</p></details>
+      <details><summary>Bagaimana pembeli membayar?<i class="bi bi-plus-lg"></i></summary><p>Lewat WhatsApp untuk paket gratis, atau checkout QRIS dengan bukti bayar di paket Premium.</p></details>
+      <details><summary>Bisa berhenti dari Premium kapan saja?<i class="bi bi-plus-lg"></i></summary><p>Bisa. Toko dan produkmu tetap ada, hanya fitur Premium yang berhenti aktif.</p></details>
     </div>
   </div>
 </section>
 
-<!-- ============ CTA ============ -->
-<section class="cta" id="contact">
-  <svg class="wave-top" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
-    <path d="M0,40 C360,-10 1080,90 1440,40 L1440,0 L0,0 Z" fill="white"/>
-  </svg>
-  <div class="cta-blob cta-blob-1"></div>
-  <div class="cta-blob cta-blob-2"></div>
-  <div class="container narrow cta-inner">
-    <h2>Siap mulai jualan lebih mudah?</h2>
-    <p>Gabung 10,000+ seller yang sudah merasakan kemudahan NiagaBio. Gratis untuk 5 produk pertama!</p>
-    <div class="hero-cta center">
-      <a href="register" class="btn btn-on-primary btn-lg">Mulai gratis sekarang <i class="bi bi-arrow-right"></i></a>
-      <a href="https://wa.me/6285191245042?text=Halo%20Admin%20Niaga%20Bio%20%F0%9F%91%8B%0ASaya%20tertarik%20dengan%20jasa%20pembuatan%20Link%20Bio.%0A%0AMohon%20informasinya%20ya%3A%0A%2ANama%2A%20%20%20%20%20%3A%20%0A%2AEmail%2A%20%20%20%20%3A%20%0A%2ANama%20Toko%2A%20%3A%20(Opsional)" class="btn btn-outline-white btn-lg"><i class="bi bi-whatsapp"></i> Chat WhatsApp</a>
+<!-- ================= CTA ================= -->
+<section class="cta-band">
+  <span class="blob blob-cta" aria-hidden="true"></span>
+  <div class="container cta-inner reveal">
+    <h2>Siap punya link toko sendiri?</h2>
+    <p>Buat akun gratis, isi produkmu, lalu bagikan satu link ke semua pembeli.</p>
+    <div class="hero-cta">
+      <a href="register" class="btn btn-on-primary btn-lg">Mulai gratis <i class="bi bi-arrow-right"></i></a>
+      <a href="https://niaga-bio.vercel.app/seller/u?username=demo-account" class="btn btn-outline-white btn-lg">Lihat contoh toko</a>
     </div>
-    <ul class="check-inline light">
-      <li><i class="bi bi-credit-card-fill"></i> Tanpa kartu kredit</li>
-      <li><i class="bi bi-stopwatch-fill"></i> Setup 5 menit</li>
-      <li><i class="bi bi-x-circle-fill"></i> Cancel kapan saja</li>
-    </ul>
   </div>
 </section>
 
-<!-- ============ FOOTER ============ -->
+</main>
+
+<!-- ================= FOOTER ================= -->
 <footer class="footer">
   <div class="container footer-grid">
     <div>
-      <div class="brand brand-light">
-        <span class="brand-badge"><img src="assets/img/niagabio-logo.svg" alt="" width="24" height="24" /></span>
+      <div class="brand">
+        <span class="brand-badge"><img src="assets/img/niagabio-logo.svg" alt="" width="26" height="26" /></span>
         <span class="brand-name">NiagaBio</span>
       </div>
-      <p class="footer-desc">Platform link bio dan etalase online. Jualan dan link bio jadi lebih mudah &amp; terorganisir.</p>
+      <p class="footer-desc">Link bio dan etalase online untuk seller kecil, UMKM, dan creator.</p>
       <div class="socials">
-        <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-        <a href="#" aria-label="X"><i class="bi bi-twitter-x"></i></a>
-        <a href="https://tiktok.com/@niaga_bio" target="_blank" aria-label="TikTok"><i class="bi bi-tiktok"></i></a>
-        <a href="https://wa.me/6285191245042?text=Halo%20Admin%20NiagaBio%2C%20saya%20ingin%20bertanya." target="_blank" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+        <a href="https://tiktok.com/@niaga_bio" target="_blank" rel="noopener" aria-label="TikTok"><i class="bi bi-tiktok"></i></a>
+        <a href="https://wa.me/6285191245042?text=Halo%20Admin%20NiagaBio%2C%20saya%20ingin%20bertanya." target="_blank" rel="noopener" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
       </div>
     </div>
     <div>
@@ -417,8 +304,8 @@
       <ul><li><a href="#features">Fitur</a></li><li><a href="#pricing">Harga</a></li><li><a href="/seller/u?username=demo-account">Demo</a></li></ul>
     </div>
     <div>
-      <h4>Tentang Kami</h4>
-      <ul><li><a href="privacy">Kebijakan Privasi</a></li><li><a href="terms">Syarat Penggunaan</a></li><li><a href="refund">Pembayaran dan refund</a></li></ul>
+      <h4>Tentang</h4>
+      <ul><li><a href="privacy">Kebijakan Privasi</a></li><li><a href="terms">Syarat Penggunaan</a></li><li><a href="refund">Pembayaran &amp; refund</a></li></ul>
     </div>
     <div>
       <h4>Bantuan</h4>
@@ -428,38 +315,23 @@
   <div class="footer-bottom">
     <div class="container footer-bottom-inner">
       <p>© <span id="year"></span> NiagaBio. All rights reserved.</p>
-      <div>
-        <a href="terms">Terms</a>
-        <a href="privacy">Privacy</a>
-        <a href="privacy">Cookies</a></div>
+      <div><a href="terms">Terms</a><a href="privacy">Privacy</a></div>
     </div>
   </div>
 </footer>
 
-<!-- ============ FLOATING QUICK MENU ============ -->
+<!-- ================= QUICK MENU ================= -->
 <div class="fab-wrap" id="fabWrap">
   <div class="fab-menu" id="fabMenu">
-    <a class="fab-item" href="https://chat-niaga-bio.vercel.app" target="_blank" rel="noopener">
-      <span class="fab-item-icon fab-icon-bot"><i class="bi bi-robot"></i></span>
-      Chat Bot
-    </a>
-    <a class="fab-item" href="register">
-      <span class="fab-item-icon fab-icon-register"><i class="bi bi-person-plus-fill"></i></span>
-      Daftar Gratis
-    </a>
-    <a class="fab-item" href="https://wa.me/6285191245042?text=Halo%20Admin%20NiagaBio%2C%20saya%20ingin%20bertanya." target="_blank" rel="noopener">
-      <span class="fab-item-icon fab-icon-wa"><i class="bi bi-whatsapp"></i></span>
-      WhatsApp Admin
-    </a>
+    <a class="fab-item" href="https://chat-niaga-bio.vercel.app" target="_blank" rel="noopener"><span class="fab-item-icon"><i class="bi bi-robot"></i></span> Chat Bot</a>
+    <a class="fab-item" href="register"><span class="fab-item-icon"><i class="bi bi-person-plus-fill"></i></span> Daftar Gratis</a>
+    <a class="fab-item" href="https://wa.me/6285191245042?text=Halo%20Admin%20NiagaBio%2C%20saya%20ingin%20bertanya." target="_blank" rel="noopener"><span class="fab-item-icon"><i class="bi bi-whatsapp"></i></span> WhatsApp Admin</a>
   </div>
-  <button class="fab-toggle" id="fabToggle" aria-label="Buka menu bantuan" aria-expanded="false" aria-controls="fabMenu" type="button">
-    <span class="fab-icon">
-      <i class="bi bi-list"></i>
-      <i class="bi bi-x-lg"></i>
-    </span>
+  <button class="fab-toggle" id="fabToggle" type="button" aria-label="Buka menu bantuan" aria-expanded="false" aria-controls="fabMenu">
+    <span class="fab-icon"><i class="bi bi-headset"></i><i class="bi bi-x-lg"></i></span>
   </button>
 </div>
 
-<script src="assets/js/landing.js"></script>
+<script src="assets/js/landing.js" defer></script>
 </body>
 </html>
