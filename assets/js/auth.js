@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const forgotPasswordToggle = document.getElementById('forgotPasswordToggle');
   const forgotPasswordBox = document.getElementById('forgotPasswordBox');
   const passwordResetForm = document.getElementById('passwordResetForm');
+  const forgotPasswordClose = document.getElementById('forgotPasswordClose');
 
   if (loginForm) {
     loginForm.addEventListener('submit', async event => {
@@ -31,6 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (forgotPasswordToggle && forgotPasswordBox) {
     forgotPasswordToggle.addEventListener('click', () => {
       forgotPasswordBox.hidden = !forgotPasswordBox.hidden;
+      forgotPasswordBox.setAttribute('aria-hidden', forgotPasswordBox.hidden ? 'true' : 'false');
       const emailInput = document.getElementById('forgotEmail');
       if (emailInput && !emailInput.value && typeof loginEmail !== 'undefined') {
         emailInput.value = loginEmail.value.trim();
@@ -38,6 +40,38 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (!forgotPasswordBox.hidden) emailInput?.focus();
     });
   }
+
+  if (forgotPasswordClose && forgotPasswordBox) {
+    forgotPasswordClose.addEventListener('click', () => {
+      forgotPasswordBox.hidden = true;
+      forgotPasswordBox.setAttribute('aria-hidden', 'true');
+    });
+
+    forgotPasswordBox.addEventListener('click', event => {
+      if (event.target === forgotPasswordBox) {
+        forgotPasswordBox.hidden = true;
+        forgotPasswordBox.setAttribute('aria-hidden', 'true');
+      }
+    });
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && !forgotPasswordBox.hidden) {
+        forgotPasswordBox.hidden = true;
+        forgotPasswordBox.setAttribute('aria-hidden', 'true');
+      }
+    });
+  }
+
+  document.querySelectorAll('.toggle-pass').forEach(button => {
+    button.addEventListener('click', () => {
+      const target = document.getElementById(button.dataset.target);
+      if (!target) return;
+      const show = target.type === 'password';
+      target.type = show ? 'text' : 'password';
+      button.setAttribute('aria-pressed', show ? 'true' : 'false');
+      button.setAttribute('aria-label', show ? 'Sembunyikan kata sandi' : 'Lihat kata sandi');
+    });
+  });
 
   if (forgotPasswordForm) {
     forgotPasswordForm.addEventListener('submit', async event => {
@@ -128,4 +162,24 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
   }
+
+
+  /* ---------- Interaksi visual Lovable: reveal + tahun ---------- */
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const revealItems = document.querySelectorAll('.reveal');
+  if (reduceMotion || !('IntersectionObserver' in window)) {
+    revealItems.forEach(element => element.classList.add('is-in'));
+  } else {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-in');
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+    revealItems.forEach(element => observer.observe(element));
+  }
+
+  const year = document.getElementById('year');
+  if (year) year.textContent = new Date().getFullYear();
 });

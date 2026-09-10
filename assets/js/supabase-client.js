@@ -725,7 +725,7 @@
             await upsertProfile({
               user_id: data.user.id,
               email: cleanEmail,
-              username: makeSafeUsername(displayName || cleanEmail.split('@')[0], attempt > 0),
+              username: makeSafeUsername(cleanEmail.split('@')[0], attempt > 0),
               display_name: displayName,
               bio: '',
               avatar_url: '/assets/img/niagabio-logo.svg',
@@ -763,7 +763,7 @@
       id: uid('profile'),
       user_id: user.id,
       email: cleanEmail,
-      username: uniqueUsername(displayName || cleanEmail.split('@')[0]),
+      username: uniqueUsername(cleanEmail.split('@')[0]),
       display_name: displayName || 'User NiagaBio',
       bio: '',
       avatar_url: '/assets/img/niagabio-logo.svg',
