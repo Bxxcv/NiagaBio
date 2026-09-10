@@ -490,13 +490,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function buy(product) {
       if (!product) return;
-      const mode = checkout.checkout_mode || 'whatsapp';
-
-      if (!demoModePage && premium && checkout.qris_enabled && (mode === 'qris_manual' || mode === 'qris_whatsapp')) {
+      if (!demoModePage) {
         location.href = `/checkout.html?username=${encodeURIComponent(profile.username)}&product=${encodeURIComponent(product.id)}`;
         return;
       }
-
       const text = `Halo kak, saya mau pesan:\nProduk: ${product.name}\nHarga: ${NB.money(product.price)}\nJumlah: 1`;
       location.href = NB.whatsappUrl(profile.whatsapp_number || checkout.whatsapp_number, text);
     }

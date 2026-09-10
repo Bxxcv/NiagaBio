@@ -26,7 +26,7 @@
     refs.userRows.innerHTML = rows.map(profile => {
       const isSelf = profile.user_id === state.currentUser?.id;
       const deleted = profile.status === 'deleted';
-      const publicUrl = profile.username ? `u?username=${encodeURIComponent(profile.username)}` : '#';
+      const publicUrl = profile.username ? `/seller/u?username=${encodeURIComponent(profile.username)}` : '#';
       const avatarUrl = profile.avatar_url;
       const initials = safe((profile.display_name || profile.email || profile.username || 'U').slice(0, 1)).toUpperCase();
       const avatarHtml = avatarUrl
