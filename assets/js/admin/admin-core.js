@@ -325,7 +325,7 @@ window.NBAdmin = (function () {
   }
 
   function setAdminView(view = 'overview') {
-    const allowed = ['overview', 'users', 'reports', 'requests', 'settings'];
+    const allowed = ['overview', 'users', 'inactive-users', 'reports', 'requests', 'settings'];
     const activeView = allowed.includes(view) ? view : 'overview';
 
     document.querySelectorAll('[data-admin-panel]').forEach(panel => {
@@ -353,7 +353,7 @@ window.NBAdmin = (function () {
 
   function initialAdminView() {
     const hash = String(location.hash || '').replace('#', '');
-    return ['overview', 'users', 'reports', 'requests', 'settings'].includes(hash) ? hash : 'overview';
+    return ['overview', 'users', 'inactive-users', 'reports', 'requests', 'settings'].includes(hash) ? hash : 'overview';
   }
 
   function bindCoreEvents() {
