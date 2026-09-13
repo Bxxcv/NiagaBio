@@ -7,6 +7,10 @@
     if (refs.maintenanceMode) refs.maintenanceMode.checked = Boolean(state.settings.maintenance_mode);
     if (refs.allowRegister) refs.allowRegister.checked = state.settings.allow_register !== false;
     if (refs.maintenanceMessage) refs.maintenanceMessage.value = state.settings.maintenance_message || '';
+    const maintenancePages = Array.isArray(state.settings.maintenance_pages) ? state.settings.maintenance_pages : [];
+    document.querySelectorAll('[data-maintenance-page]').forEach(box => {
+      box.checked = maintenancePages.includes(box.dataset.maintenancePage);
+    });
     if (refs.premiumPrice) nbSetRupiahInputValue(refs.premiumPrice, state.settings.premium_price || 80000);
     if (refs.adminWhatsApp) refs.adminWhatsApp.value = state.settings.admin_whatsapp || '';
     if (refs.premiumQrisUrl) refs.premiumQrisUrl.value = state.settings.premium_qris_url || '';
@@ -34,6 +38,7 @@
       await NB.saveSettings({
         maintenance_mode: refs.maintenanceMode?.checked,
         maintenance_message: refs.maintenanceMessage?.value.trim(),
+        maintenance_pages: Array.from(document.querySelectorAll('[data-maintenance-page]:checked')).map(box => box.dataset.maintenancePage),
         allow_register: refs.allowRegister?.checked,
         premium_price: nbParseRupiah(refs.premiumPrice?.value || 80000),
         admin_whatsapp: refs.adminWhatsApp?.value.trim(),

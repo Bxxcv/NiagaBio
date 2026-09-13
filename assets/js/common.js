@@ -93,11 +93,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const settings = await NB.getSettings();
     const page = (location.pathname.split('/').filter(Boolean).pop() || 'index').replace(/\.html$/i, '');
     const maintenanceEnabled = settings.maintenance_mode === true || settings.maintenance_mode === 'true' || settings.maintenance_mode === 1;
+    const maintenancePages = Array.isArray(settings.maintenance_pages) ? settings.maintenance_pages : [];
+    const pageTargeted = maintenancePages.length === 0 || maintenancePages.includes(page);
     const isMaintenancePage = page === 'maintenance';
     const isLoginPage = page === 'login';
     const isAdmin = String(profile?.role || '').toLowerCase() === 'admin';
     
-    if (maintenanceEnabled && !isAdmin && !isMaintenancePage && !isLoginPage) {
+    if (maintenanceEnabled && pageTargeted && !isAdmin && !isMaintenancePage && !isLoginPage) {
       window.NB_MAINTENANCE_REDIRECTING = true;
       sessionStorage.setItem('nb_maintenance_message', settings.maintenance_message || 'Website sedang maintenance.');
       location.replace('/maintenance.html');

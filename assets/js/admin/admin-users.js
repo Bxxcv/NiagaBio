@@ -54,6 +54,7 @@
           <td class="text-end">
             <div class="admin-action-row justify-content-end">
               <button class="btn btn-sm btn-outline-nb" type="button" data-user-detail="${safe(profile.user_id)}">Detail</button>
+              ${profile.plan === 'premium' ? `<button class="btn btn-sm btn-outline-success" type="button" data-user-extend="${safe(profile.user_id)}" ${isSelf || deleted ? 'disabled' : ''}>Perpanjang</button>` : ''}
               <button class="btn btn-sm ${profile.plan === 'premium' ? 'btn-outline-secondary' : 'btn-success'}" type="button" data-user-plan="${safe(profile.user_id)}" ${isSelf || deleted ? 'disabled' : ''}>${profile.plan === 'premium' ? 'Set Free' : 'Premium'}</button>
               <button class="btn btn-sm ${profile.status === 'blocked' ? 'btn-outline-success' : 'btn-outline-danger'}" type="button" data-user-block="${safe(profile.user_id)}" ${isSelf || deleted ? 'disabled' : ''}>${profile.status === 'blocked' ? 'Unblock' : 'Blokir'}</button>
               <button class="btn btn-sm btn-danger" type="button" data-user-delete="${safe(profile.user_id)}" ${isSelf || deleted ? 'disabled' : ''}>Hapus</button>
@@ -65,6 +66,7 @@
 
     refs.userRows.querySelectorAll('[data-user-detail]').forEach(button => button.addEventListener('click', () => openUserDetail(button.dataset.userDetail)));
     refs.userRows.querySelectorAll('[data-user-plan]').forEach(button => button.addEventListener('click', () => togglePremium(button.dataset.userPlan)));
+    refs.userRows.querySelectorAll('[data-user-extend]').forEach(button => button.addEventListener('click', () => extendPremium(button.dataset.userExtend)));
     refs.userRows.querySelectorAll('[data-user-block]').forEach(button => button.addEventListener('click', () => toggleBlock(button.dataset.userBlock)));
     refs.userRows.querySelectorAll('[data-user-delete]').forEach(button => button.addEventListener('click', () => deleteUser(button.dataset.userDelete)));
   }
@@ -147,6 +149,10 @@
       refs.modalPlanBtn.textContent = profile.plan === 'premium' ? 'Set Free' : 'Set Premium';
       refs.modalPlanBtn.disabled = isSelf || deleted;
     }
+    if (refs.modalExtendBtn) {
+      refs.modalExtendBtn.hidden = profile.plan !== 'premium';
+      refs.modalExtendBtn.disabled = isSelf || deleted;
+    }
     if (refs.modalBlockBtn) {
       refs.modalBlockBtn.textContent = profile.status === 'blocked' ? 'Unblock' : 'Blokir';
       refs.modalBlockBtn.disabled = isSelf || deleted;
@@ -184,6 +190,31 @@
       if (state.selectedUserId === userId) openUserDetail(userId, false);
     } catch (error) {
       nbToast(error.message || 'Gagal update plan user.', 'danger');
+    }
+  }
+
+  async function extendPremium(userId) {
+    const profile = state.profiles.find(item => item.user_id === userId);
+    if (!profile) return;
+    if (profile.plan !== 'premium') return nbToast('User ini bukan Premium.', 'warning');
+    if (profile.status === 'deleted') return nbToast('User deleted tidak bisa diubah plan-nya.', 'warning');
+
+    const daysInput = prompt('Tambah berapa hari masa Premium?', '30');
+    if (daysInput === null) return;
+    const days = Number(daysInput || 0);
+    if (!Number.isFinite(days) || days < 1) return nbToast('Durasi tidak valid.', 'danger');
+
+    const currentEnd = profile.plan_end_date ? new Date(profile.plan_end_date).getTime() : NaN;
+    const base = Number.isFinite(currentEnd) && currentEnd > Date.now() ? currentEnd : Date.now();
+    const endDate = new Date(base + days * 24 * 60 * 60 * 1000).toISOString();
+
+    try {
+      await NB.adminUpdateProfile(userId, { plan: 'premium', status: 'active', plan_end_date: endDate });
+      nbToast(`Premium berhasil diperpanjang ${days} hari.`);
+      await A.refresh();
+      if (state.selectedUserId === userId) openUserDetail(userId, false);
+    } catch (error) {
+      nbToast(error.message || 'Gagal perpanjang premium.', 'danger');
     }
   }
 
@@ -248,6 +279,7 @@
     refs.planFilter?.addEventListener('change', renderUsers);
     refs.statusFilter?.addEventListener('change', renderUsers);
     refs.modalPlanBtn?.addEventListener('click', () => { if (state.selectedUserId) togglePremium(state.selectedUserId); });
+    refs.modalExtendBtn?.addEventListener('click', () => { if (state.selectedUserId) extendPremium(state.selectedUserId); });
     refs.modalBlockBtn?.addEventListener('click', () => { if (state.selectedUserId) toggleBlock(state.selectedUserId); });
     refs.modalDeleteBtn?.addEventListener('click', () => { if (state.selectedUserId) deleteUser(state.selectedUserId); });
   });

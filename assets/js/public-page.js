@@ -4,7 +4,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   try {
     const settings = await NB.getSettings();
     const maintenanceEnabled = settings.maintenance_mode === true || settings.maintenance_mode === 'true' || settings.maintenance_mode === 1;
-    if (maintenanceEnabled) {
+    const maintenancePages = Array.isArray(settings.maintenance_pages) ? settings.maintenance_pages : [];
+    const pageTargeted = maintenancePages.length === 0 || maintenancePages.includes('store');
+    if (maintenanceEnabled && pageTargeted) {
       const loggedUser = await NB.currentUser();
       const loggedProfile = loggedUser ? await NB.getProfile(loggedUser.id) : null;
       const isAdmin = String(loggedProfile?.role || '').toLowerCase() === 'admin';

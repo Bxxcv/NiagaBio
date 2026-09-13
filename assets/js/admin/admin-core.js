@@ -43,6 +43,7 @@ window.NBAdmin = (function () {
     platformApprovedRequests: $('platformApprovedRequests'),
     platformPendingRequests: $('platformPendingRequests'),
     platformExpiringSoon: $('platformExpiringSoon'),
+    reportPeriod: $('adminReportPeriod'),
     userSearch: $('adminUserSearch'),
     planFilter: $('adminPlanFilter'),
     statusFilter: $('adminStatusFilter'),
@@ -78,6 +79,7 @@ window.NBAdmin = (function () {
     userModalSubtitle: $('adminUserModalSubtitle'),
     userModalBody: $('adminUserModalBody'),
     modalPlanBtn: $('modalPlanBtn'),
+    modalExtendBtn: $('modalExtendBtn'),
     modalBlockBtn: $('modalBlockBtn'),
     modalDeleteBtn: $('modalDeleteBtn')
   };
@@ -244,6 +246,26 @@ window.NBAdmin = (function () {
     }
   }
 
+  async function autoDowngradeExpiredPremium(profiles) {
+    const now = Date.now();
+    const expired = profiles.filter(profile => {
+      if (profile.plan !== 'premium' || profile.status !== 'active' || !profile.plan_end_date) return false;
+      const end = new Date(profile.plan_end_date).getTime();
+      return Number.isFinite(end) && end < now;
+    });
+    if (!expired.length) return;
+
+    await Promise.all(expired.map(async profile => {
+      try {
+        await NB.adminUpdateProfile(profile.user_id, { plan: 'free', plan_end_date: null });
+        profile.plan = 'free';
+        profile.plan_end_date = null;
+      } catch (error) {
+        console.warn('[NiagaBio] Gagal auto-downgrade premium expired:', profile.user_id, error.message);
+      }
+    }));
+  }
+
   async function loadData() {
     state.dataErrors = {};
     const [profiles, orders, products, premiumRequests, passwordResetRequests] = await Promise.all([
@@ -253,6 +275,8 @@ window.NBAdmin = (function () {
       safeAll('premium_requests'),
       NB.listPasswordResetRequests ? NB.listPasswordResetRequests() : []
     ]);
+
+    await autoDowngradeExpiredPremium(profiles);
 
     state.profiles = profiles;
     state.orders = orders;
