@@ -1,136 +1,161 @@
-2026-09-07T00:00:00Z — Audited commit: 404bcddfe0ca666424f6510bd24604cf45ab5f50
-
-# LOGIC & SECURITY AUDIT — NiagaBio
-Role: External security & logic auditor (read-only audit; single allowed write: HASIL_DATA.md)
-
-Source of truth read in order before code: PRD.md, SkilAi.md, docs/PAYMENT_GATEWAY_PLAN.md
-Files examined (selection): api/, lib/, assets/js/, supabase/*.sql (migrations 23..28), README.md
-
-Note: code search has result limits; I may have missed unrelated files. Full repo search: https://github.com/Bxxcv/NiagaBio/search?q=repo%3ABxxcv%2FNiagaBio&type=code
+# HASIL AUDIT — NiagaBio Checkout & Accounting
+**Tanggal audit:** 2026-09-13
+**Auditor:** Arise (AI Assistant)
+**Scope:** Validasi harga checkout, accounting seller/platform, sandbox isolation, webhook security
 
 ---
 
-EXECUTIVE SUMMARY
-- Focus: logic correctness across checkout/payment/withdrawal and quick security checks.
-- Active Critical findings: 1
-- Active High findings: 2
-- Active Medium findings: 4
-- Active Low findings: 1
+## 1. MIGRATION AKTIF YANG DIAUDIT
 
-Top remediation priorities (short):
-1) Critical: ensure provider-created transactions are durably recorded (create flow resilience + webhook reconciliation).
-2) High: require ORDER_ACCESS_SECRET (fail-closed) to prevent IDOR; remove permissive fallback.
-3) High: add reconciliation/upsert behavior when webhook arrives before local ledger.
-4) Medium: centralize rate-limiting and implement per-order idempotency.
-5) Medium: enforce migration ordering and test is_test isolation.
+| Migration | File | Fungsi Utama |
+|---|---|---|
+| 24 | `24_buatqris_payment_gateway.sql` | `apply_buatqris_payment_event` (versi awal) |
+| 26 | `26_fix_audit_findings.sql` | `apply_buatqris_payment_event` (patch audit) |
+| 28 | `28_sandbox_wallet_isolation.sql` | `apply_buatqris_payment_event` (versi aktif), `get_seller_wallet_summary` |
+| 32 | `32_normalize_buyer_phone_dedup.sql` | `create_public_order` (versi aktif) |
 
 ---
 
-DETAILED FINDINGS
+## 2. HASIL AUDIT PER AREA
 
-1) Severity: Critical
-- File + lines: api/payment/create.js — provider create -> insert payment_transactions -> PATCH orders sequence
-- Deskripsi (kenapa logic bug): The server calls the external provider (createQris) and then inserts a local payment_transactions row and patches orders. If the DB insert/PATCH fails after provide[...] 
-- Migration/version: serverless code (P3 backend) and RPC apply_buatqris_payment_event (migrations 24/26/28) — current behavior in active code.
-- Skenario konkret: provider returns transaction_id; server fails to persist local tx due to Supabase outage; buyer pays; webhook arrives and RPC errors with P0002; funds not reflected in ledger o[...] 
-- Dampak: real money collected but not recorded; manual reconciliation, potential lost revenue, order fulfillment failures and disputes.
-- Rekomendasi: make the create flow resilient/transactional: ensure durable local record before returning success (retry with idempotency keys), or record provider-created events in a durable inco[...]
+### 2.1 Accounting Harga — BENAR
 
+`create_public_order` (migration 32) saat order dibuat:
 
-2) Severity: High
-- File + lines: lib/buatqris.js (orderAccessToken, verifyOrderAccessToken) and api/payment/create.js & api/payment/status.js (access token checks)
-- Deskripsi (kenapa logic bug): verifyOrderAccessToken(...) intentionally returns true if ORDER_ACCESS_SECRET env var is empty (fallback permissive). This means that if ORDER_ACCESS_SECRET is not [...]
-- Migration/version: serverless code (current) — active.
-- Skenario konkret: in a deployment without ORDER_ACCESS_SECRET set, an attacker who knows or guesses an order_id can request /api/payment/create (existing branch) or /api/payment/status and obtai[...]
-- Dampak: IDOR — exposure of payment URLs and transaction data; privacy and payment integrity issues.
-- Rekomendasi: fail-closed: if ORDER_ACCESS_SECRET is unset, reject attempts and surface a deploy-time error/alert. Change verifyOrderAccessToken to return false (or 403/503) when secret is missin[...]
+```sql
+gateway_fee    = 0                                          -- belum diketahui
+buyer_total    = (product_price * qty) + platform_fee + withdrawal_reserve
+seller_earning = product_price * qty                       -- full subtotal
+platform_earning = 0                                       -- belum settlement
+```
 
+`apply_buatqris_payment_event` (migration 28) saat settlement (webhook success):
 
-3) Severity: High
-- File + lines: api/payment/webhook.js and supabase RPC apply_buatqris_payment_event (supabase/24_..., 26, 28)
-- Deskripsi (kenapa logic bug): Webhook handler verifies signature and directly calls apply_buatqris_payment_event which expects an existing payment_transactions row. If webhook arrives before the[...] 
-- Migration/version: current RPC (migration 28 is authoritative for financial semantics) still requires payment_transactions to exist — active.
-- Skenario konkret: provider posts payment.success quickly; local INSERT hasn't completed or failed; webhook fails; provider may retry but if exhausted payment remains unrecorded.
-- Dampak: missed settlements, manual ops burden, possible customer/seller impact.
-- Rekomendasi: when RPC indicates missing payment_transactions, persist the webhook payload (delivery id, raw body, headers) to a durable table and either return 200 (ack) or 202, and process asyn[...]
+```sql
+gateway_fee      = p_admin_fee dari provider               -- aktual provider
+buyer_total      = greatest(p_total_amount, buyer_total)   -- aktual provider
+seller_earning   = order_row.total_price                   -- full product subtotal
+platform_earning = order_row.platform_fee                  -- platform_fee saja (PRD s.10)
+```
 
+Sesuai PRD section 10:
+- `seller_earning` = hak seller penuh, tidak dikurangi gateway_fee
+- `platform_earning` = `platform_fee` saja, BUKAN include `withdrawal_reserve`
+- `withdrawal_reserve` = cadangan biaya withdrawal, bukan profit platform
+- `gateway_fee` = biaya provider aktual dari webhook
 
-4) Severity: Medium
-- File + lines: api/payment/create.js (amount rounding and buyer_total usage)
-- Deskripsi (kenapa logic bug): Money handling occurs in multiple places with rounding (Math.round(Number(order.buyer_total)), trigger-calculated buyer_total, provider-returned provider.total_amou[...] 
-- Migration/version: supabase/23_payment_ledger_foundation.sql sets snapshot fields; api/payment/create.js and settlement RPC update buyer_total.
-- Skenario konkret: buyer sees buyer_total pre-create; provider adds gateway_fee changing total_amount; UI shows different value leading to complaints; rounding edge cases may cause tiny accountin[...]
-- Dampak: UX issues, reconciliation edge-cases.
-- Rekomendasi: standardize on integer smallest-currency units across frontend, server, and DB; avoid floating point; add tests for rounding; consider deferring persist of buyer_total until provide[...]
-
-
-5) Severity: Medium
-- File + lines: api/payment/status.js & api/payment/create.js — rate limiting (in-memory Map keyed by x-forwarded-for)
-- Deskripsi (kenapa logic bug): Rate limiting is per-instance and in-memory on serverless platform; counters reset on cold starts and cannot protect against distributed attacks or IP-spoofing. Rel[...] 
-- Migration/version: serverless code (active).
-- Skenario konkret: distributed attacker rotates IPs or leverages many clients to spam create/status, exhausting provider quotas or costing money.
-- Dampak: DoS on provider or increased costs.
-- Rekomendasi: move rate-limiting to centralized store (Redis) or use edge/CDN rate limits; prefer per-order or per-account limits rather than IP-only.
-
-
-6) Severity: Medium
-- File + lines: assets/js/checkout.js + create_public_order RPC (supabase) — duplicate order creation / dedup
-- Deskripsi (kenapa logic bug): Client persistence is sessionStorage but server-side dedup must handle near-duplicate requests robustly. If dedup relies on identical payloads, small variations (ph[...] 
-- Migration/version: create_public_order RPC (migration 24+) and frontend code.
-- Skenario konkret: user refreshes or double-submits, creating multiple orders; potential double-charges.
-- Dampak: DB spam, pending orders, user friction.
-- Rekomendasi: implement server-side idempotency token for create_public_order (short-lived), normalize inputs before dedup, and enforce dedup within timeframe.
-
-
-7) Severity: Medium
-- File + lines: supabase/26_fix_audit_findings.sql and supabase/28_sandbox_wallet_isolation.sql — is_test propagation and wallet isolation
-- Deskripsi (kenapa logic bug): Migration history shows reconciliation of platform_earning and introduction of orders.is_test in migration 28 to exclude test orders from wallet summaries. If migra[...] 
-- Migration/version: 28 is authoritative; environments missing 28 are at risk.
-- Skenario konkret: staging or some environments run through 26 but not 28; test payments leak into balances.
-- Dampak: incorrect balances, fraudulent withdrawals.
-- Rekomendasi: enforce migration ordering in CI/CD, include integration tests that confirm is_test exclusion and correct platform_earning formula.
-
-
-8) Severity: Low
-- File + lines: lib/buatqris.js — console.info raw provider response logging
-- Deskripsi (kenya logic bug): provider responses are logged (JSON truncated to 1200 chars) but no explicit redaction of possibly sensitive fields.
-- Skenario konkret: logs shipped to centralized system show provider-returned data.
-- Dampak: information disclosure in logs.
-- Rekomendasi: redact sensitive keys from provider response before logging and ensure logging access controls/retention policies.
-
-
-AREAS VERIFIED SAFE (short)
-- Webhook HMAC verification: AMAN — signHmac(rawBody, signingSecret) + timing-safe compare used; ensure proxy preserves raw body.
-- protect_orders_fields + RLS: AMAN — triggers and RLS protect settlement fields from browser mutation.
-- Withdrawal state-machine improvements: AMAN — migration 28 adds guards and sticky is_test propagation.
-
-
-HISTORY / RESOLVED (anti-false-positive)
-- Trigger v15 blocking qris_buatqris — RESOLVED by migration 26 (validate_order_public_fields rebuilt). Do not report as active if migration 26+ applied.
-- Platform_earning inclusion of withdrawal_reserve — migration 26 applied this but migration 28 corrected back to PRD behavior (platform_earning = platform_fee, withdrawal_reserve separate). Tr[...]
-
-
-SUMMARY — counts & priority
-- Critical: 1
-- High: 2
-- Medium: 4
-- Low: 1
-
-Fix priority (practical):
-1) (Critical) Resilient create flow + webhook reconciliation.
-2) (High) Require ORDER_ACCESS_SECRET (fail-closed) to prevent IDOR.
-3) (High) Add webhook upsert/reconcile path for missing payment_transactions.
-4) (Medium) Centralize rate limiting, add per-order idempotency.
-5) (Medium) Enforce migration ordering & test is_test isolation.
-6) (Low) Redact provider logs.
+**STATUS: BENAR**
 
 ---
 
-FOLLOW-UP SUGGESTIONS (ops)
-- Automated E2E tests for create → immediate pay → webhook → reconcile, including the race where webhook arrives before DB write.
-- Monitoring/alerting for error text 'Payment transaction not found' and create.js 502 path.
-- Deploy-time check that ORDER_ACCESS_SECRET exists and fail deployment or disable payment endpoints if missing.
+### 2.2 Sandbox Isolation — BENAR
+
+Migration 28 menambahkan `orders.is_test`:
+
+- `is_test` di-set dari `payment_transactions.is_test` saat settlement
+- Sticky: `effective_is_test = coalesce(tx.is_test, false) OR coalesce(p_is_test, false)` — tidak bisa di-flip ke false
+- `get_seller_wallet_summary` hanya sum order dengan `is_test = false`
+- Webhook `apply_buatqris_payment_event` hanya bisa dipanggil `service_role`
+
+**STATUS: AMAN — sandbox payment tidak masuk withdrawable balance**
 
 ---
 
-I will now commit this file as HASIL_DATA.md and push with message "docs: logic & security audit report 2026-09-07".
+### 2.3 Webhook Security — BENAR
+
+File: `api/payment/webhook.js`
+
+- HMAC verification via `signHmac` + `safeTimingEqual` (timing-safe compare)
+- `BQ_SIGNING_SECRET` dari ENV, bukan hardcode
+- Jika secret kosong → 500, bukan bypass
+- Idempotency: duplicate `success` webhook hanya update provider refs, tidak re-credit seller
+- Out-of-order: order sudah `paid` + webhook bukan `success` → skip, hanya update `is_test`
+
+**STATUS: AMAN**
+
+---
+
+### 2.4 apply_buatqris_payment_event Access Control — BENAR
+
+```sql
+revoke all on function ... from public, anon, authenticated;
+grant execute on function ... to service_role;
+```
+
+Di dalam function:
+```sql
+if coalesce(auth.role(), '') <> 'service_role' then
+  raise exception 'Service role required';
+end if;
+```
+
+Double guard: revoke + runtime check.
+
+**STATUS: AMAN — seller tidak bisa memalsukan settlement dari client**
+
+---
+
+### 2.5 Dedup Guard Nomor HP — BENAR
+
+Migration 32 menambahkan normalisasi untuk perbandingan dedup:
+
+```sql
+dedup_phone_key := case
+  when left(clean_buyer_phone, 2) = '62' and length(...) between 10 and 15
+    then '0' || substr(clean_buyer_phone, 3)
+  else clean_buyer_phone
+end;
+```
+
+- `081234567890` dan `6281234567890` dianggap sama oleh dedup guard
+- Nilai yang DISIMPAN ke DB tidak berubah (`clean_buyer_phone`)
+- Window: 2 menit per produk, 15 menit max 5 order per seller
+
+**STATUS: BENAR**
+
+---
+
+### 2.6 Preview Harga di Form Checkout — UX ISSUE (Minor)
+
+**Temuan:** Sebelum buyer klik "Lanjut ke Pembayaran", summary hanya menampilkan subtotal produk. `platform_fee` (Rp1.000) dan `withdrawal_reserve` (Rp2.500) baru muncul setelah QRIS dibuat di `renderPayment`.
+
+**Dampak:** Buyer bisa kaget total berubah dari Rp50.000 menjadi Rp53.500 setelah klik lanjut.
+
+**Bukan bug teknis** — tidak ada data yang salah. Tapi UX-nya misleading.
+
+**STATUS: PERLU FIX UI — belum diimplementasi**
+
+---
+
+## 3. RINGKASAN STATUS
+
+| Area | Status | Prioritas |
+|---|---|---|
+| Harga RPC (DB) | Benar | - |
+| Accounting seller_earning | Benar | - |
+| platform_earning vs withdrawal_reserve dipisah | Benar | - |
+| Sandbox isolation (is_test sticky) | Aman | - |
+| HMAC webhook | Aman | - |
+| Idempotency duplicate webhook | Aman | - |
+| Access control settlement (service_role only) | Aman | - |
+| Dedup nomor HP | Benar | - |
+| Preview harga sebelum QRIS (UX) | Issue | P2 |
+
+---
+
+## 4. YANG BELUM DIUJI
+
+- Live provider (BuatQris masih SANDBOX)
+- `apply_buatqris_withdrawal_event` — belum diaudit di sesi ini
+- RLS policy seluruh tabel terkait (orders, payment_transactions, seller_wallets)
+- `get_seller_wallet_summary` edge case (seller tanpa order paid)
+- Withdrawal race condition / double spend — tercatat di PRD, belum diverifikasi source
+
+---
+
+## 5. REKOMENDASI NEXT STEP
+
+1. **P2 — Fix preview harga checkout**: Tampilkan breakdown fee sebelum buyer klik lanjut
+2. **Audit `apply_buatqris_withdrawal_event`**: Cek withdrawal race condition dan double spend guard
+3. **Audit RLS** `orders`, `payment_transactions`, `seller_wallets`
+4. **Live test** setelah BuatQris sandbox → production
