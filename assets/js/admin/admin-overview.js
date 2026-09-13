@@ -3,7 +3,7 @@
   const A = window.NBAdmin;
   const { refs, state, safe, setText, timeAgo } = A;
 
-  const VIEW_TITLES = { overview: 'Ringkasan', users: 'Kelola User', reports: 'Laporan Platform', requests: 'Request Masuk', settings: 'Setting Platform' };
+  const VIEW_TITLES = { overview: 'Ringkasan', users: 'Kelola User', 'inactive-users': 'User Nonaktif', reports: 'Laporan Platform', requests: 'Request Masuk', settings: 'Setting Platform' };
 
   function renderTopbar() {
     const view = A.initialAdminView();

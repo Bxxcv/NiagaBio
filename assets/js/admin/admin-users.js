@@ -6,69 +6,92 @@
   function filteredProfiles() {
     const keyword = (refs.userSearch?.value || '').trim().toLowerCase();
     const plan = refs.planFilter?.value || 'all';
-    const status = refs.statusFilter?.value || 'all';
 
     return state.profiles.filter(profile => {
+      if (['blocked', 'deleted'].includes(profile.status)) return false;
       const text = [profile.display_name, profile.email, profile.username, profile.whatsapp_number, profile.role, profile.plan, profile.status].join(' ').toLowerCase();
       const matchKeyword = !keyword || text.includes(keyword);
       const matchPlan = plan === 'all' || profile.plan === plan;
-      const matchStatus = status === 'all' || (profile.status || 'active') === status;
-      return matchKeyword && matchPlan && matchStatus;
+      return matchKeyword && matchPlan;
     });
+  }
+
+  function filteredInactiveProfiles() {
+    const keyword = (refs.inactiveUserSearch?.value || '').trim().toLowerCase();
+    const status = refs.inactiveStatusFilter?.value || 'all';
+
+    return state.profiles.filter(profile => {
+      if (!['blocked', 'deleted'].includes(profile.status)) return false;
+      const text = [profile.display_name, profile.email, profile.username, profile.whatsapp_number, profile.role, profile.plan, profile.status].join(' ').toLowerCase();
+      const matchKeyword = !keyword || text.includes(keyword);
+      const matchStatus = status === 'all' || profile.status === status;
+      return matchKeyword && matchStatus;
+    });
+  }
+
+  function buildUserRow(profile) {
+    const isSelf = profile.user_id === state.currentUser?.id;
+    const deleted = profile.status === 'deleted';
+    const publicUrl = profile.username ? `/seller/u?username=${encodeURIComponent(profile.username)}` : '#';
+    const avatarUrl = profile.avatar_url;
+    const initials = safe((profile.display_name || profile.email || profile.username || 'U').slice(0, 1)).toUpperCase();
+    const avatarHtml = avatarUrl
+      ? `<img src="${NB.safeImageUrl(avatarUrl, 'assets/img/niagabio-logo.svg')}" alt="" class="admin-user-avatar">`
+      : `<div class="admin-user-initials">${initials}</div>`;
+
+    return `
+      <tr class="${deleted ? 'table-light opacity-75' : ''}">
+        <td>
+          <div class="admin-user-cell">
+            ${avatarHtml}
+            <div>
+              <div class="fw-bold">${safe(profile.display_name || 'User NiagaBio')} ${roleBadge(profile.role)}</div>
+              <small class="text-muted">${safe(profile.email || '-')}</small>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="fw-semibold">@${safe(profile.username || '-')}</div>
+          ${profile.username && !deleted ? `<a class="small" href="${NB.safeHref(publicUrl)}" target="_blank" rel="noopener">Lihat toko</a>` : '<small class="text-muted">Toko tidak aktif</small>'}
+        </td>
+        <td>${planBadge(profile.plan)}</td>
+        <td>${statusBadge(profile.status || 'active')}</td>
+        <td class="small">${formatDate(profile.plan_end_date)}</td>
+        <td class="text-end">
+          <div class="admin-action-row justify-content-end">
+            <button class="btn btn-sm btn-outline-nb" type="button" data-user-detail="${safe(profile.user_id)}">Detail</button>
+            ${profile.plan === 'premium' ? `<button class="btn btn-sm btn-outline-success" type="button" data-user-extend="${safe(profile.user_id)}" ${isSelf || deleted ? 'disabled' : ''}>Perpanjang</button>` : ''}
+            <button class="btn btn-sm ${profile.plan === 'premium' ? 'btn-outline-secondary' : 'btn-success'}" type="button" data-user-plan="${safe(profile.user_id)}" ${isSelf || deleted ? 'disabled' : ''}>${profile.plan === 'premium' ? 'Set Free' : 'Premium'}</button>
+            <button class="btn btn-sm ${profile.status === 'blocked' ? 'btn-outline-success' : 'btn-outline-danger'}" type="button" data-user-block="${safe(profile.user_id)}" ${isSelf || deleted ? 'disabled' : ''}>${profile.status === 'blocked' ? 'Unblock' : 'Blokir'}</button>
+            <button class="btn btn-sm btn-danger" type="button" data-user-delete="${safe(profile.user_id)}" ${isSelf || deleted ? 'disabled' : ''}>Hapus</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }
+
+  function bindRowActions(container) {
+    container.querySelectorAll('[data-user-detail]').forEach(button => button.addEventListener('click', () => openUserDetail(button.dataset.userDetail)));
+    container.querySelectorAll('[data-user-plan]').forEach(button => button.addEventListener('click', () => togglePremium(button.dataset.userPlan)));
+    container.querySelectorAll('[data-user-extend]').forEach(button => button.addEventListener('click', () => extendPremium(button.dataset.userExtend)));
+    container.querySelectorAll('[data-user-block]').forEach(button => button.addEventListener('click', () => toggleBlock(button.dataset.userBlock)));
+    container.querySelectorAll('[data-user-delete]').forEach(button => button.addEventListener('click', () => deleteUser(button.dataset.userDelete)));
   }
 
   function renderUsers() {
     if (!refs.userRows) return;
-
     const rows = filteredProfiles();
     if (refs.userCountInfo) refs.userCountInfo.textContent = `${rows.length} user tampil`;
+    refs.userRows.innerHTML = rows.map(buildUserRow).join('') || '<tr><td colspan="6" class="text-center text-muted py-4">User tidak ditemukan.</td></tr>';
+    bindRowActions(refs.userRows);
+  }
 
-    refs.userRows.innerHTML = rows.map(profile => {
-      const isSelf = profile.user_id === state.currentUser?.id;
-      const deleted = profile.status === 'deleted';
-      const publicUrl = profile.username ? `/seller/u?username=${encodeURIComponent(profile.username)}` : '#';
-      const avatarUrl = profile.avatar_url;
-      const initials = safe((profile.display_name || profile.email || profile.username || 'U').slice(0, 1)).toUpperCase();
-      const avatarHtml = avatarUrl
-        ? `<img src="${NB.safeImageUrl(avatarUrl, 'assets/img/niagabio-logo.svg')}" alt="" class="admin-user-avatar">`
-        : `<div class="admin-user-initials">${initials}</div>`;
-
-      return `
-        <tr class="${deleted ? 'table-light opacity-75' : ''}">
-          <td>
-            <div class="admin-user-cell">
-              ${avatarHtml}
-              <div>
-                <div class="fw-bold">${safe(profile.display_name || 'User NiagaBio')} ${roleBadge(profile.role)}</div>
-                <small class="text-muted">${safe(profile.email || '-')}</small>
-              </div>
-            </div>
-          </td>
-          <td>
-            <div class="fw-semibold">@${safe(profile.username || '-')}</div>
-            ${profile.username && !deleted ? `<a class="small" href="${NB.safeHref(publicUrl)}" target="_blank" rel="noopener">Lihat toko</a>` : '<small class="text-muted">Toko tidak aktif</small>'}
-          </td>
-          <td>${planBadge(profile.plan)}</td>
-          <td>${statusBadge(profile.status || 'active')}</td>
-          <td class="small">${formatDate(profile.plan_end_date)}</td>
-          <td class="text-end">
-            <div class="admin-action-row justify-content-end">
-              <button class="btn btn-sm btn-outline-nb" type="button" data-user-detail="${safe(profile.user_id)}">Detail</button>
-              ${profile.plan === 'premium' ? `<button class="btn btn-sm btn-outline-success" type="button" data-user-extend="${safe(profile.user_id)}" ${isSelf || deleted ? 'disabled' : ''}>Perpanjang</button>` : ''}
-              <button class="btn btn-sm ${profile.plan === 'premium' ? 'btn-outline-secondary' : 'btn-success'}" type="button" data-user-plan="${safe(profile.user_id)}" ${isSelf || deleted ? 'disabled' : ''}>${profile.plan === 'premium' ? 'Set Free' : 'Premium'}</button>
-              <button class="btn btn-sm ${profile.status === 'blocked' ? 'btn-outline-success' : 'btn-outline-danger'}" type="button" data-user-block="${safe(profile.user_id)}" ${isSelf || deleted ? 'disabled' : ''}>${profile.status === 'blocked' ? 'Unblock' : 'Blokir'}</button>
-              <button class="btn btn-sm btn-danger" type="button" data-user-delete="${safe(profile.user_id)}" ${isSelf || deleted ? 'disabled' : ''}>Hapus</button>
-            </div>
-          </td>
-        </tr>
-      `;
-    }).join('') || '<tr><td colspan="6" class="text-center text-muted py-4">User tidak ditemukan.</td></tr>';
-
-    refs.userRows.querySelectorAll('[data-user-detail]').forEach(button => button.addEventListener('click', () => openUserDetail(button.dataset.userDetail)));
-    refs.userRows.querySelectorAll('[data-user-plan]').forEach(button => button.addEventListener('click', () => togglePremium(button.dataset.userPlan)));
-    refs.userRows.querySelectorAll('[data-user-extend]').forEach(button => button.addEventListener('click', () => extendPremium(button.dataset.userExtend)));
-    refs.userRows.querySelectorAll('[data-user-block]').forEach(button => button.addEventListener('click', () => toggleBlock(button.dataset.userBlock)));
-    refs.userRows.querySelectorAll('[data-user-delete]').forEach(button => button.addEventListener('click', () => deleteUser(button.dataset.userDelete)));
+  function renderInactiveUsers() {
+    if (!refs.inactiveUserRows) return;
+    const rows = filteredInactiveProfiles();
+    if (refs.inactiveUserCountInfo) refs.inactiveUserCountInfo.textContent = `${rows.length} user`;
+    refs.inactiveUserRows.innerHTML = rows.map(buildUserRow).join('') || '<tr><td colspan="6" class="text-center text-muted py-4">Tidak ada user blocked/deleted.</td></tr>';
+    bindRowActions(refs.inactiveUserRows);
   }
 
   function openUserDetail(userId, showModal = true) {
@@ -274,10 +297,12 @@
   }
 
   A.registerRenderer(renderUsers);
+  A.registerRenderer(renderInactiveUsers);
   A.registerBinder(() => {
     refs.userSearch?.addEventListener('input', renderUsers);
     refs.planFilter?.addEventListener('change', renderUsers);
-    refs.statusFilter?.addEventListener('change', renderUsers);
+    refs.inactiveUserSearch?.addEventListener('input', renderInactiveUsers);
+    refs.inactiveStatusFilter?.addEventListener('change', renderInactiveUsers);
     refs.modalPlanBtn?.addEventListener('click', () => { if (state.selectedUserId) togglePremium(state.selectedUserId); });
     refs.modalExtendBtn?.addEventListener('click', () => { if (state.selectedUserId) extendPremium(state.selectedUserId); });
     refs.modalBlockBtn?.addEventListener('click', () => { if (state.selectedUserId) toggleBlock(state.selectedUserId); });

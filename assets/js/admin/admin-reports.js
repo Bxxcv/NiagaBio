@@ -6,10 +6,16 @@
   function periodStartMs() {
     const period = refs.reportPeriod?.value || 'all';
     const now = new Date();
-    if (period === 'today') return new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-    if (period === '7d') return now.getTime() - 7 * 24 * 60 * 60 * 1000;
-    if (period === '30d') return now.getTime() - 30 * 24 * 60 * 60 * 1000;
-    return null;
+    let start = null;
+    if (period === 'today') start = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    else if (period === '7d') start = now.getTime() - 7 * 24 * 60 * 60 * 1000;
+    else if (period === '30d') start = now.getTime() - 30 * 24 * 60 * 60 * 1000;
+
+    const resetAt = state.settings?.reports_reset_at ? new Date(state.settings.reports_reset_at).getTime() : null;
+    if (Number.isFinite(resetAt)) {
+      start = start === null ? resetAt : Math.max(start, resetAt);
+    }
+    return start;
   }
 
   function inPeriod(value, startMs) {
@@ -50,6 +56,16 @@
     setText(refs.platformApprovedRequests, approvedInPeriod.length);
     setText(refs.platformPendingRequests, pending.length);
     setText(refs.platformExpiringSoon, expiring.length);
+
+    if (refs.reportsResetNotice) {
+      const resetAt = state.settings?.reports_reset_at;
+      if (resetAt) {
+        refs.reportsResetNotice.textContent = `Tampilan direset sejak ${NB.formatDateTime ? NB.formatDateTime(resetAt) : new Date(resetAt).toLocaleString('id-ID')} — data lama disembunyikan (bukan dihapus).`;
+        refs.reportsResetNotice.classList.remove('d-none');
+      } else {
+        refs.reportsResetNotice.classList.add('d-none');
+      }
+    }
   }
 
   function exportUsersCsv() {
@@ -66,11 +82,28 @@
     ]);
   }
 
+  async function resetReportsView(e) {
+    const clearInstead = e.altKey; // sambil tekan Alt = balikin lihat semua data lagi
+    const msg = clearInstead
+      ? 'Tampilkan semua data laporan lagi (batalkan reset)?'
+      : 'Reset tampilan Laporan? Ini CUMA reset tampilan — data order asli di database tetap aman, tidak ada yang dihapus. Bisa dibatalkan kapan saja (klik tombol ini sambil tekan Alt).';
+    if (!confirm(msg)) return;
+    try {
+      const updated = await NB.resetReportsView(clearInstead);
+      state.settings = { ...state.settings, ...updated };
+      nbToast(clearInstead ? 'Laporan menampilkan semua data lagi.' : 'Tampilan laporan berhasil direset.');
+      renderReports();
+    } catch (error) {
+      nbToast(error.message || 'Gagal reset tampilan laporan.', 'danger');
+    }
+  }
+
   A.registerRenderer(renderReports);
   A.registerBinder(() => {
     refs.exportUsersBtn?.addEventListener('click', exportUsersCsv);
     refs.exportRequestsBtn?.addEventListener('click', exportRequestsCsv);
     refs.printReportBtn?.addEventListener('click', () => window.print());
     refs.reportPeriod?.addEventListener('change', renderReports);
+    refs.resetReportsBtn?.addEventListener('click', resetReportsView);
   });
 })();

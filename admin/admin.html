@@ -39,6 +39,10 @@
           <i class="bi bi-people"></i>
           Kelola User
         </a>
+        <a class="side-link" href="#inactive-users" data-admin-view="inactive-users">
+          <i class="bi bi-person-x"></i>
+          User Nonaktif
+        </a>
         <a class="side-link" href="#reports" data-admin-view="reports">
           <i class="bi bi-file-earmark-bar-graph"></i>
           Laporan Platform
@@ -259,9 +263,31 @@
               <option value="free">Free</option>
               <option value="premium">Premium</option>
             </select>
-            <select class="form-select" id="adminStatusFilter" aria-label="Filter status user">
-              <option value="all">Semua status</option>
-              <option value="active" selected>Active</option>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead><tr><th>User</th><th>Toko</th><th>Plan</th><th>Status</th><th>Plan End</th><th class="text-end">Aksi</th></tr></thead>
+              <tbody id="userRows"><tr><td colspan="6" class="text-center text-muted py-4">Memuat user...</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ============ INACTIVE USERS ============ -->
+        <section class="nb-panel admin-section mb-4 admin-panel" id="adminInactiveUsersSection" data-admin-panel="inactive-users" hidden>
+          <div class="admin-section-head">
+            <div>
+              <h2><i class="bi bi-person-x text-green me-2"></i> User Nonaktif</h2>
+              <p>User yang diblokir atau dihapus — terpisah dari daftar user aktif.</p>
+            </div>
+            <span class="admin-count-pill" id="adminInactiveUserCountInfo">0 user</span>
+          </div>
+          <div class="admin-filter-grid mb-3">
+            <div class="admin-input-icon">
+              <i class="bi bi-search"></i>
+              <input class="form-control" id="adminInactiveUserSearch" placeholder="Cari nama, email, username...">
+            </div>
+            <select class="form-select" id="adminInactiveStatusFilter" aria-label="Filter status user nonaktif">
+              <option value="all">Semua nonaktif</option>
               <option value="blocked">Blocked</option>
               <option value="deleted">Deleted</option>
             </select>
@@ -269,7 +295,7 @@
           <div class="admin-table-wrap">
             <table class="admin-table">
               <thead><tr><th>User</th><th>Toko</th><th>Plan</th><th>Status</th><th>Plan End</th><th class="text-end">Aksi</th></tr></thead>
-              <tbody id="userRows"><tr><td colspan="6" class="text-center text-muted py-4">Memuat user...</td></tr></tbody>
+              <tbody id="inactiveUserRows"><tr><td colspan="6" class="text-center text-muted py-4">Memuat user...</td></tr></tbody>
             </table>
           </div>
         </section>
@@ -280,6 +306,7 @@
             <div>
               <h2><i class="bi bi-graph-up-arrow text-green me-2"></i> Laporan Platform</h2>
               <p>Ringkasan pendapatan premium, performa user, dan data platform.</p>
+              <small class="text-muted d-none" id="adminReportsResetNotice"></small>
             </div>
             <div class="d-flex flex-wrap gap-2">
               <select class="form-select form-select-sm" id="adminReportPeriod" style="width:auto" aria-label="Periode laporan">
@@ -290,6 +317,7 @@
               </select>
               <button class="btn-outline-nb btn-sm" type="button" id="adminExportUsersBtn">Export User</button>
               <button class="btn-outline-nb btn-sm" type="button" id="adminExportRequestsBtn">Export Request</button>
+              <button class="btn-outline-nb btn-sm" type="button" id="adminResetReportsBtn" title="Cuma reset tampilan, data order asli di database tetap aman">Reset Tampilan</button>
               <button class="btn-nb btn-sm" type="button" id="adminPrintReportBtn"><i class="bi bi-printer"></i> Print</button>
             </div>
           </div>

@@ -118,6 +118,7 @@
     maintenance_mode: false,
     maintenance_message: 'Website sedang maintenance. Silakan coba lagi nanti.',
     maintenance_pages: [],
+    reports_reset_at: null,
     allow_register: true,
     premium_price: Number(cfg.PREMIUM_PRICE || 80000),
     admin_whatsapp: '6281234567890',
@@ -1284,6 +1285,18 @@
     return read(LS.settings, defaultSettings);
   }
 
+  async function resetReportsView(clear = false) {
+    const value = clear ? null : new Date().toISOString();
+    if (sb) {
+      const { data, error } = await sb.from('app_settings').update({ reports_reset_at: value }).eq('id', 'global').select().single();
+      if (error) throw error;
+      return data;
+    }
+    const current = read(LS.settings, defaultSettings);
+    write(LS.settings, { ...current, reports_reset_at: value });
+    return read(LS.settings, defaultSettings);
+  }
+
   async function adminUpdateProfile(userId, fields) {
     if (sb) {
       const { data, error } = await sb.rpc('admin_update_profile_system_fields', {
@@ -1666,6 +1679,7 @@
     all,
     getSettings,
     saveSettings,
+    resetReportsView,
     adminUpdateProfile,
     createPremiumRequest,
     listPasswordResetRequests,
