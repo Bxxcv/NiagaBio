@@ -372,5 +372,21 @@
 </div>
 
 <script src="assets/js/landing.js" defer></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script defer src="assets/js/config.js"></script>
+<script defer src="assets/js/supabase-client.js"></script>
+<script defer>
+  document.addEventListener('DOMContentLoaded', async () => {
+    try {
+      if (!window.NB) return;
+      const settings = await NB.getSettings();
+      const price = Number(settings.premium_price || 80000);
+      const amtEl = document.querySelector('.price-card.highlight .amt');
+      if (amtEl && price) amtEl.dataset.monthly = amtEl.textContent = NB.money(price);
+    } catch (err) {
+      // Diamkan - biarkan harga default (fallback) yang tampil kalau gagal fetch.
+    }
+  });
+</script>
 </body>
 </html>
