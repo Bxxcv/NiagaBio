@@ -25,6 +25,7 @@
 .checkout-success-summary{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;text-align:left;background:var(--nb-canvas,#f6f7f5);border-radius:var(--nb-radius-md,10px);padding:16px 20px;font-size:.95rem;max-width:360px;margin:0 auto 24px}
 .checkout-success-summary span{color:var(--nb-muted)}
 .checkout-success-summary strong{color:var(--nb-ink);font-weight:600;text-align:right}
+.checkout-seller-note{background:#eaf6ef;border:1px solid #bfe3cc;border-radius:var(--nb-radius-md,10px);padding:14px 18px;font-size:.92rem;max-width:420px;margin:0 auto 20px;color:var(--nb-ink,#1a1a1a);text-align:left;line-height:1.5}
 
 /* Backbar */
 .checkout-backbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}

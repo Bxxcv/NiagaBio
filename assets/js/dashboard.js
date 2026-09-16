@@ -51,16 +51,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     const premium = NB.isPremium(profile);
     const limits = NB.getLimits(premium ? 'premium' : 'free');
 
-    const [products, orders, links, socials, galleryRows, checkoutRows] = await Promise.all([
+    const [products, orders, links, socials, galleryRows] = await Promise.all([
       NB.list('products', user.id),
       NB.list('orders', user.id, 'seller_id'),
       NB.list('custom_links', user.id),
       NB.list('social_links', user.id),
-      NB.list('gallery', user.id),
-      NB.list('checkout_settings', user.id)
+      NB.list('gallery', user.id)
     ]);
 
-    const checkout = checkoutRows[0] || {};
     const paidOrders = orders.filter(order => order.payment_status === 'paid');
     const pendingOrders = orders.filter(order => order.payment_status === 'pending');
     const revenue = paidOrders.reduce((sum, order) => sum + Number(order.total_price || 0), 0);
@@ -119,7 +117,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const profileReady = Boolean(profile?.display_name && profile?.username && profile?.whatsapp_number);
     const productsReady = products.length > 0;
     const linksReady = links.length > 0 || socials.length > 0;
-    const checkoutReady = Boolean(checkout.whatsapp_number || checkout.qris_enabled || profile?.whatsapp_number);
+    const checkoutReady = Boolean(profile?.whatsapp_number);
     const setupItems = [profileReady, productsReady, linksReady, checkoutReady];
     const setupScore = Math.round((setupItems.filter(Boolean).length / setupItems.length) * 100);
 
@@ -147,10 +145,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       },
       {
         done: checkoutReady,
-        title: 'Atur checkout toko',
-        desc: 'Pastikan nomor WhatsApp order aktif. Premium bisa menambahkan QRIS manual.',
-        href: 'checkout-settings',
-        label: 'Atur checkout'
+        title: 'Lengkapi nomor WhatsApp',
+        desc: 'Pastikan nomor WhatsApp toko aktif supaya pembeli bisa menghubungi kamu.',
+        href: 'profile',
+        label: 'Lengkapi WhatsApp'
       }
     ];
     const nextStep = nextSteps.find(step => !step.done) || {
@@ -198,8 +196,76 @@ document.addEventListener('DOMContentLoaded', async () => {
         </tr>
       `).join('') || '<tr><td colspan="4" class="text-center text-muted py-4">Belum ada pesanan.</td></tr>';
     }
+
+    renderTopProducts(paidOrders);
+    renderPeakHours(orders);
   } catch (error) {
     console.error('[Dashboard]', error);
     nbToast(error.message || 'Gagal memuat dashboard.', 'danger');
+  }
+
+  function renderTopProducts(paidOrdersList) {
+    const el = $('topProducts');
+    if (!el) return;
+    if (!paidOrdersList.length) {
+      el.innerHTML = '<p class="text-center nb-text-muted py-3 mb-0">Belum ada order yang dibayar.</p>';
+      return;
+    }
+    const totals = new Map();
+    paidOrdersList.forEach(order => {
+      const key = order.product_name || 'Produk tanpa nama';
+      const qty = Number(order.quantity || 1);
+      totals.set(key, (totals.get(key) || 0) + qty);
+    });
+    const ranked = Array.from(totals.entries()).sort((a, b) => b[1] - a[1]).slice(0, 5);
+    const maxQty = ranked[0][1];
+    el.innerHTML = ranked.map(([name, qty], index) => `
+      <div class="d-flex align-items-center gap-3">
+        <div class="nb-text-sm fw-bold" style="width:20px">${index + 1}</div>
+        <div class="flex-fill">
+          <div class="d-flex justify-content-between nb-text-sm mb-1">
+            <span class="fw-semibold">${NB.escapeHtml(name)}</span>
+            <span class="nb-text-muted">${qty} terjual</span>
+          </div>
+          <div class="progress" style="height:6px"><div class="progress-bar bg-success" style="width:${Math.max(6, Math.round((qty / maxQty) * 100))}%"></div></div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderPeakHours(allOrders) {
+    const el = $('peakHours');
+    if (!el) return;
+    if (!allOrders.length) {
+      el.innerHTML = '<p class="text-center nb-text-muted py-3 mb-0">Belum ada data order.</p>';
+      return;
+    }
+    const buckets = new Array(24).fill(0);
+    allOrders.forEach(order => {
+      if (!order.created_at) return;
+      const hour = new Date(order.created_at).getHours();
+      if (Number.isFinite(hour)) buckets[hour] += 1;
+    });
+    const maxCount = Math.max(...buckets, 1);
+    const top = buckets
+      .map((count, hour) => ({ hour, count }))
+      .filter(item => item.count > 0)
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+    if (!top.length) {
+      el.innerHTML = '<p class="text-center nb-text-muted py-3 mb-0">Belum ada data order.</p>';
+      return;
+    }
+    el.innerHTML = top.map(({ hour, count }) => `
+      <div class="d-flex align-items-center gap-3">
+        <div class="nb-text-sm fw-bold" style="width:56px">${String(hour).padStart(2, '0')}:00</div>
+        <div class="flex-fill">
+          <div class="progress" style="height:14px">
+            <div class="progress-bar bg-success" style="width:${Math.max(8, Math.round((count / maxCount) * 100))}%"></div>
+          </div>
+        </div>
+        <div class="nb-text-sm nb-text-muted" style="width:70px text-align:right">${count} order</div>
+      </div>
+    `).join('');
   }
 });

@@ -1071,6 +1071,10 @@
       payload.qris_image_url = assertSafeImageUrl(payload.qris_image_url || '', '');
       payload.qris_name = String(payload.qris_name || '').trim().slice(0, 80);
       payload.payment_note = String(payload.payment_note || '').slice(0, 500);
+      payload.success_message = String(payload.success_message || '').trim().slice(0, 300);
+      payload.success_redirect_url = payload.success_redirect_url
+        ? normalizeExternalUrl(payload.success_redirect_url, '')
+        : '';
     }
 
     return payload;

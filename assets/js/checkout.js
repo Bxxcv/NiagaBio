@@ -44,21 +44,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     `;
   }
 
-  function renderPaid({ profile, product, quantity, order, buyerName, buyerPhone }) {
+  async function renderPaid({ profile, product, quantity, order, buyerName, buyerPhone }) {
     clearPolling();
+    let customSettings = {};
+    try {
+      const rows = await NB.list('checkout_settings', profile.user_id);
+      customSettings = rows[0] || {};
+    } catch (err) {
+      // Diamkan - kalau gagal fetch, tampilkan layar sukses standar saja.
+    }
+    const successMessage = String(customSettings.success_message || '').trim();
+    const redirectUrl = String(customSettings.success_redirect_url || '').trim();
     const waText = `Halo kak, pembayaran order NiagaBio sudah berhasil.\nProduk: ${product.name}\nJumlah: ${quantity}\nTotal: ${money(order.buyer_total)}\nNama: ${buyerName}\nWA: ${buyerPhone}`;
     root.innerHTML = `
       <section class="checkout-success card-nb checkout-payment-state">
         <div class="success-icon"><i class="bi bi-check2-circle"></i></div>
         <h1>Pembayaran berhasil</h1>
         <p>Order kamu sudah tercatat sebagai <strong>PAID</strong>. Seller bisa langsung memproses pesanan.</p>
+        ${successMessage ? `<div class="checkout-seller-note"><i class="bi bi-chat-left-text me-1"></i>${NB.escapeHtml(successMessage)}</div>` : ''}
         <div class="checkout-success-summary">
           <span>Produk</span><strong>${NB.escapeHtml(product.name)}</strong>
           <span>Jumlah</span><strong>${NB.escapeHtml(quantity)}</strong>
           <span>Total dibayar</span><strong>${money(order.buyer_total)}</strong>
         </div>
         <div class="d-grid gap-2 mt-4">
-          <a class="nb-btn nb-btn--commerce" href="${NB.safeHref(NB.whatsappUrl(profile.whatsapp_number, waText))}" target="_blank" rel="noopener"><i class="bi bi-whatsapp me-1"></i>Kirim Konfirmasi WhatsApp</a>
+          ${redirectUrl ? `<a class="nb-btn nb-btn--commerce" href="${NB.safeHref(redirectUrl)}" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-1"></i>Lanjut ke Langkah Berikutnya</a>` : ''}
+          <a class="nb-btn ${redirectUrl ? 'nb-btn--outline' : 'nb-btn--commerce'}" href="${NB.safeHref(NB.whatsappUrl(profile.whatsapp_number, waText))}" target="_blank" rel="noopener"><i class="bi bi-whatsapp me-1"></i>Kirim Konfirmasi WhatsApp</a>
           <a class="nb-btn nb-btn--outline" href="${NB.safeHref(storeUrl(profile))}"><i class="bi bi-shop me-1"></i>Kembali ke Toko</a>
         </div>
       </section>
@@ -146,7 +157,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (status === 'success') {
           paymentLocked = true;
           const latestOrder = { ...order, buyer_total: Number(payment.total_amount || order.buyer_total) };
-          renderPaid({ profile, product, quantity: order.quantity, order: latestOrder, buyerName, buyerPhone });
+          await renderPaid({ profile, product, quantity: order.quantity, order: latestOrder, buyerName, buyerPhone });
           return;
         }
         if (status === 'expired' || status === 'failed' || status === 'cancelled') {
@@ -201,7 +212,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             // that renderPayment expects (same shape as /api/payment/create response)
             if (paymentResponse.ok && restoredStatus === 'success') {
               const tx = paymentBody.payment || {};
-              renderPaid({
+              await renderPaid({
                 profile,
                 product,
                 quantity: existingOrder.quantity,
