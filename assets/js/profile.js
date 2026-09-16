@@ -28,30 +28,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (profileAvatar.files[0]) avatarPreview.src = URL.createObjectURL(profileAvatar.files[0]);
   });
 
-  let checkoutSettings = (await NB.list('checkout_settings', user.id))[0] || null;
-  if (successMessage) successMessage.value = checkoutSettings?.success_message || '';
-  if (successRedirectUrl) successRedirectUrl.value = checkoutSettings?.success_redirect_url || '';
-
-  successMessageForm?.addEventListener('submit', async event => {
-    event.preventDefault();
-    const button = successMessageForm.querySelector('button[type="submit"]');
-    button.disabled = true;
-    try {
-      const payload = {
-        user_id: user.id,
-        success_message: successMessage.value.trim(),
-        success_redirect_url: successRedirectUrl.value.trim()
-      };
-      if (checkoutSettings?.id) payload.id = checkoutSettings.id;
-      checkoutSettings = await NB.save('checkout_settings', payload);
-      nbToast('Pesan berhasil disimpan.');
-    } catch (error) {
-      nbToast(error.message || 'Gagal simpan pesan.', 'danger');
-    } finally {
-      button.disabled = false;
-    }
-  });
-
   profileForm.addEventListener('submit', async event => {
     event.preventDefault();
     const button = profileForm.querySelector('button[type="submit"]');

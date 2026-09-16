@@ -519,3 +519,6 @@ body.sidebar-open .sidebar-overlay {
     padding: 16px !important;
   }
 }
+
+.checkout-seller-note-preview{background:#eaf6ef;border:1px solid #bfe3cc;border-radius:var(--nb-radius-md,10px);padding:14px 16px;font-size:.9rem;line-height:1.5;color:var(--nb-ink,#1a1a1a)}
+.checkout-seller-note-preview.is-empty{color:var(--nb-muted,#6b7280);font-style:italic;background:var(--nb-canvas,#f6f7f5);border-style:dashed}

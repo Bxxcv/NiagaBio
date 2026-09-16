@@ -5,7 +5,7 @@
   <meta content="width=device-width, initial-scale=1" name="viewport"/>
   <meta content="noindex,nofollow" name="robots"/>
   <title>
-   Checkout - NiagaBio
+   Pesan Sukses - NiagaBio
   </title>
   <meta content="NiagaBio adalah link bio + katalog produk untuk penjual dan UMKM." name="description"/>
   <link rel="icon" href="/favicon.ico?v=4" sizes="any">
@@ -43,7 +43,7 @@
           <a class="side-link " data-nav="social" href="social"><i class="bi bi-share"></i> Sosial Media</a>
           <a class="side-link " data-nav="gallery" href="gallery"><i class="bi bi-images"></i> Galeri</a>
           <a class="side-link " data-nav="themes" href="themes"><i class="bi bi-palette"></i> Tema</a>
-          <a class="side-link active" data-nav="checkout" href="checkout-settings"><i class="bi bi-qr-code"></i> Checkout</a>
+          <a class="side-link active" data-nav="checkout" href="checkout-settings"><i class="bi bi-chat-heart"></i> Pesan Sukses</a>
         </div>
         <div class="nb-nav-group">
           <span class="nb-nav-label">Akun</span>
@@ -63,7 +63,7 @@
     <header class="topbar nb-topbar">
         <div class="d-flex align-items-center gap-3">
           <button class="nb-menu-toggle d-lg-none" type="button" data-sidebar-toggle aria-label="Buka menu"><i class="bi bi-list"></i></button>
-          <div><div class="nb-topbar-title">Pengaturan Checkout</div><div class="nb-topbar-meta">Atur cara menerima pesanan dan pembayaran</div></div>
+          <div><div class="nb-topbar-title">Pesan Setelah Pembayaran</div><div class="nb-topbar-meta">Atur pesan &amp; redirect setelah bayar sukses</div></div>
         </div>
         <div class="nb-topbar-actions">
           <a href="notifications" class="nb-btn nb-btn-ghost nb-btn-icon" aria-label="Notifikasi"><i class="bi bi-bell"></i><span class="nb-sr-only">Notifikasi</span></a>
@@ -71,58 +71,36 @@
       </header>
     <div class="content-wrap nb-content">
       <div class="nb-page-header mb-4">
-        <h1>Pengaturan Checkout</h1>
-        <p class="nb-text-muted">Atur cara menerima pesanan dan pembayaran dari pembeli.</p>
-      </div>
-      <div class="alert alert-warning d-none mb-4" id="premiumNotice">
-        <i class="bi bi-info-circle"></i> <b>QRIS manual khusus Premium.</b> Free tetap bisa memakai checkout WhatsApp.
+        <h1>Pesan Setelah Pembayaran Berhasil</h1>
+        <p class="nb-text-muted">Tampil ke pembeli begitu pembayaran QRIS berhasil. Kosongkan kalau tidak perlu.</p>
       </div>
       <div class="row g-4">
         <div class="col-lg-7">
           <div class="nb-panel">
-            <h2 class="nb-h3 mb-3">Pengaturan Checkout</h2>
+            <h2 class="nb-h3 mb-3">Pesan &amp; Redirect</h2>
             <form id="checkoutForm">
               <div class="nb-form-group">
-                <label class="nb-form-label" for="checkoutMode">Mode checkout</label>
-                <select class="nb-select" id="checkoutMode">
-                  <option value="whatsapp">WhatsApp Only</option>
-                  <option value="qris_manual">QRIS Manual</option>
-                  <option value="qris_whatsapp">QRIS + WhatsApp</option>
-                </select>
+                <label class="nb-form-label" for="successMessage">Pesan custom (opsional)</label>
+                <textarea class="nb-textarea" id="successMessage" maxlength="300" rows="3" placeholder="Contoh: Makasih ya! Produk digital bakal dikirim manual ke WA kamu dalam 1x24 jam."></textarea>
               </div>
               <div class="nb-form-group">
-                <label class="nb-form-label" for="checkoutWhatsApp">Nomor WhatsApp</label>
-                <input class="nb-input" id="checkoutWhatsApp" placeholder="628xxxx" inputmode="tel" />
-              </div>
-              <div class="nb-form-group">
-                <label class="nb-check">
-                  <input id="qrisEnabled" type="checkbox" />
-                  Aktifkan QRIS Manual
-                </label>
-              </div>
-              <div class="nb-form-group">
-                <label class="nb-form-label" for="qrisName">Nama penerima QRIS</label>
-                <input class="nb-input" id="qrisName" />
-              </div>
-              <div class="nb-form-group">
-                <label class="nb-form-label" for="qrisImage">Upload QRIS</label>
-                <input accept="image/jpeg,image/png,image/webp" class="nb-input" id="qrisImage" type="file" />
-              </div>
-              <div class="nb-form-group">
-                <label class="nb-form-label" for="paymentNote">Catatan pembayaran</label>
-                <textarea class="nb-textarea" id="paymentNote" rows="3" placeholder="Instruksi untuk pembeli..."></textarea>
+                <label class="nb-form-label" for="successRedirectUrl">Link redirect (opsional)</label>
+                <input class="nb-input" id="successRedirectUrl" type="url" placeholder="https://chat.whatsapp.com/... atau https://t.me/...">
+                <small class="nb-text-muted d-block mt-1">Contoh: link grup WhatsApp/Telegram. Tombol tambahan bakal muncul di layar sukses pembeli.</small>
               </div>
               <button class="nb-btn nb-btn-primary" type="submit">
-                <i class="bi bi-check-lg"></i> Simpan Checkout
+                <i class="bi bi-check-lg"></i> Simpan
               </button>
             </form>
           </div>
         </div>
         <div class="col-lg-5">
-          <div class="nb-panel text-center">
-            <h2 class="nb-h3 mb-3">Preview QRIS</h2>
-            <img alt="QRIS" class="qris-preview" id="qrisPreview" src="/assets/img/niagabio-logo.svg" style="max-width:280px;width:100%;border-radius:var(--nb-radius-md)" />
-            <p class="nb-text-sm nb-text-muted mt-3 mb-0">Upload QRIS toko agar pembeli bisa bayar manual dan kirim bukti pembayaran.</p>
+          <div class="nb-panel">
+            <h2 class="nb-h3 mb-3">Preview Layar Sukses</h2>
+            <div class="checkout-seller-note-preview" id="successPreviewNote">
+              <i class="bi bi-chat-left-text me-1"></i> <span id="successPreviewText">Belum ada pesan custom.</span>
+            </div>
+            <p class="nb-text-sm nb-text-muted mt-3 mb-0">Ini contoh tampilan pesan kamu di halaman pembeli setelah bayar sukses.</p>
           </div>
         </div>
       </div>

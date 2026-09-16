@@ -4,39 +4,20 @@ document.addEventListener('DOMContentLoaded', async () => {
   const user = await NB.requireAuth();
   if (!user) return;
 
-  let profile = await NB.getProfile(user.id);
   let rows = await NB.list('checkout_settings', user.id);
-  let settings = rows[0] || {
-    id: NB.uid('chk'),
-    user_id: user.id,
-    checkout_mode: 'whatsapp',
-    whatsapp_number: profile?.whatsapp_number || '',
-    qris_enabled: false,
-    qris_image_url: '',
-    qris_name: '',
-    payment_note: ''
-  };
+  let settings = rows[0] || null;
 
-  const premium = NB.isPremium(profile);
+  successMessage.value = settings?.success_message || '';
+  successRedirectUrl.value = settings?.success_redirect_url || '';
+  updatePreview();
 
-  checkoutMode.value = settings.checkout_mode || 'whatsapp';
-  checkoutWhatsApp.value = settings.whatsapp_number || profile?.whatsapp_number || '';
-  qrisName.value = settings.qris_name || '';
-  paymentNote.value = settings.payment_note || '';
-  qrisPreview.src = NB.normalizeImageUrl(settings.qris_image_url || 'assets/img/niagabio-logo.svg', 'assets/img/niagabio-logo.svg');
-  qrisEnabled.checked = Boolean(settings.qris_enabled);
+  successMessage.addEventListener('input', updatePreview);
 
-  if (!premium) {
-    premiumNotice.classList.remove('d-none');
-    qrisEnabled.disabled = true;
-    checkoutMode.value = 'whatsapp';
-    checkoutMode.querySelector('option[value="qris_manual"]').disabled = true;
-    checkoutMode.querySelector('option[value="qris_whatsapp"]').disabled = true;
+  function updatePreview() {
+    const text = successMessage.value.trim();
+    successPreviewText.textContent = text || 'Belum ada pesan custom.';
+    successPreviewNote.classList.toggle('is-empty', !text);
   }
-
-  qrisImage.addEventListener('change', () => {
-    if (qrisImage.files[0]) qrisPreview.src = URL.createObjectURL(qrisImage.files[0]);
-  });
 
   checkoutForm.addEventListener('submit', async event => {
     event.preventDefault();
@@ -44,36 +25,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     button.disabled = true;
 
     try {
-      let qrisUrl = settings.qris_image_url || '';
-      if (premium && qrisImage.files[0]) qrisUrl = await NB.uploadFile(qrisImage.files[0], 'qris');
-
       const payload = {
-        id: settings.id,
         user_id: user.id,
-        checkout_mode: premium ? checkoutMode.value : 'whatsapp',
-        whatsapp_number: checkoutWhatsApp.value.trim(),
-        qris_enabled: premium ? qrisEnabled.checked : false,
-        qris_image_url: premium ? NB.normalizeImageUrl(qrisUrl, '') : '',
-        qris_name: qrisName.value.trim(),
-        payment_note: paymentNote.value.trim(),
-        created_at: settings.created_at || NB.now()
+        success_message: successMessage.value.trim(),
+        success_redirect_url: successRedirectUrl.value.trim()
       };
+      if (settings?.id) payload.id = settings.id;
 
       settings = await NB.save('checkout_settings', payload);
-      profile = await NB.upsertProfile({
-        user_id: user.id,
-        email: profile?.email || user.email,
-        username: profile?.username || NB.slugify(user.email.split('@')[0]),
-        display_name: profile?.display_name || user.email.split('@')[0],
-        bio: profile?.bio || '',
-        avatar_url: profile?.avatar_url || 'assets/img/niagabio-logo.svg',
-        whatsapp_number: checkoutWhatsApp.value.trim(),
-        theme_name: profile?.theme_name || 'service'
-      });
-
-      nbToast('Pengaturan checkout disimpan.');
+      nbToast('Pesan berhasil disimpan.');
     } catch (error) {
-      nbToast(error.message || 'Gagal menyimpan checkout.', 'danger');
+      nbToast(error.message || 'Gagal menyimpan pesan.', 'danger');
     } finally {
       button.disabled = false;
     }
