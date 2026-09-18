@@ -1,0 +1,212 @@
+/* STAGE23: Cart badge (header) + drawer keranjang.
+   Sengaja TIDAK menyentuh selector tema (.public-theme-*) supaya 10 tema
+   tetap aman. Drawer dibuat netral (pakai variabel brand dari
+   foundation.css) karena ini UI baru, bukan bagian dari card produk yang
+   sudah di-theme per tema. */
+
+.public-cart-toggle {
+  position: relative;
+}
+
+.public-cart-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--nb-green-600, #128044);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  box-shadow: 0 0 0 2px var(--nb-surface, #fff);
+}
+
+body.nb-cart-open-lock {
+  overflow: hidden;
+}
+
+.nb-cart-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(15, 23, 32, 0.45);
+  display: flex;
+  justify-content: flex-end;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  font-family: inherit;
+}
+
+.nb-cart-overlay.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.nb-cart-drawer {
+  width: min(420px, 100%);
+  height: 100%;
+  background: var(--nb-surface, #fff);
+  color: var(--nb-ink, #17212b);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(24px);
+  transition: transform 0.2s ease;
+  box-shadow: -8px 0 24px rgba(15, 23, 32, 0.18);
+}
+
+.nb-cart-overlay.is-open .nb-cart-drawer {
+  transform: translateX(0);
+}
+
+.nb-cart-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--nb-line, #d9e0e6);
+}
+
+.nb-cart-drawer-head h2 {
+  font-size: 18px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.nb-cart-close {
+  border: 0;
+  background: var(--nb-surface-2, #f0f2f1);
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--nb-ink, #17212b);
+}
+
+.nb-cart-items {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 20px;
+}
+
+.nb-cart-empty {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--nb-muted, #667085);
+  gap: 8px;
+  text-align: center;
+}
+
+.nb-cart-empty i {
+  font-size: 32px;
+}
+
+.nb-cart-item {
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--nb-line, #d9e0e6);
+}
+
+.nb-cart-item img {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: var(--nb-surface-2, #f0f2f1);
+}
+
+.nb-cart-item-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.nb-cart-item-body b {
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nb-cart-item-body > span {
+  font-size: 12px;
+  color: var(--nb-muted, #667085);
+}
+
+.nb-cart-qty {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.nb-cart-qty button {
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  border: 1px solid var(--nb-line-strong, #b8c3cd);
+  background: var(--nb-surface, #fff);
+  cursor: pointer;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.nb-cart-item-end {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.nb-cart-item-end strong {
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.nb-cart-remove {
+  border: 0;
+  background: transparent;
+  color: var(--nb-danger, #b42318);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.nb-cart-foot {
+  padding: 16px 20px 20px;
+  border-top: 1px solid var(--nb-line, #d9e0e6);
+}
+
+.nb-cart-subtotal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.nb-cart-note {
+  font-size: 12px;
+  color: var(--nb-muted, #667085);
+  margin: 0 0 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .nb-cart-drawer {
+    background: #101820;
+    color: #f4f7fb;
+  }
+}

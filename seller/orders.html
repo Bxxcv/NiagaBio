@@ -17,6 +17,12 @@
   <link href="/assets/css/main.css" rel="stylesheet" />
   <link href="/assets/css/v2/foundation.css" rel="stylesheet">
   <link href="/assets/css/v2/seller.css" rel="stylesheet">
+  <style>
+    /* STAGE23: scoped ke halaman ini saja, tidak menyentuh main.css/seller.css */
+    .order-card-status-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 0; border-top: 1px dashed var(--nb-line, #d9e0e6); border-bottom: 1px dashed var(--nb-line, #d9e0e6); margin: 6px 0; }
+    .order-card-status-row > span { color: var(--nb-muted, #667085); font-size: 12px; }
+    .nb-order-status-select { max-width: 170px; }
+  </style>
 </head>
  <body data-protected="true">
   <div class="app-shell">
@@ -195,7 +201,7 @@
             <div id="orderCards"></div>
             <div class="nb-table-wrap mt-3">
               <table class="nb-table">
-                <thead><tr><th>Produk</th><th>Pembeli</th><th>Total</th><th>Bukti</th><th>Status</th><th></th></tr></thead>
+                <thead><tr><th>Produk</th><th>Pembeli</th><th>Total</th><th>Bukti</th><th>Status Bayar</th><th>Status Pesanan</th><th></th></tr></thead>
                 <tbody id="orderRows"></tbody>
               </table>
             </div>

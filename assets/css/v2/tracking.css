@@ -1,0 +1,85 @@
+/* STAGE23: styling khusus halaman track.html. Class baru semua (nb-track-*),
+   tidak menimpa apa pun dari checkout.css/foundation.css. */
+
+.checkout-note--danger {
+  border-color: var(--nb-danger, #b42318);
+  background: var(--nb-danger-bg, #feeceb);
+  color: var(--nb-danger, #b42318);
+}
+
+.nb-track-item-block {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--nb-line, #d9e0e6);
+}
+
+.nb-track-item-block:last-of-type {
+  border-bottom: none;
+}
+
+.nb-track-steps {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+}
+
+.nb-track-step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  color: var(--nb-subtle, #98a2b3);
+  font-size: 11px;
+  text-align: center;
+}
+
+.nb-track-step::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: -50%;
+  width: 100%;
+  height: 2px;
+  background: var(--nb-line, #d9e0e6);
+  z-index: 0;
+}
+
+.nb-track-step:first-child::before {
+  display: none;
+}
+
+.nb-track-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--nb-line-strong, #b8c3cd);
+  border: 2px solid var(--nb-surface, #fff);
+  z-index: 1;
+}
+
+.nb-track-step.is-done {
+  color: var(--nb-green-700, #0f7a45);
+}
+
+.nb-track-step.is-done .nb-track-dot {
+  background: var(--nb-green-600, #128044);
+}
+
+.nb-track-step.is-done::before {
+  background: var(--nb-green-600, #128044);
+}
+
+.nb-track-step.is-current .nb-track-step-label {
+  font-weight: 800;
+}
+
+.nb-track-cancelled {
+  margin-top: 10px;
+  color: var(--nb-danger, #b42318);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}

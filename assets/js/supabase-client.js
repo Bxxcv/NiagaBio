@@ -1157,6 +1157,130 @@
   }
 
 
+  function prepareOrderGroupPayload(row) {
+    const paymentMethod = String(row.payment_method || 'qris_buatqris').toLowerCase();
+    if (!['qris_buatqris', 'qris_manual', 'qris_whatsapp'].includes(paymentMethod)) {
+      throw new Error('Metode pembayaran tidak valid.');
+    }
+
+    const buyerName = String(row.buyer_name || '').trim().slice(0, 80);
+    if (buyerName.length < 2) throw new Error('Nama pembeli wajib diisi minimal 2 karakter.');
+
+    const buyerPhone = normalizePhone(row.buyer_phone || '');
+    if (buyerPhone.length < 8 || buyerPhone.length > 18) throw new Error('Nomor WhatsApp pembeli tidak valid.');
+
+    const items = Array.isArray(row.items) ? row.items : [];
+    if (!items.length) throw new Error('Keranjang kosong.');
+    const cleanItems = items.map(item => ({
+      product_id: item.product_id,
+      quantity: Math.max(1, Number(item.quantity || 1))
+    }));
+    if (cleanItems.some(item => !item.product_id || !isUuid(item.product_id))) {
+      throw new Error('Ada produk di keranjang yang tidak valid.');
+    }
+
+    const proofUrl = paymentMethod === 'qris_buatqris'
+      ? ''
+      : normalizeProofReference(row.proof_image_url || '', 'proofs', row.seller_id || '');
+
+    if (paymentMethod !== 'qris_buatqris' && !proofUrl) {
+      throw new Error('Bukti pembayaran wajib diupload sebelum kirim pesanan.');
+    }
+
+    return {
+      seller_id: row.seller_id,
+      items: cleanItems,
+      buyer_name: buyerName,
+      buyer_phone: buyerPhone,
+      payment_method: paymentMethod,
+      proof_image_url: proofUrl
+    };
+  }
+
+  // STAGE23: checkout keranjang (multi-item) -> create_public_order_batch.
+  // Return: array of public.orders rows (1 per item), semuanya berbagi
+  // order_group_id yang sama. Item pertama (index 0) adalah "primary"
+  // order yang dipakai untuk /api/payment/create & polling status.
+  async function createOrderGroup(row) {
+    const payload = prepareOrderGroupPayload(row);
+    if (!payload.seller_id || !isUuid(payload.seller_id)) throw new Error('Seller tidak valid.');
+
+    if (sb) {
+      const { data, error } = await sb.rpc('create_public_order_batch', {
+        target_seller_id: payload.seller_id,
+        items: payload.items,
+        buyer_name_input: payload.buyer_name,
+        buyer_phone_input: payload.buyer_phone,
+        proof_image_url_input: payload.proof_image_url,
+        payment_method_input: payload.payment_method
+      });
+
+      if (!error) {
+        const rows = Array.isArray(data) ? data : (data ? [data] : []);
+        if (!rows.length) throw new Error('Checkout gagal: tidak ada order yang terbuat.');
+        return rows;
+      }
+
+      const message = String(error.message || '').toLowerCase();
+      const missingRpc = message.includes('create_public_order_batch') || message.includes('could not find the function') || message.includes('schema cache');
+      if (missingRpc) {
+        throw new Error('Checkout keranjang belum siap. Jalankan SQL supabase/36_cart_order_group_tracking_security_fix.sql di Supabase SQL Editor, lalu deploy ulang.');
+      }
+      throw error;
+    }
+
+    assertDataLayer('membuat pesanan keranjang');
+    throw new Error('Checkout keranjang butuh koneksi Supabase (tidak tersedia mode demo lokal).');
+  }
+
+  // STAGE23: seller/admin ubah status fulfillment (order_status), terpisah
+  // total dari payment_status. payment_status TIDAK bisa diubah lewat sini.
+  async function updateOrderStatus(orderId, newStatus) {
+    if (!orderId || !isUuid(orderId)) throw new Error('Order tidak valid.');
+    const clean = String(newStatus || '').trim().toLowerCase();
+    if (!['pending', 'processing', 'ready', 'completed', 'cancelled'].includes(clean)) {
+      throw new Error('Status pesanan tidak valid.');
+    }
+
+    if (sb) {
+      const { data, error } = await sb.rpc('update_order_status', { p_order_id: orderId, p_new_status: clean });
+      if (error) {
+        const message = String(error.message || '').toLowerCase();
+        const missingRpc = message.includes('update_order_status') || message.includes('could not find the function') || message.includes('schema cache');
+        if (missingRpc) {
+          throw new Error('Fitur status pesanan belum siap. Jalankan SQL supabase/36_cart_order_group_tracking_security_fix.sql, lalu deploy ulang.');
+        }
+        throw error;
+      }
+      return Array.isArray(data) ? data[0] : data;
+    }
+
+    assertDataLayer('mengubah status pesanan');
+    return await save('orders', { id: orderId, order_status: clean });
+  }
+
+  // STAGE23: buyer lacak pesanan tanpa akun (order_group_id + no. WA).
+  async function getOrderGroupTracking(orderGroupId, buyerPhone) {
+    if (!orderGroupId || !isUuid(orderGroupId)) throw new Error('Nomor order tidak valid.');
+    const phone = normalizePhone(buyerPhone || '');
+    if (phone.length < 8) throw new Error('Nomor WhatsApp wajib diisi.');
+    if (!sb) { assertDataLayer('melacak pesanan'); }
+
+    const { data, error } = await sb.rpc('get_order_group_tracking', {
+      p_order_group_id: orderGroupId,
+      p_buyer_phone: phone
+    });
+    if (error) {
+      const message = String(error.message || '').toLowerCase();
+      const missingRpc = message.includes('get_order_group_tracking') || message.includes('could not find the function') || message.includes('schema cache');
+      if (missingRpc) {
+        throw new Error('Fitur lacak pesanan belum siap. Jalankan SQL supabase/36_cart_order_group_tracking_security_fix.sql.');
+      }
+      throw new Error(error.message || 'Order tidak ditemukan atau nomor WhatsApp tidak cocok.');
+    }
+    return Array.isArray(data) ? data : [];
+  }
+
   async function save(table, row) {
     const preparedRow = normalizePayloadForTable(table, row);
 
@@ -1690,6 +1814,9 @@
     adminUpdatePasswordResetRequest,
     resetSalesRecap,
     createPublicOrder,
+    createOrderGroup,
+    updateOrderStatus,
+    getOrderGroupTracking,
     adminReviewPremiumRequest,
     adminSoftDeleteUser,
     listNotifications,

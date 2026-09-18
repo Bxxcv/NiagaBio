@@ -250,6 +250,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <span>Beli</span>
                 <i class="bi bi-arrow-right"></i>
               </button>
+              <button class="public-share-btn public-cart-add-btn" type="button" data-add-cart="${NB.escapeHtml(product.id)}" aria-label="Tambah ${NB.escapeHtml(product.name)} ke keranjang">
+                <i class="bi bi-cart-plus"></i>
+              </button>
               <button class="public-share-btn" type="button" data-share="${NB.escapeHtml(product.id)}" aria-label="Bagikan produk ${NB.escapeHtml(product.name)}">
                 <i class="bi bi-share"></i>
               </button>
@@ -336,6 +339,10 @@ document.addEventListener('DOMContentLoaded', async () => {
               ${socials.length ? socials.map(socialButton).join('') : ''}
               <button class="public-social public-store-share" id="shareStoreBtn" type="button" aria-label="Bagikan toko">
                 <i class="bi bi-share"></i>
+              </button>
+              <button class="public-social public-cart-toggle" id="cartToggleBtn" type="button" aria-label="Keranjang belanja">
+                <i class="bi bi-cart3"></i>
+                <span class="public-cart-badge" id="cartBadgeCount" hidden>0</span>
               </button>
             </div>
           </header>
@@ -481,6 +488,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
       });
 
+      if (!demoModePage && window.NBCart) {
+        document.querySelectorAll('[data-add-cart]').forEach(button => {
+          button.addEventListener('click', () => {
+            const product = list.find(item => String(item.id) === String(button.dataset.addCart));
+            if (!product) return;
+            NBCart.add(profile.user_id, product, 1);
+            nbToast(`${product.name} ditambahkan ke keranjang.`);
+          });
+        });
+      }
+
       if (highlightedProductId) {
         requestAnimationFrame(() => {
           const target = [...document.querySelectorAll('[data-product-card]')]
@@ -560,6 +578,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     renderProducts(products);
+
+    if (!demoModePage && window.NBCart) {
+      const cartToggleBtn = document.getElementById('cartToggleBtn');
+      const cartBadge = document.getElementById('cartBadgeCount');
+      const refreshCartBadge = () => {
+        if (!cartBadge) return;
+        const total = NBCart.count(profile.user_id);
+        cartBadge.textContent = total > 99 ? '99+' : String(total);
+        cartBadge.hidden = total < 1;
+      };
+      refreshCartBadge();
+      NBCart.onChange(sellerId => { if (sellerId === profile.user_id) refreshCartBadge(); });
+      cartToggleBtn?.addEventListener('click', () => NBCart.openDrawer(profile.user_id, profile, products));
+    }
 
     const search = document.getElementById('productSearch');
     if (search) {

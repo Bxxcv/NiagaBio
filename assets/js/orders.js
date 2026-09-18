@@ -19,9 +19,33 @@ document.addEventListener('DOMContentLoaded', async () => {
   let sellerProfile = null;
 
   function badge(status) {
-    if (status === 'paid') return '<span class="badge text-bg-success">selesai</span>';
+    if (status === 'paid') return '<span class="badge text-bg-success">dibayar</span>';
     if (status === 'cancelled') return '<span class="badge text-bg-secondary">batal</span>';
-    return '<span class="badge text-bg-warning">menunggu</span>';
+    return '<span class="badge text-bg-warning">menunggu bayar</span>';
+  }
+
+  // STAGE23: order_status (fulfillment) terpisah dari payment_status di atas.
+  const ORDER_STATUS_META = {
+    pending: { text: 'Pesanan Baru', cls: 'text-bg-warning' },
+    processing: { text: 'Diproses', cls: 'text-bg-info' },
+    ready: { text: 'Siap Kirim/Ambil', cls: 'text-bg-primary' },
+    completed: { text: 'Selesai', cls: 'text-bg-success' },
+    cancelled: { text: 'Dibatalkan', cls: 'text-bg-secondary' }
+  };
+  const ORDER_STATUS_OPTIONS = ['pending', 'processing', 'ready', 'completed', 'cancelled'];
+
+  function orderStatusBadge(status) {
+    const meta = ORDER_STATUS_META[status] || ORDER_STATUS_META.pending;
+    return `<span class="badge ${meta.cls}">${meta.text}</span>`;
+  }
+
+  function orderStatusSelect(order) {
+    const current = order.order_status || 'pending';
+    const locked = current === 'completed' || current === 'cancelled';
+    const options = ORDER_STATUS_OPTIONS.map(value =>
+      `<option value="${value}" ${value === current ? 'selected' : ''}>${ORDER_STATUS_META[value].text}</option>`
+    ).join('');
+    return `<select class="form-select form-select-sm nb-order-status-select" data-order-status="${NB.escapeHtml(order.id)}" ${locked ? 'disabled title="Status final, tidak bisa diubah lagi"' : ''}>${options}</select>`;
   }
 
   function formatDate(value) {
@@ -107,6 +131,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function rowHtml(order) {
+    const isGateway = order.payment_method === 'qris_buatqris';
+    const paymentActions = isGateway
+      ? `<span class="text-muted small" title="Status pembayaran gateway otomatis lewat webhook BuatQris"><i class="bi bi-shield-lock"></i> Otomatis</span>`
+      : `
+        <button class="nb-btn nb-btn-commerce nb-btn-sm" data-paid="${NB.escapeHtml(order.id)}" ${order.payment_status === 'paid' ? 'disabled' : ''}>Tandai Dibayar</button>
+        <button class="nb-btn nb-btn-danger nb-btn-sm" data-cancel="${NB.escapeHtml(order.id)}" ${order.payment_status === 'cancelled' ? 'disabled' : ''}>Batal</button>
+      `;
     return `
       <tr>
         <td>
@@ -120,11 +151,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         <td>${NB.money(order.total_price)}<br><small class="text-muted">Qty ${NB.escapeHtml(order.quantity || 1)}</small></td>
         <td>${proofHtml(order)}</td>
         <td>${badge(order.payment_status)}</td>
+        <td>${orderStatusSelect(order)}</td>
         <td class="text-end">
           <div class="btn-group btn-group-sm">
             <a class="nb-btn nb-btn-commerce nb-btn-sm ${order.buyer_phone ? '' : 'disabled'}" href="${NB.safeHref(buyerWaUrl(order))}" target="_blank" rel="noopener" title="WhatsApp pembeli"><i class="bi bi-whatsapp"></i></a>
-            <button class="nb-btn nb-btn-commerce nb-btn-sm" data-paid="${NB.escapeHtml(order.id)}" ${order.payment_status === 'paid' ? 'disabled' : ''}>Selesai</button>
-            <button class="nb-btn nb-btn-danger nb-btn-sm" data-cancel="${NB.escapeHtml(order.id)}" ${order.payment_status === 'cancelled' ? 'disabled' : ''}>Batal</button>
+            ${paymentActions}
             <button class="nb-btn nb-btn-ghost nb-btn-sm" data-print-note="${NB.escapeHtml(order.id)}" title="Cetak nota"><i class="bi bi-printer"></i></button>
           </div>
         </td>
@@ -133,6 +164,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function cardHtml(order) {
+    const isGateway = order.payment_method === 'qris_buatqris';
+    const paymentActions = isGateway
+      ? `<span class="text-muted small w-100 text-center"><i class="bi bi-shield-lock"></i> Pembayaran otomatis via BuatQris</span>`
+      : `
+        <button class="nb-btn nb-btn-commerce nb-btn-sm" data-paid="${NB.escapeHtml(order.id)}" ${order.payment_status === 'paid' ? 'disabled' : ''}>Tandai Dibayar</button>
+        <button class="nb-btn nb-btn-danger nb-btn-sm" data-cancel="${NB.escapeHtml(order.id)}" ${order.payment_status === 'cancelled' ? 'disabled' : ''}>Batal</button>
+      `;
     return `
       <article class="order-card-mobile">
         <div class="order-card-head">
@@ -149,10 +187,10 @@ document.addEventListener('DOMContentLoaded', async () => {
           <div><span>Total</span><b>${NB.money(order.total_price)}</b></div>
         </div>
         <div class="order-card-proof">${proofHtml(order)}</div>
+        <div class="order-card-status-row"><span>Status Pesanan</span>${orderStatusSelect(order)}</div>
         <div class="order-card-actions">
           <a class="nb-btn nb-btn-commerce nb-btn-sm ${order.buyer_phone ? '' : 'disabled'}" href="${NB.safeHref(buyerWaUrl(order))}" target="_blank" rel="noopener"><i class="bi bi-whatsapp me-1"></i>WA</a>
-          <button class="nb-btn nb-btn-commerce nb-btn-sm" data-paid="${NB.escapeHtml(order.id)}" ${order.payment_status === 'paid' ? 'disabled' : ''}>Selesai</button>
-          <button class="nb-btn nb-btn-danger nb-btn-sm" data-cancel="${NB.escapeHtml(order.id)}" ${order.payment_status === 'cancelled' ? 'disabled' : ''}>Batal</button>
+          ${paymentActions}
           <button class="nb-btn nb-btn-ghost nb-btn-sm" data-print-note="${NB.escapeHtml(order.id)}"><i class="bi bi-printer me-1"></i>Nota</button>
         </div>
       </article>
@@ -168,8 +206,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     return labels[value] || value || '-';
   }
 
-  function orderStatusLabel(value) {
-    const labels = { paid: 'Selesai', pending: 'Menunggu', cancelled: 'Dibatalkan' };
+  // STAGE23: rename dari orderStatusLabel -> paymentStatusLabel supaya tidak
+  // rancu dengan order_status (fulfillment) yang baru. Fungsi ini TETAP
+  // soal payment_status, tidak ada perubahan logic.
+  function paymentStatusLabel(value) {
+    const labels = { paid: 'Dibayar', pending: 'Menunggu Bayar', cancelled: 'Dibatalkan' };
     return labels[value] || value || '-';
   }
 
@@ -239,7 +280,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       const total = NB.money(order.total_price);
       const qty = Number(order.quantity || 1);
       const unitPrice = Number(order.total_price || 0) / Math.max(qty, 1);
-      const status = orderStatusLabel(order.payment_status);
+      const status = paymentStatusLabel(order.payment_status);
+      const fulfillmentStatus = (ORDER_STATUS_META[order.order_status] || ORDER_STATUS_META.pending).text;
 
       popup.document.open();
       popup.document.write(`<!doctype html>
@@ -287,6 +329,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   </div>
   <div class="total"><span>Total</span><span>${safe(total)}</span></div>
   <div class="status ${order.payment_status === 'pending' ? 'pending' : order.payment_status === 'cancelled' ? 'cancelled' : ''}">${safe(status)}</div>
+  <div class="row" style="margin-top:8px"><span>Status Pesanan</span><span>${safe(fulfillmentStatus)}</span></div>
   <footer class="foot">Terima kasih telah berbelanja di ${safe(sellerName)}.<br>Nota dibuat dari NiagaBio.</footer>
 </main>
 </body>
@@ -310,6 +353,24 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.querySelectorAll('[data-print-note]').forEach(button => {
       button.addEventListener('click', async () => printNote(orders.find(item => String(item.id) === String(button.dataset.printNote))));
+    });
+
+    // STAGE23: dropdown order_status (fulfillment) - terpisah dari payment_status.
+    document.querySelectorAll('[data-order-status]').forEach(select => {
+      select.addEventListener('change', async () => {
+        const order = orders.find(item => String(item.id) === String(select.dataset.orderStatus));
+        const newStatus = select.value;
+        select.disabled = true;
+        try {
+          await NB.updateOrderStatus(order.id, newStatus);
+          nbToast(`Status pesanan diubah ke "${ORDER_STATUS_META[newStatus]?.text || newStatus}".`);
+          await loadOrders();
+        } catch (error) {
+          nbToast(error.message || 'Gagal mengubah status pesanan.', 'danger');
+          select.disabled = false;
+          select.value = order?.order_status || 'pending';
+        }
+      });
     });
   }
 
@@ -341,7 +402,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderSummary(orders);
     setText('filteredCount', `${orders.length} order`);
 
-    const empty = `<tr><td colspan="6"><div class="table-empty-action"><i class="bi bi-receipt"></i><b>Belum ada pesanan</b><span>Pesanan dari halaman toko akan muncul di sini setelah pembeli checkout.</span></div></td></tr>`;
+    const empty = `<tr><td colspan="7"><div class="table-empty-action"><i class="bi bi-receipt"></i><b>Belum ada pesanan</b><span>Pesanan dari halaman toko akan muncul di sini setelah pembeli checkout.</span></div></td></tr>`;
     setHtml('orderRows', orders.map(rowHtml).join('') || empty);
     setHtml('orderCards', orders.map(cardHtml).join('') || '<div class="empty-state empty-action py-4"><i class="bi bi-receipt"></i><b>Belum ada pesanan</b><span>Pesanan dari halaman toko akan muncul di sini.</span></div>');
     NB.hydrateProofLinks(document);
@@ -382,7 +443,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function exportCsv() {
-    const header = ['Tanggal', 'Produk', 'Pembeli', 'WhatsApp', 'Qty', 'Total', 'Metode', 'Status'];
+    const header = ['Tanggal', 'Produk', 'Pembeli', 'WhatsApp', 'Qty', 'Total', 'Metode', 'Status Bayar', 'Status Pesanan'];
     const lines = filteredOrders.map(order => [
       formatDate(order.created_at),
       order.product_name || '',
@@ -391,7 +452,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       order.quantity || 1,
       order.total_price || 0,
       order.payment_method || '',
-      order.payment_status || ''
+      order.payment_status || '',
+      order.order_status || ''
     ]);
 
     const csv = [header, ...lines]
@@ -436,6 +498,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadOrders();
   } catch (error) {
     nbToast(error.message || 'Gagal memuat pesanan.', 'danger');
-    setHtml('orderRows', '<tr><td colspan="6" class="text-center text-danger">Gagal memuat pesanan.</td></tr>');
+    setHtml('orderRows', '<tr><td colspan="7" class="text-center text-danger">Gagal memuat pesanan.</td></tr>');
   }
 });
