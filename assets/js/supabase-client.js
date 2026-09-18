@@ -1259,6 +1259,25 @@
     return await save('orders', { id: orderId, order_status: clean });
   }
 
+  // STAGE25: riwayat SEMUA pesanan buyer (lintas toko) berdasarkan nomor WA
+  // saja - lihat catatan trade-off keamanan di migration 37.
+  async function getOrdersByPhone(buyerPhone) {
+    const phone = normalizePhone(buyerPhone || '');
+    if (phone.length < 8) throw new Error('Nomor WhatsApp wajib diisi.');
+    if (!sb) { assertDataLayer('melihat riwayat pesanan'); }
+
+    const { data, error } = await sb.rpc('get_orders_by_phone', { p_buyer_phone: phone });
+    if (error) {
+      const message = String(error.message || '').toLowerCase();
+      const missingRpc = message.includes('get_orders_by_phone') || message.includes('could not find the function') || message.includes('schema cache');
+      if (missingRpc) {
+        throw new Error('Fitur riwayat pesanan belum siap. Jalankan SQL supabase/37_orders_history_by_phone.sql.');
+      }
+      throw new Error(error.message || 'Gagal memuat riwayat pesanan.');
+    }
+    return Array.isArray(data) ? data : [];
+  }
+
   // STAGE23: buyer lacak pesanan tanpa akun (order_group_id + no. WA).
   async function getOrderGroupTracking(orderGroupId, buyerPhone) {
     if (!orderGroupId || !isUuid(orderGroupId)) throw new Error('Nomor order tidak valid.');
@@ -1817,6 +1836,7 @@
     createOrderGroup,
     updateOrderStatus,
     getOrderGroupTracking,
+    getOrdersByPhone,
     adminReviewPremiumRequest,
     adminSoftDeleteUser,
     listNotifications,

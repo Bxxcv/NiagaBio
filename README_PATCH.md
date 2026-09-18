@@ -1,17 +1,19 @@
-# Patch STAGE24 — Revisi Feedback Cart (di atas Stage 23 yang sudah live)
+# Patch STAGE25 — Riwayat Pesanan + Fix "Lacak Order Lain"
 
-Cuma 6 file yang berubah, semua di ronde ini (Stage 23 tidak ikut lagi).
-Detail lengkap: `docs/patch-notes/STAGE24_CART_FEEDBACK_FIXES.md`.
+Detail lengkap + query diagnostik untuk bug nominal QR:
+`docs/patch-notes/STAGE25_ORDER_HISTORY_AND_FIXES.md` — **baca poin 3,
+saya butuh hasil 1 query dari kamu sebelum bisa fix bug nominal dengan
+benar (bukan tebak-tebakan).**
 
 ## Copy & timpa
 
-- `api/payment/create.js`
-- `assets/js/cart.js`
-- `assets/js/public-page.js`
 - `assets/js/order-tracking.js`
-- `assets/css/v2/cart.css`
+- `assets/js/supabase-client.js`
 - `assets/css/v2/tracking.css`
 
-Tidak ada SQL baru. Deploy, lalu test ulang: cart 2+ produk → checkout →
-kalau muncul error nominal dari BuatQris, itu tanda perlu cek limit sandbox
-di dashboard BuatQris (lihat poin 1 di STAGE24 doc).
+## Jalankan SQL baru
+
+- `supabase/37_orders_history_by_phone.sql`
+
+Deploy, lalu test `/track.html` (tanpa `?order=`) → harus muncul form
+nomor WA duluan, bukan langsung minta order ID.

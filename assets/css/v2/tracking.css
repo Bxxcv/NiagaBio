@@ -7,6 +7,51 @@
   color: var(--nb-danger, #b42318);
 }
 
+.nb-track-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nb-track-history-card {
+  text-align: left;
+  background: var(--nb-surface, #fff);
+  border: 1px solid var(--nb-line, #d9e0e6);
+  border-radius: 14px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.nb-track-history-card:hover {
+  border-color: var(--nb-green-600, #128044);
+  box-shadow: 0 2px 10px rgba(18, 128, 68, 0.12);
+}
+
+.nb-track-history-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.nb-track-history-items {
+  margin: 0 0 8px;
+  color: var(--nb-muted, #667085);
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nb-track-history-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
 .nb-track-refresh-note {
   color: var(--nb-muted, #667085);
   font-size: 12px;
