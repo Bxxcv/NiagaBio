@@ -4,25 +4,40 @@
    foundation.css) karena ini UI baru, bukan bagian dari card produk yang
    sudah di-theme per tema. */
 
-.public-cart-toggle {
-  position: relative;
+.nb-cart-fab {
+  position: fixed;
+  right: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  z-index: 1900;
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  border: 0;
+  background: var(--nb-green-600, #128044);
+  color: #fff;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px rgba(18, 128, 68, 0.35);
+  cursor: pointer;
 }
 
-.public-cart-badge {
+.nb-cart-fab-badge {
   position: absolute;
-  top: -6px;
-  right: -6px;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 4px;
+  top: -4px;
+  right: -4px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
   border-radius: 999px;
-  background: var(--nb-green-600, #128044);
+  background: var(--nb-danger, #b42318);
   color: #fff;
   font-size: 11px;
   font-weight: 700;
-  line-height: 18px;
+  line-height: 20px;
   text-align: center;
-  box-shadow: 0 0 0 2px var(--nb-surface, #fff);
+  box-shadow: 0 0 0 2px #fff;
 }
 
 body.nb-cart-open-lock {

@@ -138,6 +138,31 @@ module.exports = async function handler(req, res) {
     const transactionId = String(provider.transaction_id || '').trim();
     if (!transactionId) throw new Error('BuatQris tidak mengembalikan transaction_id.');
 
+    // STAGE24: guard nominal. QRIS BuatQris seharusnya dibuat untuk `amount`
+    // yang kita minta (fee gateway dipotong saat settlement, BUKAN
+    // ditambahkan ke tagihan buyer). Kalau provider.total_amount balik
+    // dengan nominal yang beda jauh dari amount, JANGAN lanjutkan — lebih
+    // baik gagal jelas daripada buyer bayar nominal yang tidak sama dengan
+    // catatan order (order.buyer_total). Ditemukan dari test checkout cart
+    // multi-item: amount diminta Rp2.707.973, provider balas total_amount
+    // Rp1.304.001 (kemungkinan besar batas nominal sandbox BuatQris).
+    const providerTotal = Number(provider.total_amount || 0);
+    if (providerTotal > 0) {
+      const deviation = Math.abs(providerTotal - amount);
+      const tolerance = Math.max(1000, amount * 0.02);
+      if (deviation > tolerance) {
+        console.error('[NiagaBio] [ALERT] buatqris_amount_mismatch', {
+          order_id: order.id,
+          requested_amount: amount,
+          provider_total_amount: providerTotal,
+          transaction_id: transactionId
+        });
+        return res.status(502).json({
+          error: `BuatQris mengembalikan nominal berbeda dari yang diminta (diminta Rp${amount.toLocaleString('id-ID')}, provider balas Rp${providerTotal.toLocaleString('id-ID')}). Kemungkinan ada batas nominal di akun/sandbox BuatQris kamu. Cek dashboard/dokumentasi BuatQris dulu sebelum lanjut — order belum dibuatkan QRIS.`
+        });
+      }
+    }
+
     const RETRY_BACKOFF_MS = [0, 300, 600];
     let insertedRows = null;
     let persisted = false;

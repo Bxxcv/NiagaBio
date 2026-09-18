@@ -340,10 +340,6 @@ document.addEventListener('DOMContentLoaded', async () => {
               <button class="public-social public-store-share" id="shareStoreBtn" type="button" aria-label="Bagikan toko">
                 <i class="bi bi-share"></i>
               </button>
-              <button class="public-social public-cart-toggle" id="cartToggleBtn" type="button" aria-label="Keranjang belanja">
-                <i class="bi bi-cart3"></i>
-                <span class="public-cart-badge" id="cartBadgeCount" hidden>0</span>
-              </button>
             </div>
           </header>
 
@@ -580,17 +576,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderProducts(products);
 
     if (!demoModePage && window.NBCart) {
-      const cartToggleBtn = document.getElementById('cartToggleBtn');
-      const cartBadge = document.getElementById('cartBadgeCount');
-      const refreshCartBadge = () => {
-        if (!cartBadge) return;
-        const total = NBCart.count(profile.user_id);
-        cartBadge.textContent = total > 99 ? '99+' : String(total);
-        cartBadge.hidden = total < 1;
-      };
-      refreshCartBadge();
-      NBCart.onChange(sellerId => { if (sellerId === profile.user_id) refreshCartBadge(); });
-      cartToggleBtn?.addEventListener('click', () => NBCart.openDrawer(profile.user_id, profile, products));
+      NBCart.mountFab(profile.user_id, profile, products);
     }
 
     const search = document.getElementById('productSearch');

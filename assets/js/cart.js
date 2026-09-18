@@ -208,6 +208,26 @@
     }
   }
 
+  let lockedScrollY = 0;
+
+  function lockBodyScroll() {
+    lockedScrollY = window.scrollY || window.pageYOffset || 0;
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${lockedScrollY}px`;
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.classList.add('nb-cart-open-lock');
+  }
+
+  function unlockBodyScroll() {
+    document.body.classList.remove('nb-cart-open-lock');
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    window.scrollTo(0, lockedScrollY);
+  }
+
   function openDrawer(sellerId, profile, products) {
     drawerSellerId = sellerId;
     drawerProfile = profile || null;
@@ -215,20 +235,56 @@
     ensureDrawer();
     renderDrawer();
     drawerEl.classList.add('is-open');
-    document.body.classList.add('nb-cart-open-lock');
+    lockBodyScroll();
   }
 
   function closeDrawer() {
     if (!drawerEl) return;
     drawerEl.classList.remove('is-open');
-    document.body.classList.remove('nb-cart-open-lock');
+    unlockBodyScroll();
   }
 
   onChange(sellerId => {
     if (drawerEl && drawerEl.classList.contains('is-open') && sellerId === drawerSellerId) {
       renderDrawer();
     }
+    if (fabEl && sellerId === fabSellerId) refreshFabBadge();
   });
+
+  // STAGE24: tombol cart dipindah jadi floating button (bukan ikut baris
+  // ikon sosial/link toko di header) - supaya tidak mengganggu link custom
+  // seller & konsisten di semua tema tanpa perlu sentuh markup shell.
+  let fabEl = null;
+  let fabSellerId = null;
+  let fabProfile = null;
+  let fabProducts = [];
+
+  function refreshFabBadge() {
+    if (!fabEl) return;
+    const badge = fabEl.querySelector('.nb-cart-fab-badge');
+    const total = count(fabSellerId);
+    if (!badge) return;
+    badge.textContent = total > 99 ? '99+' : String(total);
+    badge.hidden = total < 1;
+  }
+
+  function mountFab(sellerId, profile, products) {
+    fabSellerId = sellerId;
+    fabProfile = profile || null;
+    fabProducts = Array.isArray(products) ? products : [];
+
+    if (!fabEl) {
+      fabEl = document.createElement('button');
+      fabEl.type = 'button';
+      fabEl.id = 'nbCartFab';
+      fabEl.className = 'nb-cart-fab';
+      fabEl.setAttribute('aria-label', 'Keranjang belanja');
+      fabEl.innerHTML = `<i class="bi bi-cart3"></i><span class="nb-cart-fab-badge" hidden>0</span>`;
+      fabEl.addEventListener('click', () => openDrawer(fabSellerId, fabProfile, fabProducts));
+      document.body.appendChild(fabEl);
+    }
+    refreshFabBadge();
+  }
 
   window.NBCart = {
     add,
@@ -239,6 +295,7 @@
     getItems: readCart,
     onChange,
     openDrawer,
-    closeDrawer
+    closeDrawer,
+    mountFab
   };
 })();

@@ -7,6 +7,26 @@
   color: var(--nb-danger, #b42318);
 }
 
+.nb-track-refresh-note {
+  color: var(--nb-muted, #667085);
+  font-size: 12px;
+}
+
+.nb-track-toplabel {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  margin-top: 8px;
+}
+
+.nb-track-toplabel--warning { background: var(--nb-warning-bg, #fff4d6); color: var(--nb-warning, #9a6700); }
+.nb-track-toplabel--info { background: var(--nb-info-bg, #eaf2ff); color: var(--nb-info, #175cd3); }
+.nb-track-toplabel--success { background: var(--nb-success-bg, #e8f5ed); color: var(--nb-success, #137a45); }
+.nb-track-toplabel--danger { background: var(--nb-danger-bg, #feeceb); color: var(--nb-danger, #b42318); }
+
 .nb-track-item-block {
   padding: 14px 0;
   border-bottom: 1px solid var(--nb-line, #d9e0e6);
