@@ -387,6 +387,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             <footer class="public-footer">
               <span>&copy; ${year} ${NB.escapeHtml(displayName)}</span>
+              <a class="public-powered public-track-link" href="/track.html"><i class="bi bi-truck me-1"></i>Lacak Pesanan</a>
               <span class="public-powered">${NB.escapeHtml(template.footer)}</span>
             </footer>
           </div>

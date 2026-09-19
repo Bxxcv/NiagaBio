@@ -4,6 +4,14 @@
    foundation.css) karena ini UI baru, bukan bagian dari card produk yang
    sudah di-theme per tema. */
 
+.public-track-link {
+  text-decoration: none;
+}
+
+.public-track-link:hover {
+  text-decoration: underline;
+}
+
 .nb-cart-fab {
   position: fixed;
   right: 16px;

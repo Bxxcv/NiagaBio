@@ -500,4 +500,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     nbToast(error.message || 'Gagal memuat pesanan.', 'danger');
     setHtml('orderRows', '<tr><td colspan="7" class="text-center text-danger">Gagal memuat pesanan.</td></tr>');
   }
+
+  // STAGE27: auto-refresh biar pesanan baru & perubahan status pembayaran
+  // (dari webhook BuatQris) muncul otomatis tanpa perlu reload manual -
+  // sama seperti /track.html. Di-skip kalau seller lagi pegang dropdown
+  // status (biar tidak ganggu interaksi yang sedang berjalan).
+  setInterval(async () => {
+    const active = document.activeElement;
+    if (active && active.matches?.('.nb-order-status-select, input, select, textarea')) return;
+    try {
+      await loadOrders();
+    } catch (_) {
+      // Diamkan kalau refresh otomatis gagal sesekali (network blip).
+    }
+  }, 15000);
 });

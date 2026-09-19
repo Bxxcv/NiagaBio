@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     const successMessage = String(customSettings.success_message || '').trim();
     const redirectUrl = String(customSettings.success_redirect_url || '').trim();
+    const trackUrl = `${location.origin}/track.html?order=${encodeURIComponent(order.order_group_id || order.id)}`;
     const waText = `Halo kak, pembayaran order NiagaBio sudah berhasil.\nProduk: ${product.name}\nJumlah: ${quantity}\nTotal: ${money(order.buyer_total)}\nNama: ${buyerName}\nWA: ${buyerPhone}`;
     root.innerHTML = `
       <section class="checkout-success card-nb checkout-payment-state">
@@ -67,9 +68,14 @@ document.addEventListener('DOMContentLoaded', async () => {
           <span>Jumlah</span><strong>${NB.escapeHtml(quantity)}</strong>
           <span>Total dibayar</span><strong>${money(order.buyer_total)}</strong>
         </div>
+        <div class="checkout-note mt-3">
+          <i class="bi bi-signpost-2"></i>
+          <div><b>Simpan link lacak pesanan ini.</b><span>Kamu bisa cek status pesanan kapan saja tanpa perlu akun.</span></div>
+        </div>
         <div class="d-grid gap-2 mt-4">
-          ${redirectUrl ? `<a class="nb-btn nb-btn--commerce" href="${NB.safeHref(redirectUrl)}" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-1"></i>Lanjut ke Langkah Berikutnya</a>` : ''}
-          <a class="nb-btn ${redirectUrl ? 'nb-btn--outline' : 'nb-btn--commerce'}" href="${NB.safeHref(NB.whatsappUrl(profile.whatsapp_number, waText))}" target="_blank" rel="noopener"><i class="bi bi-whatsapp me-1"></i>Kirim Konfirmasi WhatsApp</a>
+          <a class="nb-btn nb-btn--commerce" href="${NB.safeHref(trackUrl)}"><i class="bi bi-truck me-1"></i>Lacak Pesanan Saya</a>
+          ${redirectUrl ? `<a class="nb-btn nb-btn--outline" href="${NB.safeHref(redirectUrl)}" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-1"></i>Lanjut ke Langkah Berikutnya</a>` : ''}
+          <a class="nb-btn nb-btn--outline" href="${NB.safeHref(NB.whatsappUrl(profile.whatsapp_number, waText))}" target="_blank" rel="noopener"><i class="bi bi-whatsapp me-1"></i>Kirim Konfirmasi WhatsApp</a>
           <a class="nb-btn nb-btn--outline" href="${NB.safeHref(storeUrl(profile))}"><i class="bi bi-shop me-1"></i>Kembali ke Toko</a>
         </div>
       </section>
